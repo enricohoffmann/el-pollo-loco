@@ -1,10 +1,15 @@
 const keyboard = new Keyboard();
 let canvas;
 let world;
+let canvasWidth = 720;
+let canvasHeight = 480;
 
 function init() {
     canvas = document.getElementById("canvas");
-    world = new World(canvas);
+    canvasWidth = canvas.width;
+    canvasHeight = canvas.height;
+    world = new World(canvas, keyboard);
+    
 }
 
 
