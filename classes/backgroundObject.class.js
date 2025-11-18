@@ -1,6 +1,6 @@
 class BackgroundObject extends MoveableObject {
-    width = canvasWidth;
-    height = canvasHeight;
+    width = 720;
+    height = 480;
     pos_y = 0;
     pos_x = 0;
 
