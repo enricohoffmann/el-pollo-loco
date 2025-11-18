@@ -21,5 +21,9 @@ class Keyboard {
 
     }
 
+    get jumping() {
+        return this.keys[" "] || this.keys.ArrowUp;
+    }
+
 
 }
