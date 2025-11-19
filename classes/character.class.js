@@ -2,6 +2,7 @@ class Character extends MoveableObject {
     height = 320;
     width = 150;
     speed = 10;
+    damage = 20;
 
     CHARACTER_WALKING_IMAGES = [
         'img/2_character_pepe/2_walk/W-21.png',
@@ -45,6 +46,7 @@ class Character extends MoveableObject {
 
         setInterval(() => {
             if (this.world.keyboard.keys.ArrowRight && this.pos_x < this.world.level.level_end_x) {
+                this.otherDirection = false;
                 this.moveRight();
             }
 

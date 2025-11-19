@@ -11,12 +11,27 @@ class World {
     constructor(canvas, keyboard) {
 
         this.canvas = canvas;
-        this.ctx = canvas.getContext("2d");
+        this.ctx = canvas.getContext('2d');
         this.keyboard = keyboard;
         this.character = new Character(this);
-        
+
         this.draw();
+        this.checkCollisions();
     }
+
+
+    checkCollisions() {
+        setInterval(() => {
+            this.level.enemies.forEach((enemy) => {
+                if (this.character.isColliding(enemy)) {
+                    this.character.energy -= enemy.damage;
+                    console.log('Character energy: ' + this.character.energy);
+                }
+            });
+        }, 200);
+    }
+        
+
 
 
     draw() {
@@ -37,20 +52,30 @@ class World {
 
     addToMap(mo) {
 
-        if(mo.otherDirection) {
-            this.ctx.save();
-            this.ctx.translate(mo.pos_x + mo.width, 0);
-            this.ctx.scale(-1, 1);
-            this.ctx.translate(-mo.pos_x, 0);
+        if (mo.otherDirection) {
+            this.flipImage(mo);
         }
 
+        mo.drow(this.ctx);
+        
+        mo.drawFrame(this.ctx);
 
-        this.ctx.drawImage(mo.img, mo.pos_x, mo.pos_y, mo.width, mo.height);
-
-        if(mo.otherDirection) {
-            this.ctx.restore();
+        if (mo.otherDirection) {
+            this.flipImageBack();
         }
     }
+
+    flipImage(mo) {
+        this.ctx.save();
+        this.ctx.translate(mo.pos_x + mo.width, 0);
+        this.ctx.scale(-1, 1);
+        this.ctx.translate(-mo.pos_x, 0);
+    }
+
+    flipImageBack() {
+        this.ctx.restore();
+    }
+    
 
     addObjectsToMap(objects) {
         objects.forEach(object => {

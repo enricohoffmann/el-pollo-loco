@@ -10,6 +10,8 @@ class MoveableObject {
     otherDirection = false;
     speedY = 0;
     acceleration = 2.5;
+    energy = 100;
+    damage = 0;
 
     constructor() {
 
@@ -28,13 +30,26 @@ class MoveableObject {
         });
     }
 
+    drow(ctx){
+        ctx.drawImage(this.img, this.pos_x, this.pos_y, this.width, this.height);
+    }
+
+    drawFrame(ctx) {
+        if (this instanceof Character || this instanceof Chicken || this instanceof Endboss) {
+            ctx.beginPath();
+            ctx.lineWidth = "4";
+            ctx.strokeStyle = "blue";
+            ctx.rect(this.pos_x, this.pos_y, this.width, this.height);
+            ctx.stroke();
+        }
+    }
+
     moveLeft() {
         this.pos_x -= this.speed;
     }
 
     moveRight() {
         this.pos_x += this.speed;
-        this.otherDirection = false;
     }
 
     playAnimation(images) {
@@ -56,6 +71,13 @@ class MoveableObject {
             }
 
         }, 1000 / 25);
+    }
+
+    isColliding(mo) {
+        return this.pos_x + this.width > mo.pos_x &&
+               this.pos_x < mo.pos_x + mo.width &&
+               this.pos_y + this.height > mo.pos_y &&
+               this.pos_y < mo.pos_y + mo.height;
     }
 
     jump() {
