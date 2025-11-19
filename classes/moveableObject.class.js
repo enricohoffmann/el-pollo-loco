@@ -1,48 +1,16 @@
-class MoveableObject {
-    pos_x = 100;
-    pos_y = 120;
-    img;
-    height = 150;
-    width = 100;
-    imageCache = {};
-    currentImageIndex = 0;
+class MoveableObject extends DrawableObject {
     speed = 0.15;
     otherDirection = false;
     speedY = 0;
     acceleration = 2.5;
     energy = 100;
     damage = 0;
+    lastHit = 0;
 
     constructor() {
-
+        super();
     }
-
-    loadImage(path) {
-        this.img = new Image();
-        this.img.src = path;
-    }
-
-    loadImages(arr) {
-        arr.forEach((path) => {
-            let img = new Image();
-            img.src = path;
-            this.imageCache[path] = img;
-        });
-    }
-
-    drow(ctx){
-        ctx.drawImage(this.img, this.pos_x, this.pos_y, this.width, this.height);
-    }
-
-    drawFrame(ctx) {
-        if (this instanceof Character || this instanceof Chicken || this instanceof Endboss) {
-            ctx.beginPath();
-            ctx.lineWidth = "4";
-            ctx.strokeStyle = "blue";
-            ctx.rect(this.pos_x, this.pos_y, this.width, this.height);
-            ctx.stroke();
-        }
-    }
+ 
 
     moveLeft() {
         this.pos_x -= this.speed;
@@ -82,6 +50,24 @@ class MoveableObject {
 
     jump() {
         this.speedY = 30;
+    }
+
+    hit(){
+        this.energy -= this.damage;
+        if(this.energy < 0){
+            this.energy = 0;
+        }else{
+            this.lastHit = new Date().getTime();
+        }
+    }
+
+    get isDead(){
+        return this.energy == 0;
+    }
+
+    get isHurt(){
+        const timepassed = new Date().getTime() - this.lastHit;
+        return timepassed < 1000;
     }
 
 }
