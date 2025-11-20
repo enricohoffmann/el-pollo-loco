@@ -5,7 +5,9 @@ class Keyboard {
         ArrowRight: false,
         ArrowUp: false,
         ArrowDown: false,
-        " ": false
+        " ": false,
+        "d": false,
+        "D": false,
     };
 
     constructor() {
@@ -25,5 +27,8 @@ class Keyboard {
         return this.keys[" "] || this.keys.ArrowUp;
     }
 
+    get throwing() {
+        return this.keys["d"] || this.keys["D"];
+    }
 
 }

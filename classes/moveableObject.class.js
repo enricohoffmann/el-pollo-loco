@@ -28,8 +28,8 @@ class MoveableObject extends DrawableObject {
     }
 
     isAboveGround() {
-        return this.pos_y < 100;
-    }
+        return this instanceof ThrowableObject ? true : this.pos_y < 100;
+   }
 
     applyGravity() {
         setInterval(() => {

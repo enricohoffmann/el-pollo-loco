@@ -98,6 +98,9 @@ class Character extends MoveableObject {
     }
 
 
+    heIsDied(){
+        //See the docs for setInterval() and clearInterval().
+    }
 
 
 
