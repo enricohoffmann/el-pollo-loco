@@ -101,4 +101,11 @@ class World {
             this.addToMap(object);
         });
     }
+
+    gameOver() {
+        setTimeout(() => {
+            alert('Game Over! Try again!');
+            location.reload();
+        }, 100);
+    }
 }

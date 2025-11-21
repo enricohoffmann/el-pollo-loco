@@ -31,4 +31,14 @@ class Keyboard {
         return this.keys["d"] || this.keys["D"];
     }
 
+    get allKeysReleased() {
+        return !this.keys.ArrowLeft &&
+               !this.keys.ArrowRight &&
+               !this.keys.ArrowUp &&
+               !this.keys.ArrowDown &&
+               !this.keys[" "] &&
+               !this.keys["d"] &&
+               !this.keys["D"];
+    }
+
 }
