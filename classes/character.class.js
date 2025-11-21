@@ -55,16 +55,16 @@ class Character extends MoveableObject {
     ];
 
     CHARACTER_IDLE_LONG_IMAGES = [
-        'img/2_character_pepe/1_idle/long_idle/IL-11.png',
-        'img/2_character_pepe/1_idle/long_idle/IL-12.png',
-        'img/2_character_pepe/1_idle/long_idle/IL-13.png',
-        'img/2_character_pepe/1_idle/long_idle/IL-14.png',
-        'img/2_character_pepe/1_idle/long_idle/IL-15.png',
-        'img/2_character_pepe/1_idle/long_idle/IL-16.png',
-        'img/2_character_pepe/1_idle/long_idle/IL-17.png',
-        'img/2_character_pepe/1_idle/long_idle/IL-18.png',
-        'img/2_character_pepe/1_idle/long_idle/IL-19.png',
-        'img/2_character_pepe/1_idle/long_idle/IL-20.png'
+        'img/2_character_pepe/1_idle/long_idle/I-11.png',
+        'img/2_character_pepe/1_idle/long_idle/I-12.png',
+        'img/2_character_pepe/1_idle/long_idle/I-13.png',
+        'img/2_character_pepe/1_idle/long_idle/I-14.png',
+        'img/2_character_pepe/1_idle/long_idle/I-15.png',
+        'img/2_character_pepe/1_idle/long_idle/I-16.png',
+        'img/2_character_pepe/1_idle/long_idle/I-17.png',
+        'img/2_character_pepe/1_idle/long_idle/I-18.png',
+        'img/2_character_pepe/1_idle/long_idle/I-19.png',
+        'img/2_character_pepe/1_idle/long_idle/I-20.png'
     ];
 
     world;
@@ -85,6 +85,8 @@ class Character extends MoveableObject {
         this.loadImages(this.CHARACTER_JUMPING_IMAGES);
         this.loadImages(this.CHARACTER_DEAD_IMAGES);
         this.loadImages(this.CHARACTER_HURT_IMAGES);
+        this.loadImages(this.CHARACTER_IDLE_IMAGES);
+        this.loadImages(this.CHARACTER_IDLE_LONG_IMAGES);
         this.applyGravity();
         this.animate();
         this.lastKeyboardInputTime = new Date().getTime();
@@ -102,10 +104,6 @@ class Character extends MoveableObject {
             this.animationLoop();
         }, 40);
 
-        this.idleInterval = setInterval(() => {
-            this.idleLoop();
-        }, 40);
-
     }
 
     checkIdleTime() {
@@ -113,10 +111,10 @@ class Character extends MoveableObject {
         this.isSleeping = currentTime - this.lastKeyboardInputTime >= 15000;
     }
 
-    idleLoop(){
-        if(this.isSleeping){
+    idleLoop() {
+        if (this.isSleeping) {
             this.playAnimation(this.CHARACTER_IDLE_LONG_IMAGES);
-        }else{
+        } else {
             this.playAnimation(this.CHARACTER_IDLE_IMAGES);
         }
     }
@@ -124,14 +122,18 @@ class Character extends MoveableObject {
 
     animationLoop() {
         if (this.isDead && !this.deathAnimationStarted) {
-            this.heDied();
-            return;
+            this.stopIdleLoop();
+            //this.heDied();
+            //return;
         } else if (this.isHurt) {
             this.playAnimation(this.CHARACTER_HURT_IMAGES);
+            this.stopIdleLoop();
         } else if (this.isAboveGround()) {
             this.playAnimation(this.CHARACTER_JUMPING_IMAGES);
+            this.stopIdleLoop();
         } else if (this.world.keyboard.keys.ArrowRight || this.world.keyboard.keys.ArrowLeft) {
             this.playAnimation(this.CHARACTER_WALKING_IMAGES);
+            this.stopIdleLoop();
         }
     }
 
@@ -154,7 +156,7 @@ class Character extends MoveableObject {
             this.jump();
         }
 
-        if(this.world.keyboard.allKeysReleased){
+        if (this.world.keyboard.allKeysReleased && this.isAboveGround() && !this.isDead && !this.isHurt) {
             this.startIdleLoop();
         }
 
@@ -170,7 +172,10 @@ class Character extends MoveableObject {
 
     startIdleLoop() {
         if (!this.isIdle) {
-            
+            this.isIdle = true;
+            this.idleInterval = setInterval(() => {
+                this.idleLoop();
+            }, 40);
         }
     }
 
