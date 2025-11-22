@@ -1,16 +1,17 @@
 class World {
 
     character;
-    level = level1;
+    level;
     canvas;
     ctx;
     keyboard;
     camera_x = 0;
     statusBar = new StatusBar();
     throwableObjects = [];
+    
 
-    constructor(canvas, keyboard) {
-
+    constructor(canvas, keyboard, level) {
+        this.level = level;
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.keyboard = keyboard;
@@ -78,6 +79,7 @@ class World {
         mo.draw(this.ctx);
 
         mo.drawFrame(this.ctx);
+        mo.drawOffsetFrame(this.ctx);
 
         if (mo.otherDirection) {
             this.flipImageBack();

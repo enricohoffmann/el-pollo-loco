@@ -13,7 +13,7 @@ class ThrowableObject  extends MoveableObject {
     }
 
     fling(x, y){
-        this.pos_x = x;
+        this.pos_x = x - this.offset.right;
         this.pos_y = y;
         this.speedY = 30;
         this.applyGravity();

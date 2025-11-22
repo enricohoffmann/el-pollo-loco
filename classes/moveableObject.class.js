@@ -47,7 +47,7 @@ class MoveableObject extends DrawableObject {
 
 
     isAboveGround() {
-        return this instanceof ThrowableObject ? true : this.pos_y < 100;
+        return this instanceof ThrowableObject ? true : this.pos_y < 125;
     }
 
     applyGravity() {
@@ -87,6 +87,14 @@ class MoveableObject extends DrawableObject {
     get isHurt() {
         const timepassed = new Date().getTime() - this.lastHit;
         return timepassed < 1000;
+    }
+
+    get isEndLeft() {
+        return this.pos_x < 110;
+    }
+
+    get isEndRight() {
+        return this.pos_x > this.world.level.level_end_x; 
     }
 
 }

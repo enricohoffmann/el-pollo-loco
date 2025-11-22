@@ -8,7 +8,10 @@ function init() {
     canvas = document.getElementById("canvas");
     canvasWidth = canvas.width;
     canvasHeight = canvas.height;
-    world = new World(canvas, keyboard);
+    const levelCreator = new LevelCreator('easy', canvasWidth);
+    const level = levelCreator.createLevel()
+
+    world = new World(canvas, keyboard, level,);
     
 }
 

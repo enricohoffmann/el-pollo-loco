@@ -7,6 +7,8 @@ class DrawableObject {
     height = 150;
     width = 100;
 
+    offset = { top: 0, right: 0, bottom: 0, left: 0};
+
     constructor() {
     }
 
@@ -36,5 +38,19 @@ class DrawableObject {
             ctx.stroke();
         }
     }
-    
+
+    drawOffsetFrame(ctx) {
+        if (this instanceof Character || this instanceof Chicken || this instanceof Endboss) {
+            ctx.beginPath();
+            ctx.lineWidth = "4";
+            ctx.strokeStyle = "red";
+            ctx.rect(
+                this.pos_x + this.offset.left,
+                this.pos_y + this.offset.top,
+                this.width - this.offset.right - this.offset.left,
+                this.height - this.offset.bottom - this.offset.top
+            );
+            ctx.stroke();
+        }
+    }
 }
