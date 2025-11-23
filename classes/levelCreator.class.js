@@ -1,11 +1,11 @@
 class LevelCreator {
     difficulty = 'easy';
-    canvas_width;
+    canvas;
     xPosition = 0;
 
-    constructor(difficulty, canvas_width) {
+    constructor(difficulty, canvas) {
         this.difficulty = difficulty;
-        this.canvas_width = canvas_width;
+        this.canvas = canvas;
     }
 
     createLevel() {
@@ -19,68 +19,24 @@ class LevelCreator {
     }
 
     createEasyLevel() {
-        let enemies = [
-            new Chicken(),
-            new Chicken(),
-            new Chicken(),
-            new Endboss()
-        ];
-
-        let clouds = [
-            new Cloud(),
-            new Cloud()
-        ];
-
         let backgroundObjects = this.createBackgroundObjects(3);
-
-
+        let enemies = this.createEnemys(0);
+        let clouds = this.createClouds(2);
+        
         return new Level(enemies, clouds, backgroundObjects, this.xPosition, 10, 100);
     }
 
     createMediumLevel() {
-        let enemies = [
-            new Chicken(),
-            new Chicken(),
-            new Chicken(),
-            new Chicken(),
-            new Chicken(),
-            new Chicken(),
-            new Endboss()
-        ];
-
-        let clouds = [
-            new Cloud(),
-            new Cloud()
-        ];
-
         let backgroundObjects = this.createBackgroundObjects(5);
-
-
+        let enemies = this.createEnemys(5);
+        let clouds = this.createClouds(2);
         return new Level(enemies, clouds, backgroundObjects, this.xPosition, 20, 100);
     }
 
     createHardLevel() {
-        let enemies = [
-            new Chicken(),
-            new Chicken(),
-            new Chicken(),
-            new Chicken(),
-            new Chicken(),
-            new Chicken(),
-            new Chicken(),
-            new Chicken(),
-            new Chicken(),
-            new Endboss()
-        ];
-
-        let clouds = [
-            new Cloud(),
-            new Cloud()
-        ];
-
         let backgroundObjects = this.createBackgroundObjects(8);
-
-
+        let enemies = this.createEnemys(8);
+        let clouds = this.createClouds(2);
         return new Level(enemies, clouds, backgroundObjects, this.xPosition, 30, 100);
     }
 
@@ -94,29 +50,45 @@ class LevelCreator {
             }  else{
                 backgroundObjects.push(...this.getOddBackgroundObjects());
             }
-            this.xPosition += this.canvas_width - 1;
+            this.xPosition += this.canvas.width - 1;
         }
         return backgroundObjects;
     }
 
     getOddBackgroundObjects() {
         return [
-            new BackgroundObject('../img/5_background/layers/air.png', this.xPosition),
-            new BackgroundObject('../img/5_background/layers/3_third_layer/1.png', this.xPosition),
-            new BackgroundObject('../img/5_background/layers/2_second_layer/1.png', this.xPosition),
-            new BackgroundObject('../img/5_background/layers/1_first_layer/1.png', this.xPosition)
+            new BackgroundObject('../img/5_background/layers/air.png', this.xPosition, this.canvas),
+            new BackgroundObject('../img/5_background/layers/3_third_layer/1.png', this.xPosition, this.canvas),
+            new BackgroundObject('../img/5_background/layers/2_second_layer/1.png', this.xPosition, this.canvas),
+            new BackgroundObject('../img/5_background/layers/1_first_layer/1.png', this.xPosition, this.canvas)
         ]
     }
 
     getEvenBackgroundObjects() {
         return [
-            new BackgroundObject('../img/5_background/layers/air.png', this.xPosition),
-            new BackgroundObject('../img/5_background/layers/3_third_layer/2.png', this.xPosition),
-            new BackgroundObject('../img/5_background/layers/2_second_layer/2.png', this.xPosition),
-            new BackgroundObject('../img/5_background/layers/1_first_layer/2.png', this.xPosition)
+            new BackgroundObject('../img/5_background/layers/air.png', this.xPosition, this.canvas),
+            new BackgroundObject('../img/5_background/layers/3_third_layer/2.png', this.xPosition, this.canvas),
+            new BackgroundObject('../img/5_background/layers/2_second_layer/2.png', this.xPosition, this.canvas),
+            new BackgroundObject('../img/5_background/layers/1_first_layer/2.png', this.xPosition, this.canvas)
         ]
     }
 
+    createEnemys(countOfEnemys) {
+        let enemies = [];
+        for (let i = 0; i < countOfEnemys; i++) {
+            enemies.push(new Chicken());
+        }
+        enemies.push(new Endboss(this.canvas, this.xPosition));
+        return enemies;
+    }
+
+    createClouds(countOfClouds) {
+        let clouds = [];
+        for (let i = 0; i < countOfClouds; i++) {
+            clouds.push(new Cloud());
+        }   
+        return clouds;
+    }
 
 
 }

@@ -94,7 +94,7 @@ class MoveableObject extends DrawableObject {
     }
 
     get isEndRight() {
-        return this.pos_x > this.world.level.level_end_x; 
+        return this.pos_x + this.width >= this.world.level.level_end_x;
     }
 
 }

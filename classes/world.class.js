@@ -6,8 +6,10 @@ class World {
     ctx;
     keyboard;
     camera_x = 0;
+    maxCameraLeft = 0;
     statusBar = new StatusBar();
     throwableObjects = [];
+
     
 
     constructor(canvas, keyboard, level) {
@@ -38,7 +40,7 @@ class World {
         }
     }
 
-
+    //TODO - Hier noch ändern. Den Offset einarbeiten
     checkThrowableObjects() {
         if(this.keyboard.throwing){
             let bottle = new ThrowableObject();

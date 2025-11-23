@@ -13,24 +13,20 @@ class Character extends MoveableObject {
     lastKeyboardInputTime;
     isSleeping = false;
     isIdle = false;
-    offset = { top: 100, right: 40, bottom: 10, left: 30};
+    offset = { top: 100, right: 40, bottom: 10, left: 30 };
 
 
     constructor(world) {
         super();
         this.world = world;
-        this.loadImages(this.characterImages.CHARACTER_WALKING_IMAGES);
-        this.loadImages(this.characterImages.CHARACTER_JUMPING_IMAGES);
-        this.loadImages(this.characterImages.CHARACTER_DEAD_IMAGES);
-        this.loadImages(this.characterImages.CHARACTER_HURT_IMAGES);
-        this.loadImages(this.characterImages.CHARACTER_IDLE_IMAGES);
-        this.loadImages(this.characterImages.CHARACTER_IDLE_LONG_IMAGES);
+        this.loadTypeImages(this.characterImages);
         this.loadImage(this.characterImages.CHARACTER_IDLE_IMAGES[0]);
         this.applyGravity();
         this.animate();
         this.lastKeyboardInputTime = new Date().getTime();
     }
 
+    
 
     animate() {
 
@@ -78,6 +74,7 @@ class Character extends MoveableObject {
 
 
     keyboardReadLoop() {
+
         if (this.world.keyboard.keys.ArrowRight && !this.isEndRight) {
             this.otherDirection = false;
             this.stopIdleLoop();
@@ -105,7 +102,13 @@ class Character extends MoveableObject {
             this.startIdleLoop();
         }
 
-        this.world.camera_x = -this.pos_x + 100;
+        this.setCamaraPosition();
+    }
+
+    setCamaraPosition() {
+        const cameraFollowX = -this.pos_x + 100;
+        const maxCameraRight = -(this.world.level.level_end_x - this.world.canvas.width);
+        this.world.camera_x = Math.max(maxCameraRight, Math.min(cameraFollowX, this.world.maxCameraLeft));
     }
 
     stopIdleLoop() {
