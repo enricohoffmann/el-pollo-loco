@@ -8,6 +8,7 @@ class DrawableObject {
     width = 100;
     canvas;
     end_pos_x;
+    imagesOfType;
 
     offset = { top: 0, right: 0, bottom: 0, left: 0};
 
@@ -16,6 +17,7 @@ class DrawableObject {
     }
 
     loadTypeImages(imagesOfType) {
+        this.imagesOfType = imagesOfType;
         for(const [key, value] of Object.entries(imagesOfType)) {
             this.loadImages(value);
         }

@@ -5,8 +5,6 @@ class Character extends MoveableObject {
     damage = 0.5;
 
     world;
-    characterImages = characterImages;
-
     animationInterval;
     keyboardReadInterval;
     idleInterval;
@@ -19,14 +17,13 @@ class Character extends MoveableObject {
     constructor(world) {
         super();
         this.world = world;
-        this.loadTypeImages(this.characterImages);
-        this.loadImage(this.characterImages.CHARACTER_IDLE_IMAGES[0]);
+        this.loadTypeImages(characterImages);
+        this.loadImage(this.imagesOfType.CHARACTER_IDLE_IMAGES[0]);
         this.applyGravity();
         this.animate();
         this.lastKeyboardInputTime = new Date().getTime();
     }
-
-    
+   
 
     animate() {
 
@@ -48,9 +45,9 @@ class Character extends MoveableObject {
 
     idleLoop() {
         if (this.isSleeping) {
-            this.playAnimation(this.characterImages.CHARACTER_IDLE_LONG_IMAGES);
+            this.playAnimation(this.imagesOfType.CHARACTER_IDLE_LONG_IMAGES);
         } else {
-            this.playAnimation(this.characterImages.CHARACTER_IDLE_IMAGES);
+            this.playAnimation(this.imagesOfType.CHARACTER_IDLE_IMAGES);
         }
     }
 
@@ -61,13 +58,13 @@ class Character extends MoveableObject {
             this.heDied();
             return;
         } else if (this.isHurt) {
-            this.playAnimation(this.characterImages.CHARACTER_HURT_IMAGES);
+            this.playAnimation(this.imagesOfType.CHARACTER_HURT_IMAGES);
             this.stopIdleLoop();
         } else if (this.isAboveGround()) {
-            this.playAnimation(this.characterImages.CHARACTER_JUMPING_IMAGES);
+            this.playAnimation(this.imagesOfType.CHARACTER_JUMPING_IMAGES);
             this.stopIdleLoop();
         } else if ((this.world.keyboard.keys.ArrowRight && !this.isEndRight) || (this.world.keyboard.keys.ArrowLeft && !this.isEndLeft)) {
-            this.playAnimation(this.characterImages.CHARACTER_WALKING_IMAGES);
+            this.playAnimation(this.imagesOfType.CHARACTER_WALKING_IMAGES);
             this.stopIdleLoop();
         }
     }
@@ -137,7 +134,7 @@ class Character extends MoveableObject {
         this.deathAnimationStarted = true;
         this.resetAnyInterval(this.keyboardReadInterval);
         this.resetAnyInterval(this.animationInterval);
-        this.playAnimationOnce(this.characterImages.CHARACTER_DEAD_IMAGES, () => {
+        this.playAnimationOnce(this.imagesOfType.CHARACTER_DEAD_IMAGES, () => {
             this.world.gameOver();
         });
     }
