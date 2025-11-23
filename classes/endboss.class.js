@@ -6,8 +6,11 @@ class Endboss extends MoveableObject {
     pos_y = 60;
     damage = 50;
     animationInterval;
+    attackInterval;
     walkingInterval;
-
+    offset = { top: 50, right: 10, bottom: 10, left: 10 };
+    lastAttackTime = 0;
+    isAttacking = false;
 
     constructor(canvas, level_end_x) {
         super();
@@ -15,13 +18,18 @@ class Endboss extends MoveableObject {
         this.end_pos_x = level_end_x;
         this.loadTypeImages(endbossImages);
         this.loadImage(this.imagesOfType.ENDBOSS_ALERT_IMAGES[0]);
+        this.setSize(0.75, 1.44);
         this.setEndbossPosition();
         this.speed = 0.15;
         this.animate();
     }
 
+
     setEndbossPosition() {
         this.pos_x = this.end_pos_x - (this.width + 80);
+        const endbossHeight = this.height - (this.offset.top + this.offset.bottom);
+        const bottomMargin = 80;
+        this.pos_y = this.canvas.height - (bottomMargin + endbossHeight);
     }
 
     animate() {
@@ -46,6 +54,29 @@ class Endboss extends MoveableObject {
         }, 1000 / 60);
 
     }
+
+    attack() {
+        this.isAttacking = true;
+        this.lastAttackTime = new Date().getTime();
+        clearInterval(this.animationInterval);
+        clearInterval(this.walkingInterval);
+        this.attackAnimation();
+    }
+
+    attackAnimation() {
+        this.attackAnimationInterval = setInterval(() => {
+            this.playAnimation(this.imagesOfType.ENDBOSS_ATTACK_IMAGES);
+            const attackDuration = new Date().getTime() - this.lastAttackTime;
+            if (attackDuration >= 3000) {
+                this.isAttacking = false;
+                this.lastAttackTime = 0;
+                clearInterval(this.attackAnimationInterval);
+                this.walkingAnimation();
+            }
+        }, 160);
+
+    }
+
 
 
 }

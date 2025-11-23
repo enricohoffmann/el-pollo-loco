@@ -37,6 +37,12 @@ class World {
         if (this.character.isColliding(enemy)) {
             this.character.hit();
             this.statusBar.setPercentage(this.character.energy);
+            if(enemy instanceof Endboss && !this.character.isDead){
+                const endboss = this.level.enemies.find(e => e instanceof Endboss); 
+                if(!endboss.isAttacking){
+                    endboss.attack();
+                }
+            }
         }
     }
 

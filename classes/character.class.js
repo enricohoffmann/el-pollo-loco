@@ -17,14 +17,23 @@ class Character extends MoveableObject {
     constructor(world) {
         super();
         this.world = world;
+        this.canvas = world.canvas;
         this.loadTypeImages(characterImages);
         this.loadImage(this.imagesOfType.CHARACTER_IDLE_IMAGES[0]);
         this.applyGravity();
+        this.setSize(0.65, 2.13);
+        this.setPosition();
         this.animate();
         this.lastKeyboardInputTime = new Date().getTime();
     }
-   
 
+    setPosition(){
+        const bottomMargin = 160;
+        const characterHeight = this.height - (this.offset.top + this.offset.bottom);
+        this.pos_y = this.canvas.height - (bottomMargin + characterHeight);
+        this.pos_x = 100;
+    }
+   
     animate() {
 
         this.keyboardReadInterval = setInterval(() => {

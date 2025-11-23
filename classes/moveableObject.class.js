@@ -13,6 +13,10 @@ class MoveableObject extends DrawableObject {
         super();
     }
 
+    setSize(heightInPercent, ratioWidthToHeight) {
+        this.height = this.canvas.height * heightInPercent;
+        this.width = this.height / ratioWidthToHeight;
+    }
 
     moveLeft() {
         this.pos_x -= this.speed;
