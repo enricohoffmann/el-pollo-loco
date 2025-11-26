@@ -9,7 +9,7 @@ class World {
     maxCameraLeft = 0;
     statusBar = new StatusBar();
     throwableObjects = [];
-
+    isThrowing = false;
     
 
     constructor(canvas, keyboard, level) {
@@ -29,7 +29,7 @@ class World {
                 this.checkColisions(enemy);
                 this.checkThrowableObjects();
             });
-        }, 200);
+        }, 100);
     }
 
 
@@ -46,12 +46,20 @@ class World {
         }
     }
 
-    //TODO - Hier noch ändern. Den Offset einarbeiten
+
     checkThrowableObjects() {
-        if(this.keyboard.throwing){
+        if(this.keyboard.throwing && !this.isThrowing){
+            this.isThrowing = true;
             let bottle = new ThrowableObject();
+            bottle.canvas = this.canvas;
             this.throwableObjects.push(bottle);
-            bottle.fling(this.character.pos_x + 100, this.character.pos_y + 100);
+            const pos_x = this.character.otherDirection ? this.character.pos_x - this.character.offset.right + 40 : this.character.pos_x + 70;
+            const pos_y = this.character.pos_y + 150;
+            bottle.fling(pos_x, pos_y, this.character.otherDirection);
+        }
+
+        if(this.keyboard.allKeysReleased){
+            this.isThrowing = false;
         }
     }
 
@@ -72,11 +80,22 @@ class World {
         this.addToMap(this.statusBar);
         this.ctx.translate(this.camera_x, 0);
 
-        this.addObjectsToMap(this.throwableObjects);
+        this.drawBottle();
 
         this.ctx.translate(-this.camera_x, 0);
         requestAnimationFrame(() => this.draw());
     }
+
+
+    drawBottle(){
+        this.throwableObjects.forEach(bottle => {
+            if(!bottle.isSplashed){
+                this.addToMap(bottle);
+            }
+        });
+    }
+
+
 
     addToMap(mo) {
 

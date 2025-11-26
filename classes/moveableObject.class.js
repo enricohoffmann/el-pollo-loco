@@ -8,6 +8,7 @@ class MoveableObject extends DrawableObject {
     lastHit = 0;
     currentImagePathIndex = 0;
     deathAnimationStarted = false;
+    gravityInterval;
 
     constructor() {
         super();
@@ -55,7 +56,7 @@ class MoveableObject extends DrawableObject {
     }
 
     applyGravity() {
-        setInterval(() => {
+        this.gravityInterval = setInterval(() => {
             if (this.isAboveGround() || this.speedY > 0) {
                 this.pos_y -= this.speedY;
                 this.speedY -= this.acceleration;
