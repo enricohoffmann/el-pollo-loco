@@ -27,8 +27,9 @@ class World {
         setInterval(() => {
             this.level.enemies.forEach((enemy) => {
                 this.checkColisions(enemy);
-                this.checkThrowableObjects();
+                this.checkColisionsWithThrowableObjects(enemy);
             });
+            this.checkThrowableObjects();
         }, 100);
     }
 
@@ -46,6 +47,16 @@ class World {
         }
     }
 
+    checkColisionsWithThrowableObjects(enemy) {
+        const index = this.throwableObjects.findIndex(bottle => bottle.isColliding(enemy) && bottle.isFlying);
+        if(index !== -1){
+            this.throwableObjects[index].isFlying = false;
+            this.throwableObjects[index].splashing();
+            
+            /* enemy.hit();
+            this.statusBar.setPercentage(enemy.energy); */
+        }
+    }
 
     checkThrowableObjects() {
         if(this.keyboard.throwing && !this.isThrowing){

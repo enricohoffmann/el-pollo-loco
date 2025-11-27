@@ -1,9 +1,10 @@
-class ThrowableObject  extends MoveableObject {
+class ThrowableObject extends MoveableObject {
 
     throwInterval;
     isSplashed = false;
+    isFlying = false;
 
-    constructor(){
+    constructor() {
         super();
         this.pos_x = 100;
         this.pos_y = 100;
@@ -11,7 +12,7 @@ class ThrowableObject  extends MoveableObject {
         this.height = 80;
         this.loadTypeImages(bottleImages);
         this.loadImage(this.imagesOfType.BOTTLE_STANDARD[0]);
-        
+
     }
 
     fling(x, y, otherDirection = false) {
@@ -19,8 +20,9 @@ class ThrowableObject  extends MoveableObject {
         this.pos_y = y;
         this.speedY = 30;
         this.applyGravity();
-        
-        
+        this.isFlying = true;
+
+
         this.throwInterval = setInterval(() => {
             otherDirection ? this.pos_x -= 10 : this.pos_x += 10;
             this.playAnimation(this.imagesOfType.BOTTLE_FLYING);
@@ -31,16 +33,21 @@ class ThrowableObject  extends MoveableObject {
 
     checkIfBottleIsOnGround() {
         if (this.pos_y >= this.canvas.height - 100 && !this.isSplashed) {
-            clearInterval(this.gravityInterval);
-            clearInterval(this.throwInterval);
-            this.speedY = 0;
-            this.playAnimationOnce(this.imagesOfType.BOTTLE_SPLASH, () => {
-                if(this.currentImageIndex >= this.imagesOfType.BOTTLE_SPLASH.length){
-                    this.isSplashed = true;
-                }
-            });
+            this.splashing();
         }
 
+    }
+
+    splashing() {
+        clearInterval(this.gravityInterval);
+        clearInterval(this.throwInterval);
+        this.speedY = 0;
+        this.playAnimationOnce(this.imagesOfType.BOTTLE_SPLASH, () => {
+            if (this.currentImageIndex >= this.imagesOfType.BOTTLE_SPLASH.length) {
+                this.isSplashed = true;
+                this.isFlying = false;
+            }
+        });
     }
 
 
