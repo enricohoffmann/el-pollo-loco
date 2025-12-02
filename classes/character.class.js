@@ -1,3 +1,15 @@
+/**  
+ * Übergabe -> Welt
+ * Größenanpassung
+ * Positionen
+ * 
+*/
+
+
+
+
+
+
 class Character extends MoveableObject {
     height = 320;
     width = 150;

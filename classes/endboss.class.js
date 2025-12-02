@@ -5,6 +5,7 @@ class Endboss extends MoveableObject {
     pos_x = 700;
     pos_y = 60;
     damage = 50;
+    energy = 100;
     animationInterval;
     attackInterval;
     walkingInterval;
