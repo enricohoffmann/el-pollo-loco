@@ -1,19 +1,16 @@
 class StatusBar extends DrawableObject {
 
-    IMAGES = [
-        'img/7_statusbars/1_statusbar/2_statusbar_health/green/0.png',
-        'img/7_statusbars/1_statusbar/2_statusbar_health/green/20.png',
-        'img/7_statusbars/1_statusbar/2_statusbar_health/green/40.png',
-        'img/7_statusbars/1_statusbar/2_statusbar_health/green/60.png',
-        'img/7_statusbars/1_statusbar/2_statusbar_health/green/80.png',
-        'img/7_statusbars/1_statusbar/2_statusbar_health/green/100.png'
-    ];
-
     percentage = 100;
+    barType;
+    color;
+    currentStatusBarKey;
 
     constructor(barType, color) {
         super();
-        this.loadImages(this.IMAGES);
+        this.currentStatusBarKey = 'STATUSBAR_' + barType.toUpperCase() + '_' + color.toUpperCase();
+        this.barType = barType;
+        this.color = color;
+        this.loadTypeImages(statusBarImages)
         this.setPercentage(100);    
         this.pos_x = 20;
         this.pos_y = 20;
@@ -22,23 +19,11 @@ class StatusBar extends DrawableObject {
     }
 
 
-    setStatusBarType(){
-        if(this.barType == 'health'){
-
-        }else if(this.barType == 'coins'){
-
-        }else if(this.barType == 'bottles'){
-
-        }else if(this.barType == 'endboss'){
-
-        }
-    }
 
 
     setPercentage(percentage){
         this.percentage = percentage;
-        const path = this.IMAGES[this.resolveImageIndex()];
-        this.img = this.imageCache[path];
+        this.loadImage(this.imagesOfType[this.currentStatusBarKey][this.resolveImageIndex()]);
     }
 
 

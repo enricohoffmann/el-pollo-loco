@@ -7,17 +7,21 @@ class World {
     keyboard;
     camera_x = 0;
     maxCameraLeft = 0;
-    statusBar = new StatusBar();
+    statusHealthBar;
+    statusCoinsBar;
+    statusBottlesBar;
+    statusEndbossBar;
     throwableObjects = [];
     isThrowing = false;
     
 
-    constructor(canvas, keyboard, level) {
+    constructor(canvas, keyboard, level, colorTheme) {
         this.level = level;
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.keyboard = keyboard;
         this.character = new Character(this);
+        this.drawStatusBars(colorTheme);
         this.draw();
         this.run();
     }
@@ -34,10 +38,18 @@ class World {
     }
 
 
+    drawStatusBars(colorTheme) {
+        this.statusHealthBar = new StatusBar('health', 'green');
+        /* this.statusCoinsBar = new StatusBar('coins', colorTheme);
+        this.statusBottlesBar = new StatusBar('bottles', colorTheme);
+        this.statusEndbossBar = new StatusBar('endboss', colorTheme); */
+    }
+
+
     checkColisions(enemy) {
         if (this.character.isColliding(enemy)) {
             this.character.hit();
-            this.statusBar.setPercentage(this.character.energy);
+            this.statusHealthBar.setPercentage(this.character.energy);
             if(enemy instanceof Endboss && !this.character.isDead){
                 const endboss = this.level.enemies.find(e => e instanceof Endboss); 
                 if(!endboss.isAttacking){
@@ -88,7 +100,7 @@ class World {
         this.addObjectsToMap(this.level.enemies);
 
         this.ctx.translate(-this.camera_x, 0);
-        this.addToMap(this.statusBar);
+        this.addToMap(this.statusHealthBar);
         this.ctx.translate(this.camera_x, 0);
 
         this.drawBottle();
