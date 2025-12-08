@@ -8,11 +8,10 @@ class World {
     camera_x = 0;
     maxCameraLeft = 0;
     statusHealthBar;
-    statusCoinsBar;
-    statusBottlesBar;
-    statusEndbossBar;
+    statusBars = [];
     throwableObjects = [];
     isThrowing = false;
+    currentBottle = null;
     
 
     constructor(canvas, keyboard, level, colorTheme) {
@@ -21,7 +20,8 @@ class World {
         this.ctx = canvas.getContext('2d');
         this.keyboard = keyboard;
         this.character = new Character(this);
-        this.drawStatusBars(colorTheme);
+        this.createStatusBars(colorTheme);
+        this.createThrowableObjectsOfStartGame();
         this.draw();
         this.run();
     }
@@ -37,19 +37,32 @@ class World {
         }, 100);
     }
 
+    createThrowableObjectsOfStartGame() {
+        for (let i = 0; i < this.level.initialBottleCount; i++) {
+            const bottle = new ThrowableObject();
+            bottle.canvas = this.canvas;
+            this.throwableObjects.push(bottle);
+        }
+    }
 
-    drawStatusBars(colorTheme) {
-        this.statusHealthBar = new StatusBar('health', 'green');
-        /* this.statusCoinsBar = new StatusBar('coins', colorTheme);
-        this.statusBottlesBar = new StatusBar('bottles', colorTheme);
-        this.statusEndbossBar = new StatusBar('endboss', colorTheme); */
+    createStatusBars(colorTheme) {
+        const statusHealthBar = new StatusBar('health', colorTheme);
+        const statusCoinsBar = new StatusBar('coins', colorTheme);
+        statusCoinsBar.pos_y = statusHealthBar.pos_y + 50;
+        const statusBottlesBar = new StatusBar('bottles', colorTheme);
+        statusBottlesBar.pos_y = statusCoinsBar.pos_y + 50;
+        this.statusBars.push(statusHealthBar);
+        this.statusBars.push(statusCoinsBar);
+        this.statusBars.push(statusBottlesBar);
+        /*this.statusEndbossBar = new StatusBar('endboss', colorTheme); */
     }
 
 
     checkColisions(enemy) {
         if (this.character.isColliding(enemy)) {
             this.character.hit();
-            this.statusHealthBar.setPercentage(this.character.energy);
+            const bar = this.statusBars.find(sb => sb.barType === 'health');
+            bar.setPercentage(this.character.energy);
             if(enemy instanceof Endboss && !this.character.isDead){
                 const endboss = this.level.enemies.find(e => e instanceof Endboss); 
                 if(!endboss.isAttacking){
@@ -60,22 +73,37 @@ class World {
     }
 
     checkColisionsWithThrowableObjects(enemy) {
-        const index = this.throwableObjects.findIndex(bottle => bottle.isColliding(enemy) && bottle.isFlying);
+
+        if(this.currentBottle == null) return;
+        if(!this.currentBottle.isFlying) return;
+        if(!this.currentBottle.isColliding(enemy)) return;
+
+        this.currentBottle.isFlying = false;
+        this.currentBottle.splashing();
+
+
+        /* enemy.hit();
+            this.statusBar.setPercentage(enemy.energy); */
+
+        /* const index = this.throwableObjects.findIndex(bottle => bottle.isColliding(enemy) && bottle.isFlying);
         if(index !== -1){
             this.throwableObjects[index].isFlying = false;
             this.throwableObjects[index].splashing();
             
-            /* enemy.hit();
-            this.statusBar.setPercentage(enemy.energy); */
-        }
+            
+        } */
     }
 
     checkThrowableObjects() {
         if(this.keyboard.throwing && !this.isThrowing){
+            if(this.throwableObjects.length <= 0) return;
             this.isThrowing = true;
-            let bottle = new ThrowableObject();
-            bottle.canvas = this.canvas;
-            this.throwableObjects.push(bottle);
+            let bottle = this.throwableObjects.pop();
+            this.currentBottle = bottle;
+
+            const bar = this.statusBars.find(sb => sb.barType === 'bottles');
+            bar.setPercentage(this.throwableObjects.length * 10);
+
             const pos_x = this.character.otherDirection ? this.character.pos_x - this.character.offset.right + 40 : this.character.pos_x + 70;
             const pos_y = this.character.pos_y + 150;
             bottle.fling(pos_x, pos_y, this.character.otherDirection);
@@ -100,7 +128,7 @@ class World {
         this.addObjectsToMap(this.level.enemies);
 
         this.ctx.translate(-this.camera_x, 0);
-        this.addToMap(this.statusHealthBar);
+        this.drawStatusBars();
         this.ctx.translate(this.camera_x, 0);
 
         this.drawBottle();
@@ -111,13 +139,18 @@ class World {
 
 
     drawBottle(){
-        this.throwableObjects.forEach(bottle => {
-            if(!bottle.isSplashed){
-                this.addToMap(bottle);
-            }
-        });
+        if(this.currentBottle && !this.currentBottle.isSplashed){
+            this.addToMap(this.currentBottle);
+        }else{
+            this.currentBottle = null;
+        }
     }
 
+    drawStatusBars() {
+        this.statusBars.forEach(statusBar => {
+            this.addToMap(statusBar);
+        });
+    }
 
 
     addToMap(mo) {

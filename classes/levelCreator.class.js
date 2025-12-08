@@ -2,6 +2,7 @@ class LevelCreator {
     difficulty = 'easy';
     canvas;
     xPosition = 0;
+    currentLevel = new Level();
 
     constructor(difficulty, canvas) {
         this.difficulty = difficulty;
@@ -12,9 +13,9 @@ class LevelCreator {
         if (this.difficulty === 'easy') {
             return this.createEasyLevel();
         } else if (this.difficulty === 'medium') {
-            return this.createMediumLevel();
+            //return this.createMediumLevel();
         } else if (this.difficulty === 'hard') {
-            return this.createHardLevel();
+            //return this.createHardLevel();
         }
     }
 
@@ -22,23 +23,32 @@ class LevelCreator {
         let backgroundObjects = this.createBackgroundObjects(3);
         let enemies = this.createEnemys(0);
         let clouds = this.createClouds(2);
+        this.currentLevel.clouds = clouds;
+        this.currentLevel.enemies = enemies;
+        this.currentLevel.backgroundObjects = backgroundObjects;
+        this.currentLevel.level_end_x = this.xPosition;
+        this.currentLevel.damage = 10;
+        this.currentLevel.health = 100;
+        this.currentLevel.initialBottleCount = 10;
+        this.currentLevel.bottlesOnScreen = this.getRandomInt(5, 10);
+        this.currentLevel.coinsOnScreen = this.getRandomInt(5, 20);
         
-        return new Level(enemies, clouds, backgroundObjects, this.xPosition, 10, 100);
+        return this.currentLevel;
     }
 
-    createMediumLevel() {
+    /* createMediumLevel() {
         let backgroundObjects = this.createBackgroundObjects(5);
         let enemies = this.createEnemys(5);
         let clouds = this.createClouds(2);
         return new Level(enemies, clouds, backgroundObjects, this.xPosition, 20, 100);
-    }
+    } */
 
-    createHardLevel() {
+   /*  createHardLevel() {
         let backgroundObjects = this.createBackgroundObjects(8);
         let enemies = this.createEnemys(8);
         let clouds = this.createClouds(2);
-        return new Level(enemies, clouds, backgroundObjects, this.xPosition, 30, 100);
-    }
+        return new Level(enemies, clouds, backgroundObjects, this.xPosition, 30, 100, 3);
+    } */
 
 
     createBackgroundObjects(countOfObjects) {
@@ -88,6 +98,12 @@ class LevelCreator {
             clouds.push(new Cloud());
         }   
         return clouds;
+    }
+
+    getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min)) + min; 
     }
 
 

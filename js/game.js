@@ -11,7 +11,7 @@ function init() {
     const levelCreator = new LevelCreator('easy', canvas);
     const level = levelCreator.createLevel()
 
-    world = new World(canvas, keyboard, level, 'green');
+    world = new World(canvas, keyboard, level, 'blue');
     
 }
 
