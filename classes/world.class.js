@@ -12,6 +12,7 @@ class World {
     throwableObjects = [];
     isThrowing = false;
     currentBottle = null;
+    coinsObjects = [];
     
 
     constructor(canvas, keyboard, level, colorTheme) {
@@ -21,6 +22,7 @@ class World {
         this.keyboard = keyboard;
         this.character = new Character(this);
         this.createStatusBars(colorTheme);
+        this.createCoins();
         this.createThrowableObjectsOfStartGame();
         this.draw();
         this.run();
@@ -55,6 +57,14 @@ class World {
         this.statusBars.push(statusCoinsBar);
         this.statusBars.push(statusBottlesBar);
         /*this.statusEndbossBar = new StatusBar('endboss', colorTheme); */
+    }
+
+
+    createCoins() {
+        for (let i = 0; i < this.level.coinsOnScreen; i++) {
+            const coin = new Coin(this.canvas.height, this.level.level_end_x);
+            this.coinsObjects.push(coin);
+        }
     }
 
 
@@ -132,6 +142,7 @@ class World {
         this.ctx.translate(this.camera_x, 0);
 
         this.drawBottle();
+        this.addObjectsToMap(this.coinsObjects);
 
         this.ctx.translate(-this.camera_x, 0);
         requestAnimationFrame(() => this.draw());
