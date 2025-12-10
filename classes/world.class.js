@@ -36,6 +36,7 @@ class World {
                 this.checkColisionsWithThrowableObjects(enemy);
             });
             this.checkThrowableObjects();
+            this.checkCoinsColisions();
         }, 100);
     }
 
@@ -61,9 +62,24 @@ class World {
 
 
     createCoins() {
+
+        const maxAttempts = 35;
+       
         for (let i = 0; i < this.level.coinsOnScreen; i++) {
-            const coin = new Coin(this.canvas.height, this.level.level_end_x);
-            this.coinsObjects.push(coin);
+
+            let attempts = 0;
+            let coin;
+
+            do{
+                coin = new Coin(this.canvas.height, this.level.level_end_x);
+            } while(this.isObjectOverlapping(coin, this.coinsObjects) && attempts++ < maxAttempts);
+
+            if(!this.isObjectOverlapping(coin, this.coinsObjects)){
+                this.coinsObjects.push(coin);
+            } else {
+                console.log(`Could not place coin ${i + 1} after ${maxAttempts} attempts, skipping.`);
+            }
+           
         }
     }
 
@@ -102,6 +118,31 @@ class World {
             
             
         } */
+    }
+
+    //Noch umbauen, so das der Index nihct gebraucht wird
+    checkCoinsColisions() {
+
+        if(this.coinsObjects.length <= 0) return;
+
+        const index = this.coinsObjects.findIndex(coin => this.character.isColliding(coin));
+        if(index !== -1){
+            const coin = this.coinsObjects[index];
+            
+
+            if(!coin.isCollected){
+                coin.isCollected = true;
+                coin.animateCollectet(() => {
+                    this.coinsObjects.splice(index, 1);
+                });
+                const bar = this.statusBars.find(sb => sb.barType === 'coins');
+                const currentCoins = bar.percentage / 10;
+                bar.setPercentage((currentCoins + 1) * 10);
+            }
+
+            
+            
+        }
     }
 
     checkThrowableObjects() {
@@ -203,5 +244,16 @@ class World {
             alert('Game Over! Try again!');
             location.reload();
         }, 100);
+    }
+
+    isRectsOverlapping(a, b, padding = 15) {
+        return a.pos_x < b.pos_x + b.width + padding &&
+            a.pos_x + a.width + padding > b.pos_x &&
+            a.pos_y < b.pos_y + b.height + padding &&
+            a.pos_y + a.height + padding > b.pos_y;
+    }
+
+    isObjectOverlapping(newObject, existingObjects){
+        return existingObjects.some(o => this.isRectsOverlapping(newObject, o));
     }
 }

@@ -10,7 +10,7 @@ class DrawableObject {
     end_pos_x;
     imagesOfType;
 
-    offset = { top: 0, right: 0, bottom: 0, left: 0};
+    offset = { top: 0, right: 0, bottom: 0, left: 0 };
 
     constructor() {
 
@@ -18,7 +18,7 @@ class DrawableObject {
 
     loadTypeImages(imagesOfType) {
         this.imagesOfType = imagesOfType;
-        for(const [key, value] of Object.entries(imagesOfType)) {
+        for (const [key, value] of Object.entries(imagesOfType)) {
             this.loadImages(value);
         }
     }
@@ -36,7 +36,7 @@ class DrawableObject {
         });
     }
 
-    draw(ctx){
+    draw(ctx) {
         ctx.drawImage(this.img, this.pos_x, this.pos_y, this.width, this.height);
     }
 
@@ -70,4 +70,7 @@ class DrawableObject {
         max = Math.floor(max);
         return Math.random() * (max - min) + min;
     }
+
+    
+
 }

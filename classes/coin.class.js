@@ -5,6 +5,8 @@ class Coin extends DrawableObject {
         'img/8_coin/coin_1.png',
         'img/8_coin/coin_2.png',
     ];
+    isCollected = false;
+    currentCoinIndex = 0;
 
     constructor(canvasHeight, levelLength) {
         super();
@@ -18,4 +20,24 @@ class Coin extends DrawableObject {
         this.pos_y = this.getRandomObjectPosition(groundLevel - canvasHeight + topMargin, groundLevel);
         this.pos_x = this.getRandomObjectPosition(250, levelLength - 500);
     }
+
+
+    animateCollectet(onFinished){
+        if(this.pos_y < -20){
+            if(onFinished){
+                onFinished();
+            }
+        }
+
+        this.currentCoinIndex = (this.currentCoinIndex + 1) % this.coinFiles.length;
+        this.loadImage(this.coinFiles[this.currentCoinIndex]);
+        this.pos_y -= 5;
+
+        const animationFrameTime = 25;
+
+        setTimeout(()=>{
+            this.animateCollectet(onFinished);
+        }, animationFrameTime);
+    }
+
 }
