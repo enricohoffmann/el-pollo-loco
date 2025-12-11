@@ -7,6 +7,7 @@ class Coin extends DrawableObject {
     ];
     isCollected = false;
     currentCoinIndex = 0;
+    isOutOfScreen = false;
 
     constructor(canvasHeight, levelLength) {
         super();
@@ -16,7 +17,7 @@ class Coin extends DrawableObject {
 
     setPosition(canvasHeight, levelLength){
         const groundLevel = canvasHeight - 100;
-        const topMargin = 50;
+        const topMargin = 100;
         this.pos_y = this.getRandomObjectPosition(groundLevel - canvasHeight + topMargin, groundLevel);
         this.pos_x = this.getRandomObjectPosition(250, levelLength - 500);
     }
@@ -27,6 +28,8 @@ class Coin extends DrawableObject {
             if(onFinished){
                 onFinished();
             }
+
+            return;
         }
 
         this.currentCoinIndex = (this.currentCoinIndex + 1) % this.coinFiles.length;
