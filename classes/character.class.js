@@ -11,7 +11,7 @@ class Character extends MoveableObject {
     lastKeyboardInputTime;
     isSleeping = false;
     isIdle = false;
-    offset = { top: 100, right: 40, bottom: 10, left: 30 };
+    offset = { top: 120, right: 40, bottom: 10, left: 30 };
 
 
     constructor(world) {

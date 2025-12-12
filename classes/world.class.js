@@ -14,14 +14,17 @@ class World {
     currentBottle = null;
     coinsObjects = [];
     collectedCoins = 0;
-    coinManager
+    coinManager;
+    statusBarManager;
+    bottleManager;
+    bottleObjects = [];
 
     constructor(canvas, keyboard, level, colorTheme) {
         this.level = level;
         this.canvas = canvas;
+        this.colorTheme = colorTheme;
         this.ctx = canvas.getContext('2d');
         this.keyboard = keyboard;
-        this.createStatusBars(colorTheme);
         this.creategameObjects();
 
         
@@ -46,8 +49,13 @@ class World {
 
     creategameObjects() {
         this.character = new Character(this);
+        this.statusBarManager = new StatusbarManager(this.colorTheme);
+        this.statusBars = this.statusBarManager.statusBars;
         this.coinManager = new CoinManager(this.character, this.statusBars.find(sb => sb.barType === 'coins'), this.level, this.canvas);
         this.coinsObjects = this.coinManager.createCoins();
+        this.bottleManager = new BottleManager(this.character, this.statusBars.find(sb => sb.barType === 'bottles'), this.level, this.canvas);
+        this.bottleObjects = this.bottleManager.createBottles();
+        
     }
 
 
@@ -58,22 +66,6 @@ class World {
             this.throwableObjects.push(bottle);
         }
     }
-
-    createStatusBars(colorTheme) {
-        const statusHealthBar = new StatusBar('health', colorTheme);
-        const statusCoinsBar = new StatusBar('coins', colorTheme);
-        statusCoinsBar.pos_y = statusHealthBar.pos_y + 50;
-        statusCoinsBar.percentage = 0;
-        const statusBottlesBar = new StatusBar('bottles', colorTheme);
-        statusBottlesBar.pos_y = statusCoinsBar.pos_y + 50;
-        this.statusBars.push(statusHealthBar);
-        this.statusBars.push(statusCoinsBar);
-        this.statusBars.push(statusBottlesBar);
-        /*this.statusEndbossBar = new StatusBar('endboss', colorTheme); */
-    }
-
-
-
 
 
     checkColisions(enemy) {
@@ -152,6 +144,7 @@ class World {
 
         this.drawBottle();
         this.drawCoins();
+        this.drawBottles();
 
         this.ctx.translate(-this.camera_x, 0);
         requestAnimationFrame(() => this.draw());
@@ -164,6 +157,14 @@ class World {
         }else{
             this.currentBottle = null;
         }
+    }
+
+    drawBottles(){
+        this.bottleObjects.forEach(bottle => {
+            if(!bottle.isOutOfScreen){
+                this.addToMap(bottle);
+            }
+        });
     }
 
     drawStatusBars() {

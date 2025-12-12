@@ -5,7 +5,7 @@ class CoinManager  extends Manager {
         this.character = character;
         this.statusBar = statusBar;
         this.collectedCoins = 0;
-        this.totalCoins = this.coins.length;
+        this.totalCoins = 0;
         this.level = level;
         this.canvas = canvas;
     }
@@ -50,11 +50,10 @@ class CoinManager  extends Manager {
 
             if(!this.isObjectOverlapping(coin, this.coins)){
                 this.coins.push(coin);
-            } else {
-                console.log(`Could not place coin ${i + 1} after ${maxAttempts} attempts, skipping.`);
             }
-           
         }
+
+        this.totalCoins = this.coins.length;
 
         return this.coins;
     }
