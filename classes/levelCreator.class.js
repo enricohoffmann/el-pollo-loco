@@ -30,7 +30,7 @@ class LevelCreator {
         this.currentLevel.damage = 10;
         this.currentLevel.health = 100;
         this.currentLevel.initialBottleCount = 10;
-        this.currentLevel.bottlesOnScreen = this.getRandomInt(5, 10);
+        this.currentLevel.bottlesOnScreen = this.getRandomInt(8, 15);
         this.currentLevel.coinsOnScreen = this.getRandomInt(5, 20);
         
         return this.currentLevel;

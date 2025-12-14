@@ -37,6 +37,7 @@ class ItemsManager {
 
         if(!collectedItem || collectedItem.isCollected) return;
         collectedItem.isCollected = true;
+        this.collectedItems++;
 
         collectedItem.animateCollectet(() => {
             this.handleCollectedItem(collectedItem);
@@ -45,12 +46,14 @@ class ItemsManager {
 
 
     handleCollectedItem(item){
-        this.collectedItems++;
         item.isOutOfScreen = true;
+        this.setStatusBarPercentage();
+    }
+
+    setStatusBarPercentage(){
         const percent = Math.round((this.collectedItems / this.totalItems) * 100);
         this.statusBar.setPercentage(percent);
     }
-
 
     createItems(factoryMethod, itemCount){
         const maxAttempts = 35;

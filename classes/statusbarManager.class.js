@@ -1,8 +1,10 @@
 class StatusbarManager {
-    constructor(colorTheme) {
+    constructor(colorTheme, enemies) {
         this.colorTheme = colorTheme;
+        this.enemies = enemies;
         this.statusBars = [];
         this.createStatusBar();
+        this.createEndbossHealthBar();
     }
 
     createStatusBar() {
@@ -16,5 +18,18 @@ class StatusbarManager {
         this.statusBars.push(statusHealthBar);
         this.statusBars.push(statusCoinsBar);
         this.statusBars.push(statusBottlesBar);
+    }
+
+
+    createEndbossHealthBar() {
+        const endbossHealthBar = new StatusBar('endboss_health', this.colorTheme);
+
+        const endboss = this.enemies.find(e => e instanceof Endboss);
+        if (!endboss) return;
+
+        endbossHealthBar.pos_x = endboss.pos_x;
+        endbossHealthBar.pos_y = 45;
+        endbossHealthBar.setPercentage(100);
+        this.statusBars.push(endbossHealthBar);
     }
 }

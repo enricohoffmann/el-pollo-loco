@@ -4,7 +4,7 @@ class Endboss extends MoveableObject {
     width = 250;
     pos_x = 700;
     pos_y = 60;
-    damage = 50;
+    damage = 20;
     energy = 100;
     animationInterval;
     attackInterval;
@@ -12,6 +12,8 @@ class Endboss extends MoveableObject {
     offset = { top: 50, right: 10, bottom: 10, left: 10 };
     lastAttackTime = 0;
     isAttacking = false;
+    endBossStatusBar;
+    
 
     constructor(canvas, level_end_x) {
         super();
@@ -34,10 +36,6 @@ class Endboss extends MoveableObject {
     }
 
     animate() {
-        /* setInterval(() => {
-            this.playAnimation(this.imagesOfType.ENDBOSS_ALERT_IMAGES);
-        }, 200); */
-
         setTimeout(() => {
             this.walkingAnimation();
         }, 5000);
@@ -52,8 +50,15 @@ class Endboss extends MoveableObject {
 
         this.walkingInterval = setInterval(() => {
             this.moveLeft();
+            this.moveStatusBar();
         }, 1000 / 60);
 
+    }
+
+    moveStatusBar() {
+        if (this.endBossStatusBar) {
+            this.endBossStatusBar.pos_x = this.pos_x;
+        }
     }
 
     attack() {
@@ -78,6 +83,15 @@ class Endboss extends MoveableObject {
 
     }
 
-
+    endbossDied() {
+        clearInterval(this.animationInterval);
+        clearInterval(this.walkingInterval);
+        clearInterval(this.attackAnimationInterval);    
+        this.playAnimationOnce(this.imagesOfType.ENDBOSS_DEAD_IMAGES, () => {
+            this.endBossStatusBar.pos_y = -100;
+            this.pos_x = -1000;
+        });
+    
+    }   
 
 }

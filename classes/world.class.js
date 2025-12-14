@@ -13,11 +13,11 @@ class World {
     isThrowing = false;
     currentBottle = null;
     coinsObjects = [];
-    collectedCoins = 0;
     coinManager;
     statusBarManager;
     bottleManager;
     bottleObjects = [];
+    currentCollectedBottles = 0;
 
     constructor(canvas, keyboard, level, colorTheme) {
         this.level = level;
@@ -27,9 +27,6 @@ class World {
         this.keyboard = keyboard;
         this.creategameObjects();
 
-        
-
-        this.createThrowableObjectsOfStartGame();
         this.draw();
         this.run();
     }
@@ -44,39 +41,45 @@ class World {
             this.checkThrowableObjects();
             this.coinManager.update();
             this.bottleManager.update();
+            this.checkIfNewBottleCollected();
         }, 100);
     }
 
 
+    checkIfNewBottleCollected() {
+        if (this.currentCollectedBottles < this.bottleManager.collectedItems) {
+
+            for (let i = 0; i < this.bottleManager.collectedItems - this.currentCollectedBottles; i++) {
+                const bottle = new ThrowableObject();
+                bottle.canvas = this.canvas;
+                this.throwableObjects.push(bottle);
+            }
+            this.currentCollectedBottles = this.bottleManager.collectedItems;
+        }
+    }
+
     creategameObjects() {
         this.character = new Character(this);
-        this.statusBarManager = new StatusbarManager(this.colorTheme);
+        this.statusBarManager = new StatusbarManager(this.colorTheme, this.level.enemies);
         this.statusBars = this.statusBarManager.statusBars;
         this.coinManager = new ItemsManager(this.character, this.statusBars.find(sb => sb.barType === 'coins'), this.level, this.canvas);
         this.coinsObjects = this.coinManager.createItems((height, levelEndX) => new Coin(height, levelEndX), this.level.coinsOnScreen);
         this.bottleManager = new ItemsManager(this.character, this.statusBars.find(sb => sb.barType === 'bottles'), this.level, this.canvas);
         this.bottleObjects = this.bottleManager.createItems((height, levelEndX) => new Bottle(height, levelEndX), this.level.bottlesOnScreen);
-        
-    }
-
-
-    createThrowableObjectsOfStartGame() {
-        for (let i = 0; i < this.level.initialBottleCount; i++) {
-            const bottle = new ThrowableObject();
-            bottle.canvas = this.canvas;
-            this.throwableObjects.push(bottle);
+        const endboss = this.level.enemies.find(e => e instanceof Endboss);
+        if (endboss) {
+            endboss.endBossStatusBar = this.statusBars.find(sb => sb.barType === 'endboss_health');
         }
     }
-
 
     checkColisions(enemy) {
         if (this.character.isColliding(enemy)) {
             this.character.hit();
             const bar = this.statusBars.find(sb => sb.barType === 'health');
             bar.setPercentage(this.character.energy);
-            if(enemy instanceof Endboss && !this.character.isDead){
-                const endboss = this.level.enemies.find(e => e instanceof Endboss); 
-                if(!endboss.isAttacking){
+            if (enemy instanceof Endboss && !this.character.isDead) {
+                const endboss = this.level.enemies.find(e => e instanceof Endboss);
+                if (!endboss.isAttacking) {
                     endboss.attack();
                 }
             }
@@ -85,12 +88,27 @@ class World {
 
     checkColisionsWithThrowableObjects(enemy) {
 
-        if(this.currentBottle == null) return;
-        if(!this.currentBottle.isFlying) return;
-        if(!this.currentBottle.isColliding(enemy)) return;
+        if (this.currentBottle == null) return;
+        if (!this.currentBottle.isFlying) return;
+        if (!this.currentBottle.isColliding(enemy)) return;
 
         this.currentBottle.isFlying = false;
         this.currentBottle.splashing();
+
+        const endboss = this.level.enemies.find(e => e instanceof Endboss);
+
+        if (endboss) {
+            if (enemy === endboss) {
+                enemy.hit();
+                if (endboss.endBossStatusBar) {
+                    endboss.endBossStatusBar.setPercentage(enemy.energy);
+                }
+            }
+
+            if (endboss.isDead) {
+                endboss.endbossDied();
+            }
+        }
 
 
         /* enemy.hit();
@@ -107,21 +125,24 @@ class World {
 
 
     checkThrowableObjects() {
-        if(this.keyboard.throwing && !this.isThrowing){
-            if(this.throwableObjects.length <= 0) return;
+        if (this.keyboard.throwing && !this.isThrowing) {
+            if (this.throwableObjects.length <= 0) return;
             this.isThrowing = true;
             let bottle = this.throwableObjects.pop();
             this.currentBottle = bottle;
 
-            const bar = this.statusBars.find(sb => sb.barType === 'bottles');
-            bar.setPercentage(this.throwableObjects.length * 10);
+            this.bottleManager.collectedItems--;
+            this.bottleManager.setStatusBarPercentage();
+            this.currentCollectedBottles = this.bottleManager.collectedItems;
+            /* const bar = this.statusBars.find(sb => sb.barType === 'bottles');
+            bar.setPercentage(this.throwableObjects.length * 10); */
 
             const pos_x = this.character.otherDirection ? this.character.pos_x - this.character.offset.right + 40 : this.character.pos_x + 70;
             const pos_y = this.character.pos_y + 150;
             bottle.fling(pos_x, pos_y, this.character.otherDirection);
         }
 
-        if(this.keyboard.allKeysReleased){
+        if (this.keyboard.allKeysReleased) {
             this.isThrowing = false;
         }
     }
@@ -137,51 +158,68 @@ class World {
 
 
         this.addToMap(this.character);
-        this.addObjectsToMap(this.level.enemies);
+        this.drawEnemies();
 
         this.ctx.translate(-this.camera_x, 0);
-        this.drawStatusBars();
+        this.drawStatusBars(this.statusBars);
         this.ctx.translate(this.camera_x, 0);
 
         this.drawBottle();
         this.drawCoins();
         this.drawBottles();
+        this.drawEndbossHealthBar();
 
         this.ctx.translate(-this.camera_x, 0);
         requestAnimationFrame(() => this.draw());
     }
 
+    drawEnemies() {
+        this.level.enemies.forEach(enemy => {
+            if (!enemy.isDied) {
+                this.addToMap(enemy);
+            }
+        });
+    }
 
-    drawBottle(){
-        if(this.currentBottle && !this.currentBottle.isSplashed){
+    drawBottle() {
+        if (this.currentBottle && !this.currentBottle.isSplashed) {
             this.addToMap(this.currentBottle);
-        }else{
+        } else {
             this.currentBottle = null;
         }
     }
 
-    drawBottles(){
+    drawBottles() {
         this.bottleObjects.forEach(bottle => {
-            if(!bottle.isOutOfScreen){
+            if (!bottle.isOutOfScreen) {
                 this.addToMap(bottle);
+            }
+        });
+    }
+
+    drawCoins() {
+        this.coinsObjects.forEach(coin => {
+            if (!coin.isOutOfScreen) {
+                this.addToMap(coin);
             }
         });
     }
 
     drawStatusBars() {
         this.statusBars.forEach(statusBar => {
+            if (statusBar.barType === 'endboss_health') {
+                return;
+            }
             this.addToMap(statusBar);
         });
     }
 
-    drawCoins(){
-        this.coinsObjects.forEach(coin => {
-            if(!coin.isOutOfScreen){
-                this.addToMap(coin);
-            }
-        });
+    drawEndbossHealthBar() {
+        const endbossHealthBar = this.statusBars.find(sb => sb.barType === 'endboss_health');
+        if (endbossHealthBar) {
+            this.addToMap(endbossHealthBar);
+        }
     }
-
 
     addToMap(mo) {
 
@@ -224,7 +262,7 @@ class World {
         }, 100);
     }
 
-    
+
 
 
 }
