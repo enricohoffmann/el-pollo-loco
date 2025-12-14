@@ -43,6 +43,7 @@ class World {
             });
             this.checkThrowableObjects();
             this.coinManager.update();
+            this.bottleManager.update();
         }, 100);
     }
 
@@ -51,10 +52,10 @@ class World {
         this.character = new Character(this);
         this.statusBarManager = new StatusbarManager(this.colorTheme);
         this.statusBars = this.statusBarManager.statusBars;
-        this.coinManager = new CoinManager(this.character, this.statusBars.find(sb => sb.barType === 'coins'), this.level, this.canvas);
-        this.coinsObjects = this.coinManager.createCoins();
-        this.bottleManager = new BottleManager(this.character, this.statusBars.find(sb => sb.barType === 'bottles'), this.level, this.canvas);
-        this.bottleObjects = this.bottleManager.createBottles();
+        this.coinManager = new ItemsManager(this.character, this.statusBars.find(sb => sb.barType === 'coins'), this.level, this.canvas);
+        this.coinsObjects = this.coinManager.createItems((height, levelEndX) => new Coin(height, levelEndX), this.level.coinsOnScreen);
+        this.bottleManager = new ItemsManager(this.character, this.statusBars.find(sb => sb.barType === 'bottles'), this.level, this.canvas);
+        this.bottleObjects = this.bottleManager.createItems((height, levelEndX) => new Bottle(height, levelEndX), this.level.bottlesOnScreen);
         
     }
 
