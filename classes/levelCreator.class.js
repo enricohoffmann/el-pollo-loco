@@ -21,7 +21,7 @@ class LevelCreator {
 
     createEasyLevel() {
         let backgroundObjects = this.createBackgroundObjects(3);
-        let enemies = this.createEnemys(0);
+        let enemies = this.createEnemys(3);
         let clouds = this.createClouds(2);
         this.currentLevel.clouds = clouds;
         this.currentLevel.enemies = enemies;
@@ -86,7 +86,7 @@ class LevelCreator {
     createEnemys(countOfEnemys) {
         let enemies = [];
         for (let i = 0; i < countOfEnemys; i++) {
-            enemies.push(new Chicken());
+            enemies.push(new Chicken(this.canvas, this.xPosition));
         }
         enemies.push(new Endboss(this.canvas, this.xPosition));
         return enemies;

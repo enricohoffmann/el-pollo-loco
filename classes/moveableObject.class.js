@@ -9,6 +9,9 @@ class MoveableObject extends DrawableObject {
     currentImagePathIndex = 0;
     deathAnimationStarted = false;
     gravityInterval;
+    isHurt = false;
+    lasHurtTime = 0;
+    hurtAnimationInterval;
 
     constructor() {
         super();

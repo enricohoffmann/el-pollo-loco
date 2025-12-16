@@ -96,8 +96,9 @@ class World {
         this.currentBottle.splashing();
 
         const endboss = this.level.enemies.find(e => e instanceof Endboss);
+        if(endboss){endboss.entbossHit();}
 
-        if (endboss) {
+        /* if (endboss) {
             if (enemy === endboss) {
                 enemy.hit();
                 if (endboss.endBossStatusBar) {
@@ -108,7 +109,7 @@ class World {
             if (endboss.isDead) {
                 endboss.endbossDied();
             }
-        }
+        } */
 
 
         /* enemy.hit();
