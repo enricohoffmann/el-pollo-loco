@@ -87,18 +87,16 @@ class Endboss extends MoveableObject {
         clearInterval(this.animationInterval);
         clearInterval(this.walkingInterval);
         clearInterval(this.attackAnimationInterval);
-        this.isHurt = true;
-        this.lasHurtTime = new Date().getTime();
+        this.lastHurtTime = new Date().getTime();
         this.hurtAnimation();
     }
 
     hurtAnimation() {
         this.hurtAnimationInterval = setInterval(() => {
             this.playAnimation(this.imagesOfType.ENDBOSS_HURT_IMAGES);
-            const hurtDuration = new Date().getTime() - this.lasHurtTime;
+            const hurtDuration = new Date().getTime() - this.lastHurtTime;
             if (hurtDuration >= 1000) {
-                this.isHurt = false;
-                this.lasHurtTime = 0;
+                this.lastHurtTime = 0;
                 clearInterval(this.hurtAnimationInterval);
                 this.walkingAnimation();
             }

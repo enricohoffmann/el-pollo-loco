@@ -87,7 +87,7 @@ class World {
     }
 
     checkColisionsWithThrowableObjects(enemy) {
-
+        if(enemy.isDied) return;
         if (this.currentBottle == null) return;
         if (!this.currentBottle.isFlying) return;
         if (!this.currentBottle.isColliding(enemy)) return;
@@ -95,21 +95,14 @@ class World {
         this.currentBottle.isFlying = false;
         this.currentBottle.splashing();
 
-        const endboss = this.level.enemies.find(e => e instanceof Endboss);
-        if(endboss){endboss.entbossHit();}
+        if(enemy instanceof Endboss){
+            enemy.entbossHit();
+        }else{
+            enemy.hit();
+        }
+        
 
-        /* if (endboss) {
-            if (enemy === endboss) {
-                enemy.hit();
-                if (endboss.endBossStatusBar) {
-                    endboss.endBossStatusBar.setPercentage(enemy.energy);
-                }
-            }
 
-            if (endboss.isDead) {
-                endboss.endbossDied();
-            }
-        } */
 
 
         /* enemy.hit();
@@ -126,7 +119,7 @@ class World {
 
 
     checkThrowableObjects() {
-        if (this.keyboard.throwing && !this.isThrowing) {
+        if (this.keyboard.throwing && !this.isThrowing && !this.character.isHurt) {
             if (this.throwableObjects.length <= 0) return;
             this.isThrowing = true;
             let bottle = this.throwableObjects.pop();
