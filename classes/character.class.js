@@ -148,11 +148,8 @@ class Character extends MoveableObject {
         });
     }
 
+    
 
 
-
-    junmping() {
-
-    }
 
 }

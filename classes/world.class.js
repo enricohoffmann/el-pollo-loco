@@ -18,6 +18,7 @@ class World {
     bottleManager;
     bottleObjects = [];
     currentCollectedBottles = 0;
+    lastBounceTime = 0;
 
     constructor(canvas, keyboard, level, colorTheme) {
         this.level = level;
@@ -72,8 +73,39 @@ class World {
         }
     }
 
+    /* checkColisions(enemy) {
+        if (this.character.isColliding(enemy) && !this.character.isCollidingTop(enemy)) {
+            this.character.hit();
+            const bar = this.statusBars.find(sb => sb.barType === 'health');
+            bar.setPercentage(this.character.energy);
+            if (enemy instanceof Endboss && !this.character.isDead) {
+                const endboss = this.level.enemies.find(e => e instanceof Endboss);
+                if (!endboss.isAttacking) {
+                    endboss.attack();
+                }
+            }
+        } else if (this.character.isCollidingTop(enemy) && !enemy.isDied && !this.character.isDead) {
+            enemy.hit();
+            this.bounceOffEnemy();
+
+            this.character.pos_y = enemy.pos_y - this.character.height + this.character.offset.bottom + enemy.offset.top;
+        }
+    } */
+
+
     checkColisions(enemy) {
-        if (this.character.isColliding(enemy)) {
+        const colliding = this.character.isColliding(enemy);
+        if(!colliding) return;
+
+        const collidingTop = this.character.isCollidingTop(enemy) && !this.character.isDead && !enemy.isDead;
+
+        if (collidingTop) {
+            enemy.hit();
+            this.bounceOffEnemy(enemy);
+            return;
+        }
+
+        if(!this.character.isDead){
             this.character.hit();
             const bar = this.statusBars.find(sb => sb.barType === 'health');
             bar.setPercentage(this.character.energy);
@@ -84,10 +116,18 @@ class World {
                 }
             }
         }
+
+    }
+
+
+
+    bounceOffEnemy(enemy) {
+        this.character.speedY = 20;
+        this.character.pos_y = (enemy.pos_y + enemy.offset.top) - (this.character.height - this.character.offset.bottom) - 1;
     }
 
     checkColisionsWithThrowableObjects(enemy) {
-        if(enemy.isDied) return;
+        if (enemy.isDied) return;
         if (this.currentBottle == null) return;
         if (!this.currentBottle.isFlying) return;
         if (!this.currentBottle.isColliding(enemy)) return;
@@ -95,12 +135,12 @@ class World {
         this.currentBottle.isFlying = false;
         this.currentBottle.splashing();
 
-        if(enemy instanceof Endboss){
+        if (enemy instanceof Endboss) {
             enemy.entbossHit();
-        }else{
+        } else {
             enemy.hit();
         }
-        
+
 
 
 

@@ -11,6 +11,7 @@ class MoveableObject extends DrawableObject {
     gravityInterval;
     lastHurtTime = 0;
     hurtAnimationInterval;
+    canvas;
 
     constructor() {
         super();
@@ -37,9 +38,9 @@ class MoveableObject extends DrawableObject {
     }
 
     playAnimationOnce(images, onFinished, index = 0) {
-        if(index >= images.length){
-            if(onFinished){
-               onFinished();
+        if (index >= images.length) {
+            if (onFinished) {
+                onFinished();
             }
             return;
         }
@@ -47,14 +48,24 @@ class MoveableObject extends DrawableObject {
         const imagePath = images[index];
         this.img = this.imageCache[imagePath];
         const currentFrameTime = 500;
-        setTimeout(()=>{
+        setTimeout(() => {
             this.playAnimationOnce(images, onFinished, index + 1);
         }, currentFrameTime);
     }
 
 
     isAboveGround() {
-        return this instanceof ThrowableObject ? true : this.pos_y < 125;
+
+        if(this instanceof ThrowableObject){return true;}
+
+        const groundY = this.canvas.height - 50;
+        const objectBottomY = this.pos_y + this.height - this.offset.bottom;
+        return objectBottomY < groundY;
+    }
+
+    isOnGround() {
+        const groundY = this.canvas.height - 50;
+        return groundY - (this.height - this.offset.bottom);
     }
 
     applyGravity() {
@@ -62,6 +73,9 @@ class MoveableObject extends DrawableObject {
             if (this.isAboveGround() || this.speedY > 0) {
                 this.pos_y -= this.speedY;
                 this.speedY -= this.acceleration;
+            }else{  
+                this.pos_y = this.isOnGround();   
+                this.speedY = 0;
             }
 
         }, 1000 / 25);
@@ -73,6 +87,23 @@ class MoveableObject extends DrawableObject {
             this.pos_y + this.height - this.offset.bottom > mo.pos_y + mo.offset.top &&
             this.pos_y + this.offset.top < mo.pos_y + mo.height - mo.offset.bottom;
     }
+
+    isCollidingTop(mo) {
+        const isOverlappingX =
+            this.pos_x + this.width - this.offset.right > mo.pos_x + mo.offset.left &&
+            this.pos_x + this.offset.left < mo.pos_x + mo.width - mo.offset.right;
+
+        const isFallingOrLanding = this.speedY < 0;
+
+        const charBottom = this.pos_y + this.height - this.offset.bottom;
+        const enemyTop = mo.pos_y + mo.offset.top;
+
+        const fromAbove = charBottom <= enemyTop + 10;
+
+        return isOverlappingX && isFallingOrLanding && fromAbove;
+    }
+
+
 
     jump() {
         this.speedY = 30;
