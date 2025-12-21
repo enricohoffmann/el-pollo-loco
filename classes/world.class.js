@@ -19,6 +19,7 @@ class World {
     bottleObjects = [];
     currentCollectedBottles = 0;
     lastBounceTime = 0;
+    runInterval;
 
     constructor(canvas, keyboard, level, colorTheme) {
         this.level = level;
@@ -32,7 +33,8 @@ class World {
 
 
     run() {
-        setInterval(() => {
+
+        this.runInterval = setInterval(() => {
             this.character.applyGravity();
             this.level.enemies.forEach((enemy) => {
                 this.checkColisions(enemy);
@@ -42,7 +44,8 @@ class World {
             this.coinManager.update();
             this.bottleManager.update();
             this.checkIfNewBottleCollected();
-            this.draw()
+            this.draw();
+
         }, 1000 / 60);
     }
 
@@ -70,6 +73,7 @@ class World {
         const endboss = this.level.enemies.find(e => e instanceof Endboss);
         if (endboss) {
             endboss.endBossStatusBar = this.statusBars.find(sb => sb.barType === 'endboss_health');
+            endboss.world = this;
         }
     }
 
@@ -123,7 +127,7 @@ class World {
         if (enemy.isDead) return;
         if (this.currentBottle == null) return;
         if (!this.currentBottle.isFlying) return;
-        if (!this.currentBottle.isColliding(enemy)) return;
+        if (!this.currentBottle.isColliding(enemy, this.currentBottle.killbox, enemy.killbox)) return;
 
         this.currentBottle.isFlying = false;
         this.currentBottle.splashing();
@@ -233,6 +237,7 @@ class World {
 
         //mo.drawFrame(this.ctx);
         //mo.drawOffsetFrame(this.ctx);
+        //mo.drawKillboxFrame(this.ctx);
 
         if (mo.otherDirection) {
             this.flipImageBack();
@@ -259,12 +264,24 @@ class World {
 
     gameOver() {
         setTimeout(() => {
-            alert('Game Over! Try again!');
-            location.reload();
+            clearInterval(this.runInterval);
+            window.openGameOverDialog();
+            return;
         }, 100);
     }
 
+    checkWinCondition() {
+        const endboss = this.level.enemies.find(e => e instanceof Endboss);
+        if (endboss && endboss.isDead) {
+            setTimeout(() => {
+                clearInterval(this.runInterval);
+                this.runInterval = null;
+                window.openGameWinDialog();
+                return;
+            }, 100);
+        }
 
+    }
 
 
 }

@@ -28,7 +28,7 @@
     <script src="./classes/moveableObject.class.js"></script>
     <script src="./classes/chicken.class.js"></script>
     <script src="./classes/cloud.class.js"></script>
-    
+
     <script src="./classes/character.class.js"></script>
     <script src="./classes/backgroundObject.class.js"></script>
     <script src="./classes/endboss.class.js"></script>
@@ -36,9 +36,24 @@
     <script src="./classes/levelCreator.class.js"></script>
     <script src="./classes/throwableObject.class.js"></script>
     <script src="./classes/world.class.js"></script>
-    
+
 
     <script src="./js/game.js"></script>
+
+
+    <dialog id="game-over-dialog" class="gameWinOverDialog" onclick="closeGameOverDialog()">
+        <div class="dialogContent" id="game-over-content">
+            <div class="gameOverImg winLostGameAnimation"></div>
+        </div>
+    </dialog>
+
+    <dialog id="game-win-dialog" class="gameWinOverDialog" onclick="closeGameWinDialog()">
+        <div class="dialogContent" id="game-win-content">
+            <div class="gameWinImg winLostGameAnimation"></div>
+        </div>
+    </dialog>
+
+
 </body>
 
 </html>

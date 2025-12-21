@@ -11,6 +11,7 @@ class DrawableObject {
     imagesOfType;
 
     offset = { top: 0, right: 0, bottom: 0, left: 0 };
+    killbox = { top: 0, right: 0, bottom: 0, left: 0 };
 
     constructor() {
 
@@ -65,12 +66,27 @@ class DrawableObject {
         }
     }
 
+    drawKillboxFrame(ctx) {
+        if (this instanceof Endboss || this instanceof Chicken) {
+            ctx.beginPath();
+            ctx.lineWidth = "4";
+            ctx.strokeStyle = "green";
+            ctx.rect(
+                this.pos_x + this.killbox.left,
+                this.pos_y + this.killbox.top,
+                this.width - this.killbox.right - this.killbox.left,
+                this.height - this.killbox.bottom - this.killbox.top
+            );
+            ctx.stroke();
+        }
+    }
+
     getRandomObjectPosition(min, max) {
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.random() * (max - min) + min;
     }
 
-    
+
 
 }

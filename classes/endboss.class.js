@@ -10,10 +10,12 @@ class Endboss extends MoveableObject {
     attackInterval;
     walkingInterval;
     offset = { top: 50, right: 10, bottom: 10, left: 10 };
+    killbox = { top: 110, right: 70, bottom: 20, left: 70 };
     lastAttackTime = 0;
     isAttacking = false;
     endBossStatusBar;
     state;
+    world;
 
 
 
@@ -46,22 +48,35 @@ class Endboss extends MoveableObject {
 
     walkingAnimation() {
 
-        if(this.state === 'dead') return;
+        if (this.state === 'dead') return;
         this.state = 'walk';
 
         clearInterval(this.attackAnimationInterval);
         clearInterval(this.hurtAnimationInterval);
 
         this.animationInterval = setInterval(() => {
-            if(this.state !== 'walk') return;
+            if (this.state !== 'walk') return;
             this.playAnimation(this.imagesOfType.ENDBOSS_WALKING_IMAGES);
         }, 160);
 
         this.walkingInterval = setInterval(() => {
-            if(this.state !== 'walk') return;
+            if (this.state !== 'walk') return;
             this.moveLeft();
             this.moveStatusBar();
+            this.checkEndbossReachedLeftEdge();
         }, 1000 / 60);
+
+    }
+
+    checkEndbossReachedLeftEdge() {
+        const leftEdgeX = this.pos_x <= 100;
+
+        if (leftEdgeX) {
+            clearInterval(this.walkingInterval);
+            clearInterval(this.animationInterval);
+            this.world.gameOver();
+        }
+
 
     }
 
@@ -73,8 +88,8 @@ class Endboss extends MoveableObject {
 
     attack() {
 
-        if(this.state === 'dead' || this.state === 'hurt') return;
-        if(this.state === 'attack') return;
+        if (this.state === 'dead' || this.state === 'hurt') return;
+        if (this.state === 'attack') return;
 
         this.state = 'attack';
         this.isAttacking = true;
@@ -94,7 +109,7 @@ class Endboss extends MoveableObject {
                 clearInterval(this.attackAnimationInterval);
                 this.attackAnimationInterval = null;
 
-                if(this.state === "attack"){
+                if (this.state === "attack") {
                     this.walkingAnimation();
                 }
             }
@@ -103,8 +118,8 @@ class Endboss extends MoveableObject {
     }
 
 
-    hurt(){
-        if(this.state === 'dead') return;
+    hurt() {
+        if (this.state === 'dead') return;
         this.state = 'hurt';
         this.lastHurtTime = new Date().getTime() + 800;
 
@@ -112,7 +127,7 @@ class Endboss extends MoveableObject {
         clearInterval(this.walkingInterval);
         clearInterval(this.attackAnimationInterval);
 
-        if(this.hurtAnimationInterval) return;
+        if (this.hurtAnimationInterval) return;
 
         this.hurtAnimation();
     }
@@ -120,7 +135,7 @@ class Endboss extends MoveableObject {
     hurtAnimation() {
         this.hurtAnimationInterval = setInterval(() => {
 
-            if(Date.now() < this.lastHurtTime && this.state === 'hurt'){
+            if (Date.now() < this.lastHurtTime && this.state === 'hurt') {
                 this.playAnimation(this.imagesOfType.ENDBOSS_HURT_IMAGES);
                 return;
             }
@@ -128,7 +143,7 @@ class Endboss extends MoveableObject {
             clearInterval(this.hurtAnimationInterval);
             this.hurtAnimationInterval = null;
 
-            if((this.state !== 'dead')){
+            if ((this.state !== 'dead')) {
                 this.walkingAnimation();
             }
         }, 160);
@@ -147,6 +162,7 @@ class Endboss extends MoveableObject {
         this.playAnimationOnce(this.imagesOfType.ENDBOSS_DEAD_IMAGES, () => {
             this.endBossStatusBar.pos_y = -100;
             this.pos_x = -1000;
+            this.world.checkWinCondition();
         });
 
     }

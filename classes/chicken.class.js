@@ -13,6 +13,7 @@ class Chicken extends MoveableObject {
     ENEMY_DEAD_IMAGES = [
         'img/3_enemies_chicken/chicken_normal/2_dead/dead.png'
     ];
+    killbox = { top: 10, right: 10, bottom: 10, left: 10 };
 
     chickenWalkInterval;
     chickenAnimationInterval;

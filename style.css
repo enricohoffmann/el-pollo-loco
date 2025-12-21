@@ -8,3 +8,60 @@ body{
 canvas{
     background-color: black;
 }
+
+.gameWinOverDialog {
+    outline: none;
+    border: none;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    background-color: transparent;
+}
+
+.gameWinOverDialog::backdrop {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.dialogContent{
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    background-color: transparent;
+}
+
+.gameOverImg{
+    width: 800px;
+    height: 600px;
+    background-image: url('./img/You won, you lost/Game-Over.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.gameWinImg{
+    width: 800px;
+    height: 600px;
+    background-image: url('./img/You won, you lost/You Win A.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.winLostGameAnimation{
+    animation: winLostGameAnimation 2s ease-in-out;
+}
+
+@keyframes winLostGameAnimation {
+    0%{
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}

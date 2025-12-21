@@ -77,10 +77,15 @@ class MoveableObject extends DrawableObject {
         }
     }
 
-    isColliding(mo) {
-        return this.pos_x + this.width - this.offset.right > mo.pos_x + mo.offset.left &&
-            this.pos_x + this.offset.left < mo.pos_x + mo.width - mo.offset.right &&
-            this.pos_y + this.height - this.offset.bottom > mo.pos_y + mo.offset.top &&
+    isColliding(mo, killBox = null, offsetBox = null) {
+
+        const box_a = killBox ?? this.offset ?? { top: 0, right: 0, bottom: 0, left: 0 };
+        const box_b = offsetBox ?? mo.offset ?? { top: 0, right: 0, bottom: 0, left: 0 };
+
+
+        return this.pos_x + this.width - box_a.right > mo.pos_x + box_b.left &&
+            this.pos_x + box_a.left < mo.pos_x + mo.width - box_b.right &&
+            this.pos_y + this.height - box_a.bottom > mo.pos_y + box_b.top &&
             this.pos_y + this.offset.top < mo.pos_y + mo.height - mo.offset.bottom;
     }
 
