@@ -95,7 +95,7 @@ class LevelCreator {
     createClouds(countOfClouds) {
         let clouds = [];
         for (let i = 0; i < countOfClouds; i++) {
-            clouds.push(new Cloud());
+            clouds.push(new Cloud(this.canvas, this.xPosition, clouds));
         }   
         return clouds;
     }

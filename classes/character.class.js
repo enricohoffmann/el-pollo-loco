@@ -27,18 +27,19 @@ class Character extends MoveableObject {
         this.lastKeyboardInputTime = new Date().getTime();
     }
 
-    setPosition(){
+    setPosition() {
         const bottomMargin = 160;
         const characterHeight = this.height - (this.offset.top + this.offset.bottom);
         this.pos_y = this.canvas.height - (bottomMargin + characterHeight);
         this.pos_x = 100;
     }
-   
+
     animate() {
 
         this.keyboardReadInterval = setInterval(() => {
             this.keyboardReadLoop();
             this.checkIdleTime();
+            this.lastPosY = this.pos_y;
         }, 1000 / 60);
 
         this.animationInterval = setInterval(() => {
@@ -82,26 +83,19 @@ class Character extends MoveableObject {
     keyboardReadLoop() {
 
         if (this.world.keyboard.keys.ArrowRight && !this.isEndRight) {
-            this.otherDirection = false;
-            this.stopIdleLoop();
-            this.moveRight();
+            this.startMoveRight();
         }
 
         if (this.world.keyboard.keys.ArrowLeft && !this.isEndLeft) {
-            this.otherDirection = true;
-            this.moveLeft();
-            this.stopIdleLoop();
+            this.startMoveLeft();
         }
 
         if (this.world.keyboard.jumping && !this.isAboveGround()) {
-            this.stopIdleLoop();
-            this.jump();
+            this.startJump();
         }
 
         if (this.world.keyboard.throwing) {
-            this.stopIdleLoop();
-            this.isSleeping = false;
-            this.startIdleLoop();
+            this.startThrow();
         }
 
         if (this.world.keyboard.allKeysReleased && !this.isDead && !this.isHurt) {
@@ -109,6 +103,29 @@ class Character extends MoveableObject {
         }
 
         this.setCamaraPosition();
+    }
+
+    startMoveRight() {
+        this.otherDirection = false;
+        this.stopIdleLoop();
+        this.moveRight();
+    }
+
+    startMoveLeft() {
+        this.otherDirection = true;
+        this.stopIdleLoop();
+        this.moveLeft();
+    }
+
+    startJump() {
+        this.stopIdleLoop();
+        this.jump();
+    }
+
+    startThrow() {
+        this.stopIdleLoop();
+        this.isSleeping = false;
+        this.startIdleLoop();
     }
 
     setCamaraPosition() {
@@ -148,7 +165,7 @@ class Character extends MoveableObject {
         });
     }
 
-    
+
 
 
 

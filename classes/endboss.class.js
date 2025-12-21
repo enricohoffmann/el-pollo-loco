@@ -13,7 +13,9 @@ class Endboss extends MoveableObject {
     lastAttackTime = 0;
     isAttacking = false;
     endBossStatusBar;
-    
+    state;
+
+
 
     constructor(canvas, level_end_x) {
         super();
@@ -44,11 +46,19 @@ class Endboss extends MoveableObject {
 
     walkingAnimation() {
 
+        if(this.state === 'dead') return;
+        this.state = 'walk';
+
+        clearInterval(this.attackAnimationInterval);
+        clearInterval(this.hurtAnimationInterval);
+
         this.animationInterval = setInterval(() => {
+            if(this.state !== 'walk') return;
             this.playAnimation(this.imagesOfType.ENDBOSS_WALKING_IMAGES);
         }, 160);
 
         this.walkingInterval = setInterval(() => {
+            if(this.state !== 'walk') return;
             this.moveLeft();
             this.moveStatusBar();
         }, 1000 / 60);
@@ -62,6 +72,11 @@ class Endboss extends MoveableObject {
     }
 
     attack() {
+
+        if(this.state === 'dead' || this.state === 'hurt') return;
+        if(this.state === 'attack') return;
+
+        this.state = 'attack';
         this.isAttacking = true;
         this.lastAttackTime = new Date().getTime();
         clearInterval(this.animationInterval);
@@ -77,51 +92,75 @@ class Endboss extends MoveableObject {
                 this.isAttacking = false;
                 this.lastAttackTime = 0;
                 clearInterval(this.attackAnimationInterval);
-                this.walkingAnimation();
+                this.attackAnimationInterval = null;
+
+                if(this.state === "attack"){
+                    this.walkingAnimation();
+                }
             }
         }, 160);
 
     }
 
+
     hurt(){
+        if(this.state === 'dead') return;
+        this.state = 'hurt';
+        this.lastHurtTime = new Date().getTime() + 800;
+
         clearInterval(this.animationInterval);
         clearInterval(this.walkingInterval);
         clearInterval(this.attackAnimationInterval);
-        this.lastHurtTime = new Date().getTime();
+
+        if(this.hurtAnimationInterval) return;
+
         this.hurtAnimation();
     }
 
     hurtAnimation() {
         this.hurtAnimationInterval = setInterval(() => {
-            this.playAnimation(this.imagesOfType.ENDBOSS_HURT_IMAGES);
-            const hurtDuration = new Date().getTime() - this.lastHurtTime;
-            if (hurtDuration >= 1000) {
-                this.lastHurtTime = 0;
-                clearInterval(this.hurtAnimationInterval);
+
+            if(Date.now() < this.lastHurtTime && this.state === 'hurt'){
+                this.playAnimation(this.imagesOfType.ENDBOSS_HURT_IMAGES);
+                return;
+            }
+
+            clearInterval(this.hurtAnimationInterval);
+            this.hurtAnimationInterval = null;
+
+            if((this.state !== 'dead')){
                 this.walkingAnimation();
             }
         }, 160);
     }
 
     endbossDied() {
+        this.state = 'dead';
         clearInterval(this.animationInterval);
         clearInterval(this.walkingInterval);
-        clearInterval(this.attackAnimationInterval);    
+        clearInterval(this.attackAnimationInterval);
+        clearInterval(this.hurtAnimationInterval);
+
+        this.attackAnimationInterval = null;
+        this.hurtAnimationInterval = null;
+
         this.playAnimationOnce(this.imagesOfType.ENDBOSS_DEAD_IMAGES, () => {
             this.endBossStatusBar.pos_y = -100;
             this.pos_x = -1000;
         });
-    
-    }   
 
-    entbossHit(){
-        this.hurt();
+    }
+
+    entbossHit() {
+
         this.hit();
+        this.hurt();
+
         if (this.endBossStatusBar) {
             this.endBossStatusBar.setPercentage(this.energy);
         }
 
-        if(this.isDead){
+        if (this.isDead) {
             this.endbossDied();
         }
     }

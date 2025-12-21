@@ -27,14 +27,13 @@ class World {
         this.ctx = canvas.getContext('2d');
         this.keyboard = keyboard;
         this.creategameObjects();
-
-        this.draw();
         this.run();
     }
 
 
     run() {
         setInterval(() => {
+            this.character.applyGravity();
             this.level.enemies.forEach((enemy) => {
                 this.checkColisions(enemy);
                 this.checkColisionsWithThrowableObjects(enemy);
@@ -43,7 +42,8 @@ class World {
             this.coinManager.update();
             this.bottleManager.update();
             this.checkIfNewBottleCollected();
-        }, 100);
+            this.draw()
+        }, 1000 / 60);
     }
 
 
@@ -73,50 +73,43 @@ class World {
         }
     }
 
-    /* checkColisions(enemy) {
-        if (this.character.isColliding(enemy) && !this.character.isCollidingTop(enemy)) {
-            this.character.hit();
-            const bar = this.statusBars.find(sb => sb.barType === 'health');
-            bar.setPercentage(this.character.energy);
-            if (enemy instanceof Endboss && !this.character.isDead) {
-                const endboss = this.level.enemies.find(e => e instanceof Endboss);
-                if (!endboss.isAttacking) {
-                    endboss.attack();
-                }
-            }
-        } else if (this.character.isCollidingTop(enemy) && !enemy.isDied && !this.character.isDead) {
-            enemy.hit();
-            this.bounceOffEnemy();
-
-            this.character.pos_y = enemy.pos_y - this.character.height + this.character.offset.bottom + enemy.offset.top;
-        }
-    } */
-
 
     checkColisions(enemy) {
+
+        if (enemy.isDead == true) return;
+
         const colliding = this.character.isColliding(enemy);
-        if(!colliding) return;
+        if (!colliding) return;
 
         const collidingTop = this.character.isCollidingTop(enemy) && !this.character.isDead && !enemy.isDead;
 
         if (collidingTop) {
-            enemy.hit();
-            this.bounceOffEnemy(enemy);
+            this.characterHitEnemyOnTop(enemy);
             return;
         }
 
-        if(!this.character.isDead){
-            this.character.hit();
-            const bar = this.statusBars.find(sb => sb.barType === 'health');
-            bar.setPercentage(this.character.energy);
-            if (enemy instanceof Endboss && !this.character.isDead) {
-                const endboss = this.level.enemies.find(e => e instanceof Endboss);
-                if (!endboss.isAttacking) {
-                    endboss.attack();
-                }
-            }
+        if (!this.character.isDead) {
+            this.characterHit(enemy);
         }
 
+    }
+
+    characterHit(enemy) {
+        this.character.hit();
+        const bar = this.statusBars.find(sb => sb.barType === 'health');
+        bar.setPercentage(this.character.energy);
+        if (enemy instanceof Endboss && !this.character.isDead) {
+            const endboss = this.level.enemies.find(e => e instanceof Endboss);
+            if (!endboss.isAttacking) {
+                endboss.attack();
+            }
+        }
+    }
+
+    characterHitEnemyOnTop(enemy) {
+        enemy.damage = 100;
+        enemy.hit();
+        this.bounceOffEnemy(enemy);
     }
 
 
@@ -127,7 +120,7 @@ class World {
     }
 
     checkColisionsWithThrowableObjects(enemy) {
-        if (enemy.isDied) return;
+        if (enemy.isDead) return;
         if (this.currentBottle == null) return;
         if (!this.currentBottle.isFlying) return;
         if (!this.currentBottle.isColliding(enemy)) return;
@@ -140,21 +133,6 @@ class World {
         } else {
             enemy.hit();
         }
-
-
-
-
-
-        /* enemy.hit();
-            this.statusBar.setPercentage(enemy.energy); */
-
-        /* const index = this.throwableObjects.findIndex(bottle => bottle.isColliding(enemy) && bottle.isFlying);
-        if(index !== -1){
-            this.throwableObjects[index].isFlying = false;
-            this.throwableObjects[index].splashing();
-            
-            
-        } */
     }
 
 
@@ -168,8 +146,6 @@ class World {
             this.bottleManager.collectedItems--;
             this.bottleManager.setStatusBarPercentage();
             this.currentCollectedBottles = this.bottleManager.collectedItems;
-            /* const bar = this.statusBars.find(sb => sb.barType === 'bottles');
-            bar.setPercentage(this.throwableObjects.length * 10); */
 
             const pos_x = this.character.otherDirection ? this.character.pos_x - this.character.offset.right + 40 : this.character.pos_x + 70;
             const pos_y = this.character.pos_y + 150;
@@ -184,27 +160,19 @@ class World {
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
         this.ctx.translate(this.camera_x, 0);
-
         this.addObjectsToMap(this.level.backgroundObjects);
         this.addObjectsToMap(this.level.clouds);
-
-
         this.addToMap(this.character);
         this.drawEnemies();
-
         this.ctx.translate(-this.camera_x, 0);
         this.drawStatusBars(this.statusBars);
         this.ctx.translate(this.camera_x, 0);
-
         this.drawBottle();
         this.drawCoins();
         this.drawBottles();
         this.drawEndbossHealthBar();
-
         this.ctx.translate(-this.camera_x, 0);
-        requestAnimationFrame(() => this.draw());
     }
 
     drawEnemies() {
@@ -263,8 +231,8 @@ class World {
 
         mo.draw(this.ctx);
 
-        mo.drawFrame(this.ctx);
-        mo.drawOffsetFrame(this.ctx);
+        //mo.drawFrame(this.ctx);
+        //mo.drawOffsetFrame(this.ctx);
 
         if (mo.otherDirection) {
             this.flipImageBack();

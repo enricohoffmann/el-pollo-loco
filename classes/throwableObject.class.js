@@ -12,6 +12,7 @@ class ThrowableObject extends MoveableObject {
         this.height = 80;
         this.loadTypeImages(bottleImages);
         this.loadImage(this.imagesOfType.BOTTLE_STANDARD[0]);
+        this.acceleration = 2.5;
 
     }
 
@@ -19,7 +20,7 @@ class ThrowableObject extends MoveableObject {
         this.pos_x = x - this.offset.right;
         this.pos_y = y;
         this.speedY = 30;
-        this.applyGravity();
+        this.applyGravityBottle();
         this.isFlying = true;
 
 
@@ -29,6 +30,19 @@ class ThrowableObject extends MoveableObject {
             this.checkIfBottleIsOnGround();
         }, 25);
 
+    }
+
+    applyGravityBottle() {
+        this.gravityInterval = setInterval(() => {
+            if (this.isAboveGround() || this.speedY > 0) {
+                this.pos_y -= this.speedY;
+                this.speedY -= this.acceleration;
+            }else{  
+                this.pos_y = this.isOnGround();   
+                this.speedY = 0;
+            }
+
+        }, 1000 / 25);
     }
 
     checkIfBottleIsOnGround() {

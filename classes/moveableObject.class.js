@@ -2,7 +2,7 @@ class MoveableObject extends DrawableObject {
     speed = 0.15;
     otherDirection = false;
     speedY = 0;
-    acceleration = 2.5;
+    acceleration = 1.5;
     energy = 100;
     damage = 0;
     lastHit = 0;
@@ -12,6 +12,7 @@ class MoveableObject extends DrawableObject {
     lastHurtTime = 0;
     hurtAnimationInterval;
     canvas;
+    lastPosY = 0;
 
     constructor() {
         super();
@@ -56,29 +57,24 @@ class MoveableObject extends DrawableObject {
 
     isAboveGround() {
 
-        if(this instanceof ThrowableObject){return true;}
+        if (this instanceof ThrowableObject) { return true; }
 
         const groundY = this.canvas.height - 50;
         const objectBottomY = this.pos_y + this.height - this.offset.bottom;
         return objectBottomY < groundY;
     }
 
-    isOnGround() {
-        const groundY = this.canvas.height - 50;
-        return groundY - (this.height - this.offset.bottom);
-    }
 
     applyGravity() {
-        this.gravityInterval = setInterval(() => {
-            if (this.isAboveGround() || this.speedY > 0) {
-                this.pos_y -= this.speedY;
-                this.speedY -= this.acceleration;
-            }else{  
-                this.pos_y = this.isOnGround();   
-                this.speedY = 0;
-            }
+        this.lastPosY = this.pos_y;
 
-        }, 1000 / 25);
+        if (this.isAboveGround() || this.speedY > 0) {
+            this.pos_y -= this.speedY;
+            this.speedY -= this.acceleration;
+        } else {
+            this.pos_y = this.getGroundY;
+            this.speedY = 0;
+        }
     }
 
     isColliding(mo) {
@@ -93,14 +89,15 @@ class MoveableObject extends DrawableObject {
             this.pos_x + this.width - this.offset.right > mo.pos_x + mo.offset.left &&
             this.pos_x + this.offset.left < mo.pos_x + mo.width - mo.offset.right;
 
-        const isFallingOrLanding = this.speedY < 0;
+        const falling = this.speedY < 0;
 
-        const charBottom = this.pos_y + this.height - this.offset.bottom;
+        const bottomNow = this.pos_y + this.height - this.offset.bottom;
+        const bottomLast = this.lastPosY + this.height - this.offset.bottom;
         const enemyTop = mo.pos_y + mo.offset.top;
 
-        const fromAbove = charBottom <= enemyTop + 10;
+        const crossedTop = bottomLast <= enemyTop && bottomNow >= enemyTop;
 
-        return isOverlappingX && isFallingOrLanding && fromAbove;
+        return isOverlappingX && falling && crossedTop;
     }
 
 
@@ -133,6 +130,11 @@ class MoveableObject extends DrawableObject {
 
     get isEndRight() {
         return this.pos_x + this.width >= this.world.level.level_end_x;
+    }
+
+    get getGroundY() {
+        const groundY = this.canvas.height - 50;
+        return groundY - (this.height - this.offset.bottom);
     }
 
 }
