@@ -47,6 +47,10 @@ class World {
             this.draw();
 
         }, 1000 / 60);
+
+        setInterval(() => {
+            //Safe game state every 2 seconds
+        }, 2000);
     }
 
 

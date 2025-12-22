@@ -4,16 +4,26 @@ let world;
 let canvasWidth = 720;
 let canvasHeight = 480;
 
+
 function init() {
+    
+    const state = loadGameRunningState();
+    if(!state || state === false){
+        gameStart();
+    } else {
+        loadGameState();
+    }
+
+}
+
+function gameStart() {
+    safeGameRunningState(true);
     canvas = document.getElementById("canvas");
     canvasWidth = canvas.width;
     canvasHeight = canvas.height;
     const levelCreator = new LevelCreator('easy', canvas);
     const level = levelCreator.createLevel()
-
     world = new World(canvas, keyboard, level, 'orange');
-    //openGameOverDialog();
-    
 }
 
 function openGameOverDialog() {
@@ -29,6 +39,8 @@ function openGameOverDialog() {
 function closeGameOverDialog() {
     const dialog = document.getElementById('game-over-dialog');
     dialog.close();
+    world = null;
+    safeGameRunningState(false);
 }
 
 function openGameWinDialog() {
@@ -44,11 +56,22 @@ function openGameWinDialog() {
 function closeGameWinDialog() {
     const dialog = document.getElementById('game-win-dialog');
     dialog.close();
+    safeGameRunningState(false);
     world = null;
 }
 
-window.addEventListener("keydown", (e) => { keyboard.setKey(e.key, true);});
-window.addEventListener("keyup", (e) => { keyboard.setKey(e.key, false);});
+function safeGameState() {
+    console.log('Game state saved (not really, this is a placeholder).');
+    safeGameRunningState(true);
+}
+
+function loadGameState() {
+
+    console.log('Game state loaded (not really, this is a placeholder).');
+}
+
+window.addEventListener("keydown", (e) => { keyboard.setKey(e.key, true); });
+window.addEventListener("keyup", (e) => { keyboard.setKey(e.key, false); });
 
 window.openGameOverDialog = openGameOverDialog;
 window.openGameWinDialog = openGameWinDialog;
