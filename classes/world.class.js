@@ -50,7 +50,8 @@ class World {
 
         setInterval(() => {
             //Safe game state every 2 seconds
-        }, 2000);
+            safeGameState(this)
+        }, 20000);
     }
 
 
@@ -238,10 +239,6 @@ class World {
         }
 
         mo.draw(this.ctx);
-
-        //mo.drawFrame(this.ctx);
-        //mo.drawOffsetFrame(this.ctx);
-        //mo.drawKillboxFrame(this.ctx);
 
         if (mo.otherDirection) {
             this.flipImageBack();

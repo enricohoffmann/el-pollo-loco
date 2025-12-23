@@ -39,8 +39,8 @@ function openGameOverDialog() {
 function closeGameOverDialog() {
     const dialog = document.getElementById('game-over-dialog');
     dialog.close();
-    world = null;
     safeGameRunningState(false);
+    world = null;
 }
 
 function openGameWinDialog() {
@@ -60,10 +60,6 @@ function closeGameWinDialog() {
     world = null;
 }
 
-function safeGameState() {
-    console.log('Game state saved (not really, this is a placeholder).');
-    safeGameRunningState(true);
-}
 
 function loadGameState() {
 
