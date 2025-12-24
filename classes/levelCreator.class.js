@@ -3,6 +3,7 @@ class LevelCreator {
     canvas;
     xPosition = 0;
     currentLevel = new Level();
+    levelSetting;
 
     constructor(difficulty, canvas) {
         this.difficulty = difficulty;
@@ -10,45 +11,75 @@ class LevelCreator {
     }
 
     createLevel() {
+        this.readLevelSetting();
+        this.create();
+        this.safeCurrentLevel();
+        return this.currentLevel;
+    }
+
+    readLevelSetting(){
+        const setting = new LevelSetting();
         if (this.difficulty === 'easy') {
-            return this.createEasyLevel();
+            this.levelSetting = setting.getEasyLevelSettings();
         } else if (this.difficulty === 'medium') {
-            //return this.createMediumLevel();
+            this.levelSetting = setting.getMediumLevelSettings();
         } else if (this.difficulty === 'hard') {
-            //return this.createHardLevel();
+            this.levelSetting = setting.getHardLevelSettings();
+        }else{
+            this.levelSetting = setting.getCustomLevelSettings();
         }
     }
 
-    createEasyLevel() {
-        let backgroundObjects = this.createBackgroundObjects(3);
-        let enemies = this.createEnemys(3);
-        let clouds = this.createClouds(2);
+    createLevelFromState() {
+        const levelState = loadLevelState();
+        this.currentLevel.level_end_x = levelState.level_end_x;
+        this.currentLevel.damage = levelState.damage;
+        this.currentLevel.health = levelState.health;
+        this.currentLevel.initialBottleCount = levelState.initialBottleCount;
+        this.currentLevel.bottlesOnScreen = levelState.bottlesOnScreen;
+        this.currentLevel.coinsOnScreen = levelState.coinsOnScreen;
+        this.difficulty = levelState.difficulty;
+        this.readLevelSetting();
+        this.currentLevel.backgroundObjects = this.createBackgroundObjects(this.levelSetting.contOfBackgroundObjects);
+        this.currentLevel.enemies = this.createEnemysFromState(loadEnemiesState());
+        this.currentLevel.clouds = this.createCloudsFromState(loadCloudsState());
+
+        this.safeCurrentLevel();
+        return this.currentLevel;
+    }
+
+
+    create() {
+        let backgroundObjects = this.createBackgroundObjects(this.levelSetting.contOfBackgroundObjects);
+        let enemies = this.createEnemys(this.levelSetting.countOfEnemies);
+        let clouds = this.createClouds(this.levelSetting.countOfClouds);
         this.currentLevel.clouds = clouds;
         this.currentLevel.enemies = enemies;
         this.currentLevel.backgroundObjects = backgroundObjects;
         this.currentLevel.level_end_x = this.xPosition;
-        this.currentLevel.damage = 10;
-        this.currentLevel.health = 100;
-        this.currentLevel.initialBottleCount = 10;
-        this.currentLevel.bottlesOnScreen = this.getRandomInt(8, 15);
-        this.currentLevel.coinsOnScreen = this.getRandomInt(5, 20);
-        
-        return this.currentLevel;
+        this.currentLevel.damage = this.levelSetting.damage;
+        this.currentLevel.health = this.levelSetting.initialHealth;
+        this.currentLevel.initialBottleCount = this.levelSetting.initialBottleCount;
+        this.currentLevel.bottlesOnScreen = this.getRandomInt(...this.levelSetting.bottlesOnScreenRange);
+        this.currentLevel.coinsOnScreen = this.getRandomInt(...this.levelSetting.coinsOnScreenRange);
+
     }
 
-    /* createMediumLevel() {
-        let backgroundObjects = this.createBackgroundObjects(5);
-        let enemies = this.createEnemys(5);
-        let clouds = this.createClouds(2);
-        return new Level(enemies, clouds, backgroundObjects, this.xPosition, 20, 100);
-    } */
 
-   /*  createHardLevel() {
-        let backgroundObjects = this.createBackgroundObjects(8);
-        let enemies = this.createEnemys(8);
-        let clouds = this.createClouds(2);
-        return new Level(enemies, clouds, backgroundObjects, this.xPosition, 30, 100, 3);
-    } */
+    safeCurrentLevel() {
+        const levelState = {
+            level_end_x: this.currentLevel.level_end_x,
+            damage: this.currentLevel.damage,
+            health: this.currentLevel.health,
+            initialBottleCount: this.currentLevel.initialBottleCount,
+            bottlesOnScreen: this.currentLevel.bottlesOnScreen,
+            coinsOnScreen: this.currentLevel.coinsOnScreen,
+            difficulty: this.difficulty
+        }
+
+        safeLevelState(levelState);
+        
+    }
 
 
     createBackgroundObjects(countOfObjects) {
@@ -92,11 +123,43 @@ class LevelCreator {
         return enemies;
     }
 
+    createEnemysFromState(enemiesState) {
+       
+        let enemies = [];
+        for (let enemyState of Array.isArray(enemiesState) ? enemiesState : []) {
+            let enemy;
+            if (enemyState.isChicken) {
+                enemy = new Chicken(this.canvas, this.xPosition);
+                enemy.pos_x = enemyState.pos_x;
+                enemy.pos_y = enemyState.pos_y;
+                enemy.energy = enemyState.energy;
+            } else if (enemyState.isEndboss) {
+                enemy = new Endboss(this.canvas, this.xPosition);
+                enemy.pos_x = enemyState.pos_x;
+                enemy.pos_y = enemyState.pos_y;
+                enemy.energy = enemyState.energy;
+            }
+            enemies.push(enemy);
+        }
+        return enemies;
+    }
+
     createClouds(countOfClouds) {
         let clouds = [];
         for (let i = 0; i < countOfClouds; i++) {
             clouds.push(new Cloud(this.canvas, this.xPosition, clouds));
         }   
+        return clouds;
+    }
+
+    createCloudsFromState(cloudsState) {
+        let clouds = [];
+        for (let cloudState of  Array.isArray(cloudsState) ? cloudsState : []) {
+            let cloud = new Cloud(this.canvas, this.xPosition, clouds);
+            cloud.pos_x = cloudState.pos_x;
+            cloud.pos_y = cloudState.pos_y;
+            clouds.push(cloud);
+        }
         return clouds;
     }
 

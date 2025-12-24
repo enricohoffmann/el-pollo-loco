@@ -97,13 +97,40 @@ function safeEnemyState(enemies) {
     localStorage.setItem('enemiesState', JSON.stringify(state));
 }
 
-function loadEnemyState() {
+function loadEnemiesState() {
     const enemies = localStorage.getItem('enemiesState');
     return JSON.parse(enemies);
 }
+
+
+function safeCloudState(clouds) {
+    const state = {
+        clouds: clouds.map(cloud => ({
+            pos_x: cloud.pos_x,
+            pos_y: cloud.pos_y
+        }))
+    };
+    localStorage.setItem('cloudsState', JSON.stringify(state));
+}
+
+function loadCloudsState() {
+    const clouds = localStorage.getItem('cloudsState');
+    return JSON.parse(clouds);
+}
+
+function safeLevelState(levelState) {
+    localStorage.setItem('levelState', JSON.stringify(levelState));
+}
+
+function loadLevelState() {
+    const levelState = localStorage.getItem('levelState');
+    return JSON.parse(levelState);
+}
+
 function clearGameState() {
     localStorage.removeItem('characterState');
     localStorage.removeItem('coinsState');
     localStorage.removeItem('bottlesState');
     localStorage.removeItem('enemiesState');
+    localStorage.removeItem('cloudsState');
 }

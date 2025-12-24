@@ -18,12 +18,16 @@ function init() {
 
 function gameStart() {
     safeGameRunningState(true);
-    canvas = document.getElementById("canvas");
-    canvasWidth = canvas.width;
-    canvasHeight = canvas.height;
+    getCanvas();
     const levelCreator = new LevelCreator('easy', canvas);
     const level = levelCreator.createLevel()
     world = new World(canvas, keyboard, level, 'orange');
+}
+
+function getCanvas(){
+    canvas = document.getElementById("canvas");
+    canvasWidth = canvas.width;
+    canvasHeight = canvas.height;
 }
 
 function openGameOverDialog() {
@@ -64,6 +68,15 @@ function closeGameWinDialog() {
 function loadGameState() {
 
     console.log('Game state loaded (not really, this is a placeholder).');
+    safeGameRunningState(true);
+    getCanvas();
+    const levelCreator = new LevelCreator('easy', canvas);
+    const level = levelCreator.createLevelFromState();
+    world = new World(canvas, keyboard, level, 'orange');
+    world.character.pos_x = loadCharacterState().character.x;
+    world.character.pos_y = loadCharacterState().character.y;
+    world.character.energy = loadCharacterState().character.health;
+
 }
 
 window.addEventListener("keydown", (e) => { keyboard.setKey(e.key, true); });

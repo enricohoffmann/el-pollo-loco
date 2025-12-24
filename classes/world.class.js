@@ -51,7 +51,7 @@ class World {
         setInterval(() => {
             //Safe game state every 2 seconds
             safeGameState(this)
-        }, 20000);
+        }, 2000);
     }
 
 
