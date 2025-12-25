@@ -55,7 +55,7 @@ class ItemsManager {
         this.statusBar.setPercentage(percent);
     }
 
-    createItems(factoryMethod, itemCount){
+    createNewItems(factoryMethod, itemCount){
         const maxAttempts = 35;
 
         for (let i = 0; i < itemCount; i++) {

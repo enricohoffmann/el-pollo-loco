@@ -27,8 +27,8 @@ class World {
         this.colorTheme = colorTheme;
         this.ctx = canvas.getContext('2d');
         this.keyboard = keyboard;
-        this.creategameObjects();
-        this.run();
+        //this.creategameObjects();
+        //this.run();
     }
 
 
@@ -67,14 +67,16 @@ class World {
         }
     }
 
-    creategameObjects() {
+    createNewGameObjects() {
         this.character = new Character(this);
         this.statusBarManager = new StatusbarManager(this.colorTheme, this.level.enemies);
+        this.statusBarManager.createNewStatusBars();
+        this.statusBarManager.createNewEndbossHealthBar();
         this.statusBars = this.statusBarManager.statusBars;
         this.coinManager = new ItemsManager(this.character, this.statusBars.find(sb => sb.barType === 'coins'), this.level, this.canvas);
-        this.coinsObjects = this.coinManager.createItems((height, levelEndX) => new Coin(height, levelEndX), this.level.coinsOnScreen);
+        this.coinsObjects = this.coinManager.createNewItems((height, levelEndX) => new Coin(height, levelEndX), this.level.coinsOnScreen);
         this.bottleManager = new ItemsManager(this.character, this.statusBars.find(sb => sb.barType === 'bottles'), this.level, this.canvas);
-        this.bottleObjects = this.bottleManager.createItems((height, levelEndX) => new Bottle(height, levelEndX), this.level.bottlesOnScreen);
+        this.bottleObjects = this.bottleManager.createNewItems((height, levelEndX) => new Bottle(height, levelEndX), this.level.bottlesOnScreen);
         const endboss = this.level.enemies.find(e => e instanceof Endboss);
         if (endboss) {
             endboss.endBossStatusBar = this.statusBars.find(sb => sb.barType === 'endboss_health');
@@ -82,6 +84,13 @@ class World {
         }
     }
 
+    createSavedGameObjects(savedState) {
+        this.statusBarManager = new StatusbarManager(this.colorTheme, this.level.enemies);
+        this.statusBarManager.createSavedStatusBars(savedState.statusbars);
+        this.statusBarManager.createSavedEndBossHealthBar(savedState.statusbars);
+        //Coins und Bottles einbauem
+
+    }
 
     checkColisions(enemy) {
 

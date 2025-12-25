@@ -15,6 +15,7 @@ function safeGameState(state) {
     safeCoinState(world.coinsObjects, world.coinManager);
     safeBottleState(world.bottleObjects, world.bottleManager);
     safeEnemyState(state.level.enemies);
+    safeStartState(state.statusBars);
 }
 
 function loadGameState() {
@@ -127,10 +128,31 @@ function loadLevelState() {
     return JSON.parse(levelState);
 }
 
+function safeStartState(statusBars) {
+    const state = {
+        statusBars: statusBars.map(bar => ({
+            type: bar.type,
+            value: bar.percentage,
+            color: bar.color,
+            x: bar.pos_x,
+            y: bar.pos_y
+        }))
+    }
+
+
+    localStorage.setItem('statusBarState', JSON.stringify(state));
+}
+
+function loadStartState() {
+    const startState = localStorage.getItem('statusBarState');
+    return JSON.parse(startState);
+}
+
 function clearGameState() {
     localStorage.removeItem('characterState');
     localStorage.removeItem('coinsState');
     localStorage.removeItem('bottlesState');
     localStorage.removeItem('enemiesState');
     localStorage.removeItem('cloudsState');
+    localStorage.removeItem('statusBarState');
 }
