@@ -74,6 +74,22 @@ class ItemsManager {
         return this.items;
     }
 
+    createSavedItems(savedItemsData, itemsArray, factoryMethod){
+        this.collectedItems = savedItemsData.collectedItems;
+        this.totalItems = savedItemsData.totalItems;
+        this.setStatusBarPercentage();
 
+        this.items = itemsArray.map(data => {
+            const item = factoryMethod(0, 0);
+            item.isCollected = data.isCollected;
+            item.pos_x = data.pos_x;
+            item.pos_y = data.pos_y;
+            item.isOutOfScreen = data.out;
+            item.isCollected = data.isCollected;
+            return item;
+        });
+
+        return this.items;
+    }
 
 }

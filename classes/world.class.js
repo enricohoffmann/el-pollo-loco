@@ -71,7 +71,6 @@ class World {
         this.character = new Character(this);
         this.statusBarManager = new StatusbarManager(this.colorTheme, this.level.enemies);
         this.statusBarManager.createNewStatusBars();
-        this.statusBarManager.createNewEndbossHealthBar();
         this.statusBars = this.statusBarManager.statusBars;
         this.coinManager = new ItemsManager(this.character, this.statusBars.find(sb => sb.barType === 'coins'), this.level, this.canvas);
         this.coinsObjects = this.coinManager.createNewItems((height, levelEndX) => new Coin(height, levelEndX), this.level.coinsOnScreen);
@@ -87,9 +86,17 @@ class World {
     createSavedGameObjects(savedState) {
         this.statusBarManager = new StatusbarManager(this.colorTheme, this.level.enemies);
         this.statusBarManager.createSavedStatusBars(savedState.statusbars);
-        this.statusBarManager.createSavedEndBossHealthBar(savedState.statusbars);
-        //Coins und Bottles einbauem
-
+        this.statusBars = this.statusBarManager.statusBars;
+        this.coinManager = new ItemsManager(this.character, this.statusBars.find(sb => sb.barType === 'coins'), this.level, this.canvas);
+        this.coinsObjects = this.coinManager.createSavedItems(savedState.coins, savedState.coins.coins, (height, levelEndX) => new Coin(height, levelEndX));
+        this.bottleManager = new ItemsManager(this.character, this.statusBars.find(sb => sb.barType === 'bottles'), this.level, this.canvas);
+        this.bottleObjects = this.bottleManager.createSavedItems(savedState.bottles, savedState.bottles.bottles, (height, levelEndX) => new Bottle(height, levelEndX));
+        const endboss = this.level.enemies.find(e => e instanceof Endboss);
+        if (endboss) {
+            endboss.endBossStatusBar = this.statusBars.find(sb => sb.barType === 'endboss_health');
+            endboss.world = this;
+        }
+        this.currentCollectedBottles = this.bottleManager.collectedItems;
     }
 
     checkColisions(enemy) {
@@ -195,7 +202,7 @@ class World {
 
     drawEnemies() {
         this.level.enemies.forEach(enemy => {
-            if (!enemy.isDied) {
+            if (!enemy.isDead) {
                 this.addToMap(enemy);
             }
         });
@@ -211,7 +218,7 @@ class World {
 
     drawBottles() {
         this.bottleObjects.forEach(bottle => {
-            if (!bottle.isOutOfScreen) {
+            if (!bottle.isCollected && !bottle.isOutOfScreen) {
                 this.addToMap(bottle);
             }
         });
@@ -219,7 +226,7 @@ class World {
 
     drawCoins() {
         this.coinsObjects.forEach(coin => {
-            if (!coin.isOutOfScreen) {
+            if (!coin.isCollected && !coin.isOutOfScreen) {
                 this.addToMap(coin);
             }
         });

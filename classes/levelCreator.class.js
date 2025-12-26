@@ -124,9 +124,8 @@ class LevelCreator {
     }
 
     createEnemysFromState(enemiesState) {
-       
         let enemies = [];
-        for (let enemyState of Array.isArray(enemiesState) ? enemiesState : []) {
+        for (let enemyState of Array.isArray(enemiesState.enemies) ? enemiesState.enemies : []) {
             let enemy;
             if (enemyState.isChicken) {
                 enemy = new Chicken(this.canvas, this.xPosition);

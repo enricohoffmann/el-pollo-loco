@@ -32,10 +32,12 @@ function savedGameStart(){
     const levelCreator = new LevelCreator('easy', canvas);
     const level = levelCreator.createLevelFromState();
     world = new World(canvas, keyboard, level, 'orange');
+    world.character = new Character(world);
     world.character.pos_x = loadCharacterState().character.x;
     world.character.pos_y = loadCharacterState().character.y;
     world.character.energy = loadCharacterState().character.health;
     world.createSavedGameObjects(getSavedGameObjects());
+    world.run();
 }
 
 function getCanvas(){
@@ -46,7 +48,7 @@ function getCanvas(){
 
 function getSavedGameObjects(){
     const gameObjects = {
-        statusbars: loadGameState().statusBars,
+        statusbars: loadStatusbarState(),
         coins: loadCoinState(),
         bottles: loadBottleState(),
     }
