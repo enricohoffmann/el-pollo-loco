@@ -80,7 +80,7 @@ class ItemsManager {
         this.setStatusBarPercentage();
 
         this.items = itemsArray.map(data => {
-            const item = factoryMethod(0, 0);
+            const item = factoryMethod(0, 0, data.bottleImageIndex);
             item.isCollected = data.isCollected;
             item.pos_x = data.pos_x;
             item.pos_y = data.pos_y;

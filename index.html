@@ -4,57 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>El Pollo Loco</title>
-    <link rel="stylesheet" href="./style.css">
+    <link rel="icon" type="image/png" href="./img/2_character_pepe/1_idle/idle/I-1.png">
+    <title>Pollo Loco</title>
+    <link rel="stylesheet" href="./styles/style.css">
 </head>
 
-<body onload="init()">
-    <h1>El pollo loco</h1>
+<body>
+    <div class="site-content">
+        <main>
+            <h1>Welcome to Pollo Loco</h1>
+        </main>
 
-    <canvas width="720" height="480" id="canvas">
-
-    </canvas>
-    <script src="./classes/levelProperties.class.js"></script>
-    <script src="./classes/levelSetting.class.js"></script>
-    <script src="./js/localStorage.js"></script>
-    <script src="./js/characterImages.js"></script>
-    <script src="./js/endbossImages.js"></script>
-    <script src="./js/bottleImages.js"></script>
-    <script src="./js/statusBarImages.js"></script>
-    <script src="./classes/drawableObject.class.js"></script>
-    <script src="./classes/statusBar.class.js"></script>
-    <script src="./classes/statusbarManager.class.js"></script>
-    <script src="./classes/keyboard.class.js"></script>
-    <script src="./classes/itemsManager.class.js"></script>
-    <script src="./classes/coin.class.js"></script>
-    <script src="./classes/bottle.class.js"></script>
-    <script src="./classes/moveableObject.class.js"></script>
-    <script src="./classes/chicken.class.js"></script>
-    <script src="./classes/cloud.class.js"></script>
-
-    <script src="./classes/character.class.js"></script>
-    <script src="./classes/backgroundObject.class.js"></script>
-    <script src="./classes/endboss.class.js"></script>
-    <script src="./classes/level.class.js"></script>
-    <script src="./classes/levelCreator.class.js"></script>
-    <script src="./classes/throwableObject.class.js"></script>
-    <script src="./classes/world.class.js"></script>
+        <footer>
+            <div class="footer-content">
+                <button type="button">Impressum</button>
+                <button type="button">Privacy Policy</button>
+            </div>
+        </footer>
+    </div>
 
 
-    <script src="./js/game.js"></script>
-
-
-    <dialog id="game-over-dialog" class="gameWinOverDialog" onclick="closeGameOverDialog()">
-        <div class="dialogContent" id="game-over-content">
-            <div class="gameOverImg winLostGameAnimation"></div>
-        </div>
-    </dialog>
-
-    <dialog id="game-win-dialog" class="gameWinOverDialog" onclick="closeGameWinDialog()">
-        <div class="dialogContent" id="game-win-content">
-            <div class="gameWinImg winLostGameAnimation"></div>
-        </div>
-    </dialog>
 
 
 </body>

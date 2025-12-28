@@ -9,23 +9,27 @@ class Bottle extends DrawableObject {
     isCollected = false;
     currentBottleIndex = 0;
     isOutOfScreen = false;
+    bottleImageIndex = 99;
 
-    constructor(canvasHeight, levelLength) {
+    constructor(canvasHeight, levelLength, bottleImageIndex = 99) {
         super();
-        const index = Math.floor(Math.random() * this.bottleFiles.length);
-        this.loadImage(this.bottleFiles[index]);
+        this.bottleImageIndex = bottleImageIndex;
+        if (this.bottleImageIndex === 99) {
+            this.bottleImageIndex = Math.floor(Math.random() * this.bottleFiles.length);
+        }
+        this.loadImage(this.bottleFiles[this.bottleImageIndex]);
         this.setPosition(canvasHeight, levelLength);
     }
 
-    setPosition(canvasHeight, levelLength){
+    setPosition(canvasHeight, levelLength) {
         const groundLevel = canvasHeight - 110;
         this.pos_y = groundLevel;
         this.pos_x = this.getRandomObjectPosition(250, levelLength - 500);
     }
 
-    animateCollectet(onFinished){
-        if(this.pos_y < -20){
-            if(onFinished){
+    animateCollectet(onFinished) {
+        if (this.pos_y < -20) {
+            if (onFinished) {
                 onFinished();
             }
             return;
@@ -35,9 +39,9 @@ class Bottle extends DrawableObject {
         this.pos_y -= 5;
         const animationFrameTime = 25;
 
-        setTimeout(()=>{
+        setTimeout(() => {
             this.animateCollectet(onFinished);
-        }, animationFrameTime); 
+        }, animationFrameTime);
     }
 
 }

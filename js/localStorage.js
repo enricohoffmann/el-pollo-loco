@@ -71,7 +71,8 @@ function safeBottleState(bottles, bottleManager) {
             isCollected: bottle.isCollected,
             pos_x: bottle.pos_x,
             pos_y: bottle.pos_y,
-            out: bottle.isOutOfScreen
+            out: bottle.isOutOfScreen,
+            bottleImageIndex: bottle.bottleImageIndex
         }))
     };
 

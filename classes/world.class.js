@@ -90,7 +90,7 @@ class World {
         this.coinManager = new ItemsManager(this.character, this.statusBars.find(sb => sb.barType === 'coins'), this.level, this.canvas);
         this.coinsObjects = this.coinManager.createSavedItems(savedState.coins, savedState.coins.coins, (height, levelEndX) => new Coin(height, levelEndX));
         this.bottleManager = new ItemsManager(this.character, this.statusBars.find(sb => sb.barType === 'bottles'), this.level, this.canvas);
-        this.bottleObjects = this.bottleManager.createSavedItems(savedState.bottles, savedState.bottles.bottles, (height, levelEndX) => new Bottle(height, levelEndX));
+        this.bottleObjects = this.bottleManager.createSavedItems(savedState.bottles, savedState.bottles.bottles, (height, levelEndX, bottleImageIndex) => new Bottle(height, levelEndX, bottleImageIndex));
         const endboss = this.level.enemies.find(e => e instanceof Endboss);
         if (endboss) {
             endboss.endBossStatusBar = this.statusBars.find(sb => sb.barType === 'endboss_health');
