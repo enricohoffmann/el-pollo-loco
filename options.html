@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Options</title>
+    <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="./styles/options.css">
+    <link rel="icon" type="image/png" href="./img/2_character_pepe/1_idle/idle/I-1.png">
+</head>
+
+<body>
+
+    <div class="option-overlay">
+
+        <div class="site-content">
+            <main>
+                <h1>Options</h1>
+                <div class="option-group">
+                    Language Settings
+                    <fieldset>
+                        <label for="language-select">Choose Language:</label>
+
+                        
+
+
+                        <select id="language-select" name="languages">
+                            <option value="en">English</option>
+                            <option value="de">Deutsch</option>
+                            <option value="es">Español</option>
+                        </select>
+                    </fieldset>
+
+                    Difficulty Settings
+                    <fieldset>
+                        <label for="difficulty-select">Choose Difficulty:</label>
+                        <select id="difficulty-select" name="difficulties">
+                            <option value="easy">Easy</option>
+                            <option value="medium">Medium</option>
+                            <option value="hard">Hard</option>
+                            <option value="custom">Custom</option>
+                        </select>   
+                    </fieldset>
+
+                    Audio Settings
+                    <fieldset>
+                        <label for="volume-control">Volume Control:</label>
+                        <input type="range" id="volume-control" name="volume" min="0" max="100">
+                        <label for="audio-select">Audio:</label>
+                        <select name="audio" id="audio-select">
+                            <option value="audio-on">Audio On</option>
+                            <option value="audio-off">Audio Off</option>
+                        </select>
+                    </fieldset>
+
+                    Colortheme Settings
+                    <fieldset>
+                        <label for="theme-select">Choose Theme:</label>
+                        <select id="theme-select" name="themes">
+                            <option value="blue">Blue</option>
+                            <option value="green">Green</option>
+                            <option value="orange">Orange</option>
+                        </select>
+                    </fieldset>
+                </div>
+            </main>
+
+            <footer>
+                <div class="footer-content">
+                    <button type="button" class="btn btn-yellow">Impressum</button>
+                    <button type="button" class="btn btn-yellow">Privacy Policy</button>
+                </div>
+            </footer>
+
+
+        </div>
+
+
+    </div>
+
+
+    <script src="./js/script.js"></script>
+</body>
+
+</html>

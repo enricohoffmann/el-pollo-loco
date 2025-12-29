@@ -126,6 +126,7 @@ footer {
 .btn-orange {
     background-color: rgb(255, 95, 51);
     color: rgb(22, 15, 16);
+    box-shadow: 5px 6px 15px 6px rgba(0, 0, 0, 0.2);
 }
 
 .btn-orange:hover {
