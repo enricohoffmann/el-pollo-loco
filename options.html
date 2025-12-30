@@ -18,18 +18,32 @@
             <main>
                 <h1>Options</h1>
                 <div class="option-group">
-                    Language Settings
-                    <fieldset>
+
+                    <aside class="option-group-container">
+                        <!-- Language Settings -->
+                    <fieldset class="option-fieldset">
                         <label for="language-select">Choose Language:</label>
 
-                        
+                        <div class="select-container">
+                            <input id="langInput" class="select-container-input" type="text" value="" placeholder="Select Language" readonly onclick="showOrHideLanguageList(languageListOpen ? 'hide' : 'show', 'langShowOrHideBtn')">
+                            <button id="langShowOrHideBtn" class="select-container-button" type="button" title="show or hide language list">
+                                <div title="show or hide icon"></div>
+                            </button>
+                        </div>
 
-
-                        <select id="language-select" name="languages">
-                            <option value="en">English</option>
-                            <option value="de">Deutsch</option>
-                            <option value="es">Español</option>
-                        </select>
+                        <div class="select-list-container" id="langListContainer">
+                            <div class="select-list">
+                                <button type="button" title="select English language" onclick="">
+                                    <span>English</span>
+                                </button>
+                                <button type="button" title="select Deutsch language" onclick="">
+                                    <span>Deutsch</span>
+                                </button>
+                                <button type="button" title="select Español language" onclick="">
+                                    <span>Español</span>    
+                                </button>
+                            </div>
+                        </div>
                     </fieldset>
 
                     Difficulty Settings
@@ -63,6 +77,9 @@
                             <option value="orange">Orange</option>
                         </select>
                     </fieldset>
+                    </aside>
+
+                    
                 </div>
             </main>
 
@@ -81,6 +98,7 @@
 
 
     <script src="./js/script.js"></script>
+    <script src="./js/options.js"></script>
 </body>
 
 </html>
