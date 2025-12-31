@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Options</title>
+    <link rel="stylesheet" href="./styles/color.css">
     <link rel="stylesheet" href="./styles/style.css">
     <link rel="stylesheet" href="./styles/options.css">
     <link rel="icon" type="image/png" href="./img/2_character_pepe/1_idle/idle/I-1.png">
@@ -21,65 +22,118 @@
 
                     <aside class="option-group-container">
                         <!-- Language Settings -->
-                    <fieldset class="option-fieldset">
-                        <label for="language-select">Choose Language:</label>
+                        <div class="option-fieldset">
+                            <label for="langInput" class="visually-hidden" aria-hidden="true">Choose Language:</label>
 
-                        <div class="select-container">
-                            <input id="langInput" class="select-container-input" type="text" value="" placeholder="Select Language" readonly onclick="showOrHideLanguageList(languageListOpen ? 'hide' : 'show', 'langShowOrHideBtn')">
-                            <button id="langShowOrHideBtn" class="select-container-button" type="button" title="show or hide language list">
-                                <div title="show or hide icon"></div>
-                            </button>
-                        </div>
-
-                        <div class="select-list-container" id="langListContainer">
-                            <div class="select-list">
-                                <button type="button" title="select English language" onclick="">
-                                    <span>English</span>
-                                </button>
-                                <button type="button" title="select Deutsch language" onclick="">
-                                    <span>Deutsch</span>
-                                </button>
-                                <button type="button" title="select Español language" onclick="">
-                                    <span>Español</span>    
+                            <div class="select-container" id="langSelectContainer">
+                                <input id="languageInput" class="select-container-input" type="text" value=""
+                                    placeholder="Select Language" readonly
+                                    onclick="showOrHideLanguageList(languageListOpen ? 'hide' : 'show', 'langShowOrHideBtn')">
+                                <button id="langShowOrHideBtn" class="select-container-button" type="button"
+                                    title="show or hide language list">
+                                    <div title="show or hide icon"></div>
                                 </button>
                             </div>
+
+                            <div class="select-list-container" id="langListContainer">
+                                <div class="select-list" id="langButtonList">
+                                    <button class="btn btn-yellow" type="button" title="select English language" onclick="selectLanguage('English', this)">
+                                        <span>English</span>
+                                    </button>
+                                    <button class="btn btn-yellow" type="button" title="select Deutsch language" onclick="selectLanguage('Deutsch', this)">
+                                        <span>Deutsch</span>
+                                    </button>
+                                    <button class="btn btn-yellow" type="button" title="select Español language" onclick="selectLanguage('Español', this)">
+                                        <span>Español</span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    </fieldset>
 
-                    Difficulty Settings
-                    <fieldset>
-                        <label for="difficulty-select">Choose Difficulty:</label>
-                        <select id="difficulty-select" name="difficulties">
-                            <option value="easy">Easy</option>
-                            <option value="medium">Medium</option>
-                            <option value="hard">Hard</option>
-                            <option value="custom">Custom</option>
-                        </select>   
-                    </fieldset>
+                        <!-- Difficulty Settings -->
+                        <div class="option-fieldset">
+                            <label for="difficulty-select" class="visually-hidden" aria-hidden="true">Choose Difficulty:</label>
 
-                    Audio Settings
-                    <fieldset>
-                        <label for="volume-control">Volume Control:</label>
-                        <input type="range" id="volume-control" name="volume" min="0" max="100">
-                        <label for="audio-select">Audio:</label>
-                        <select name="audio" id="audio-select">
-                            <option value="audio-on">Audio On</option>
-                            <option value="audio-off">Audio Off</option>
-                        </select>
-                    </fieldset>
+                            <div class="select-container" id="difficultySelectContainer">
+                                <input id="difficultyInput" class="select-container-input" type="text" value=""
+                                    placeholder="Select Difficulty" readonly
+                                    onclick="showOrHideDifficultyList(difficultyListOpen ? 'hide' : 'show', 'difficulty-show-hide-btn')">
+                                <button id="difficulty-show-hide-btn" class="select-container-button" type="button"
+                                    title="show or hide difficulty list">
+                                    <div title="show or hide icon"></div>
+                                </button>
+                            </div>
+                            <div class="select-list-container" id="difficultyListContainer">
+                                <div class="select-list" id="difficultyButtonList">
+                                    <button class="btn btn-yellow" type="button" title="select Easy difficulty" onclick="selectDifficulty('Easy')">
+                                        <span>Easy</span>
+                                    </button>
+                                    <button class="btn btn-yellow" type="button" title="select Medium difficulty" onclick="selectDifficulty('Medium')">
+                                        <span>Medium</span>
+                                    </button>
+                                    <button class="btn btn-yellow" type="button" title="select Hard difficulty" onclick="selectDifficulty('Hard')">
+                                        <span>Hard</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
 
-                    Colortheme Settings
-                    <fieldset>
-                        <label for="theme-select">Choose Theme:</label>
-                        <select id="theme-select" name="themes">
-                            <option value="blue">Blue</option>
-                            <option value="green">Green</option>
-                            <option value="orange">Orange</option>
-                        </select>
-                    </fieldset>
-                    </aside>
+                        <!-- Audio Settings -->
+                        <div class="option-fieldset">
+                            <label for="audioSelect" class="visually-hidden" aria-hidden="true">Volume Control:</label>
 
-                    
+                            <div class="select-container" id="audioSelectContainer">
+                                <input id="audioInput" class="select-container-input" type="text" value=""
+                                    placeholder="Select Audio Setting" readonly
+                                    onclick="showOrHideAudioList(audioListOpen ? 'hide' : 'show', 'audioShowOrHideBtn')">
+                                <button id="audioShowOrHideBtn" class="select-container-button" type="button"
+                                    title="show or hide audio list">
+                                    <div title="show or hide icon"></div>
+                                </button>
+                            </div>
+
+                            <div class="select-list-container" id="audioListContainer">
+                                <div class="select-list" id="audioButtonList">
+                                    <button class="btn btn-yellow" type="button" title="select Audio On" onclick="selectAudioSetting('Audio On')">
+                                        <span>Audio On</span>
+                                    </button>
+                                    <button class="btn btn-yellow" type="button" title="select Audio Off" onclick="selectAudioSetting('Audio Off')">
+                                        <span>Audio Off</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Theme Settings -->
+                        <div class="option-fieldset">
+                            <label for="themeInput" class="visually-hidden">Choose Theme:</label>
+
+                            <div class="select-container" id="themeSelectContainer">
+                                <input id="themeInput" class="select-container-input" type="text" value=""
+                                    placeholder="Select Theme" readonly
+                                    onclick="showOrHideThemeList(themeListOpen ? 'hide' : 'show', 'theme-show-hide-btn')">
+                                <button id="theme-show-hide-btn" class="select-container-button" type="button"
+                                    title="show or hide theme list">
+                                    <div title="show or hide icon"></div>
+                                </button>
+                            </div>
+
+                            <div class="select-list-container" id="themeListContainer">
+                                <div class="select-list" id="themeButtonList">
+                                    <button class="btn btn-yellow" type="button" title="select Blue theme" onclick="selectTheme('Blue')">
+                                        <span>Blue</span>
+                                    </button>
+                                    <button class="btn btn-yellow" type="button" title="select Green theme" onclick="selectTheme('Green')">
+                                        <span>Green</span>
+                                    </button>
+                                    <button class="btn btn-yellow" type="button" title="select Orange theme" onclick="selectTheme('Orange')">
+                                        <span>Orange</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </aside> 
+
                 </div>
             </main>
 

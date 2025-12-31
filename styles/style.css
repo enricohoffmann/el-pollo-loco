@@ -123,6 +123,13 @@ footer {
     color: rgb(242, 175, 41);
 }
 
+.btn-yellow-active {
+    background-color: rgb(196, 74, 55);
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
+    color: rgb(242, 175, 41);
+
+}
+
 .btn-orange {
     background-color: rgb(255, 95, 51);
     color: rgb(22, 15, 16);
@@ -136,6 +143,8 @@ footer {
     
 }
 
+
+
 .btn-lager {
     width: 208px;
     padding: 15px 30px;
@@ -148,4 +157,9 @@ footer {
     flex-direction: row;
     gap: 15px;
     margin-top: 30px;
+}
+
+.visually-hidden {
+    position: absolute;
+    left: -9999px;
 }
