@@ -16,6 +16,14 @@
     <div class="option-overlay">
 
         <div class="site-content">
+
+            <nav>
+                <div class="nav-content">
+                    <button type="button" class="btn btn-yellow">Impressum</button>
+                    <button type="button" class="btn btn-yellow">Privacy Policy</button>
+                </div>
+            </nav>
+
             <main>
                 <h1>Options</h1>
                 <div class="option-group">
@@ -23,56 +31,28 @@
                     <aside class="option-group-container">
                         <!-- Language Settings -->
                         <div class="option-fieldset">
-                            <label for="langInput" class="visually-hidden" aria-hidden="true">Choose Language:</label>
+                            <label for="languageInput">Choose Language:</label>
 
                             <div class="select-container" id="langSelectContainer">
                                 <input id="languageInput" class="select-container-input" type="text" value=""
                                     placeholder="Select Language" readonly
                                     onclick="showOrHideLanguageList(languageListOpen ? 'hide' : 'show', 'langShowOrHideBtn')">
-                                <button id="langShowOrHideBtn" class="select-container-button" type="button"
-                                    title="show or hide language list">
+                                <button id="langShowOrHideBtn" class="select-container-button btn-show" type="button"
+                                    title="show or hide language list" onclick="showOrHideLanguageList(languageListOpen ? 'hide' : 'show', 'langShowOrHideBtn')">
                                     <div title="show or hide icon"></div>
                                 </button>
                             </div>
 
                             <div class="select-list-container" id="langListContainer">
                                 <div class="select-list" id="langButtonList">
-                                    <button class="btn btn-yellow" type="button" title="select English language" onclick="selectLanguage('English', this)">
+                                    <button class="btn btn-yellow" type="button" title="select English language" data-selected="false" onclick="selectLanguage('English', this)">
                                         <span>English</span>
                                     </button>
-                                    <button class="btn btn-yellow" type="button" title="select Deutsch language" onclick="selectLanguage('Deutsch', this)">
+                                    <button class="btn btn-yellow" type="button" title="select Deutsch language" data-selected="false" onclick="selectLanguage('Deutsch', this)">
                                         <span>Deutsch</span>
                                     </button>
-                                    <button class="btn btn-yellow" type="button" title="select Español language" onclick="selectLanguage('Español', this)">
+                                    <button class="btn btn-yellow" type="button" title="select Español language" data-selected="false" onclick="selectLanguage('Español', this)">
                                         <span>Español</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Difficulty Settings -->
-                        <div class="option-fieldset">
-                            <label for="difficulty-select" class="visually-hidden" aria-hidden="true">Choose Difficulty:</label>
-
-                            <div class="select-container" id="difficultySelectContainer">
-                                <input id="difficultyInput" class="select-container-input" type="text" value=""
-                                    placeholder="Select Difficulty" readonly
-                                    onclick="showOrHideDifficultyList(difficultyListOpen ? 'hide' : 'show', 'difficulty-show-hide-btn')">
-                                <button id="difficulty-show-hide-btn" class="select-container-button" type="button"
-                                    title="show or hide difficulty list">
-                                    <div title="show or hide icon"></div>
-                                </button>
-                            </div>
-                            <div class="select-list-container" id="difficultyListContainer">
-                                <div class="select-list" id="difficultyButtonList">
-                                    <button class="btn btn-yellow" type="button" title="select Easy difficulty" onclick="selectDifficulty('Easy')">
-                                        <span>Easy</span>
-                                    </button>
-                                    <button class="btn btn-yellow" type="button" title="select Medium difficulty" onclick="selectDifficulty('Medium')">
-                                        <span>Medium</span>
-                                    </button>
-                                    <button class="btn btn-yellow" type="button" title="select Hard difficulty" onclick="selectDifficulty('Hard')">
-                                        <span>Hard</span>
                                     </button>
                                 </div>
                             </div>
@@ -80,24 +60,24 @@
 
                         <!-- Audio Settings -->
                         <div class="option-fieldset">
-                            <label for="audioSelect" class="visually-hidden" aria-hidden="true">Volume Control:</label>
+                            <label for="audioInput">Audio:</label>
 
                             <div class="select-container" id="audioSelectContainer">
                                 <input id="audioInput" class="select-container-input" type="text" value=""
                                     placeholder="Select Audio Setting" readonly
                                     onclick="showOrHideAudioList(audioListOpen ? 'hide' : 'show', 'audioShowOrHideBtn')">
-                                <button id="audioShowOrHideBtn" class="select-container-button" type="button"
-                                    title="show or hide audio list">
+                                <button id="audioShowOrHideBtn" class="select-container-button btn-show" type="button"
+                                    title="show or hide audio list" onclick="showOrHideAudioList(audioListOpen ? 'hide' : 'show', 'audioShowOrHideBtn')">
                                     <div title="show or hide icon"></div>
                                 </button>
                             </div>
 
                             <div class="select-list-container" id="audioListContainer">
                                 <div class="select-list" id="audioButtonList">
-                                    <button class="btn btn-yellow" type="button" title="select Audio On" onclick="selectAudioSetting('Audio On')">
+                                    <button class="btn btn-yellow" type="button" title="select Audio On" data-selected="false" onclick="selectAudioSetting('Audio On', this)">
                                         <span>Audio On</span>
                                     </button>
-                                    <button class="btn btn-yellow" type="button" title="select Audio Off" onclick="selectAudioSetting('Audio Off')">
+                                    <button class="btn btn-yellow" type="button" title="select Audio Off" data-selected="false" onclick="selectAudioSetting('Audio Off', this)">
                                         <span>Audio Off</span>
                                     </button>
                                 </div>
@@ -106,43 +86,89 @@
 
                         <!-- Theme Settings -->
                         <div class="option-fieldset">
-                            <label for="themeInput" class="visually-hidden">Choose Theme:</label>
+                            <label for="themeInput">Choose Theme:</label>
 
                             <div class="select-container" id="themeSelectContainer">
                                 <input id="themeInput" class="select-container-input" type="text" value=""
                                     placeholder="Select Theme" readonly
-                                    onclick="showOrHideThemeList(themeListOpen ? 'hide' : 'show', 'theme-show-hide-btn')">
-                                <button id="theme-show-hide-btn" class="select-container-button" type="button"
-                                    title="show or hide theme list">
+                                    onclick="showOrHideThemeList(themeListOpen ? 'hide' : 'show', 'themeShowHideBtn')">
+                                <button id="themeShowHideBtn" class="select-container-button btn-show" type="button"
+                                    title="show or hide theme list" onclick="showOrHideThemeList(themeListOpen ? 'hide' : 'show', 'themeShowHideBtn')">
                                     <div title="show or hide icon"></div>
                                 </button>
                             </div>
 
                             <div class="select-list-container" id="themeListContainer">
                                 <div class="select-list" id="themeButtonList">
-                                    <button class="btn btn-yellow" type="button" title="select Blue theme" onclick="selectTheme('Blue')">
+                                    <button class="btn btn-yellow" type="button" title="select Blue theme"  data-selected="false" onclick="selectTheme('Blue', this)">
                                         <span>Blue</span>
                                     </button>
-                                    <button class="btn btn-yellow" type="button" title="select Green theme" onclick="selectTheme('Green')">
+                                    <button class="btn btn-yellow" type="button" title="select Green theme" data-selected="false" onclick="selectTheme('Green', this)">
                                         <span>Green</span>
                                     </button>
-                                    <button class="btn btn-yellow" type="button" title="select Orange theme" onclick="selectTheme('Orange')">
+                                    <button class="btn btn-yellow" type="button" title="select Orange theme" data-selected="false" onclick="selectTheme('Orange', this)">
                                         <span>Orange</span>
                                     </button>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Difficulty Settings -->
+                        <div class="option-fieldset">
+                            <label for="difficulty-select">Choose Difficulty:</label>
+
+                            <div class="select-container" id="difficultySelectContainer">
+                                <input id="difficultyInput" class="select-container-input" type="text" value=""
+                                    placeholder="Select Difficulty" readonly
+                                    onclick="showOrHideDifficultyList(difficultyListOpen ? 'hide' : 'show', 'difficultyShowHideBtn')">
+                                <button id="difficultyShowHideBtn" class="select-container-button btn-show" type="button"
+                                    title="show or hide difficulty list" onclick="showOrHideDifficultyList(difficultyListOpen ? 'hide' : 'show', 'difficultyShowHideBtn')">
+                                    <div title="show or hide icon"></div>
+                                </button>
+                            </div>
+                            <div class="select-list-container" id="difficultyListContainer">
+                                <div class="select-list" id="difficultyButtonList">
+                                    <button class="btn btn-yellow" type="button" title="select Easy difficulty" data-selected="false" onclick="selectDifficulty('Easy', this)">
+                                        <span>Easy</span>
+                                    </button>
+                                    <button class="btn btn-yellow" type="button" title="select Medium difficulty" data-selected="false" onclick="selectDifficulty('Medium', this)">
+                                        <span>Medium</span>
+                                    </button>
+                                    <button class="btn btn-yellow" type="button" title="select Hard difficulty" data-selected="false" onclick="selectDifficulty('Hard', this)">
+                                        <span>Hard</span>
+                                    </button>
+                                    <button class="btn btn-yellow" type="button" title="select Custom difficulty" data-selected="false" onclick="selectDifficulty('Custom', this)">
+                                        <span>Custom</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Game Settings -->
+                        <div class="game-settings-container">
+                            <label for="enemyCountInput">Count of Enemies:</label> 
+                            <input type="number" id="enemyCountInput" name="enemyCountInput" min="1" max="20" value="0" readonly>
+
+                            <label class="setting-label" for="coinCountInput">Count of minimum Coins:</label>
+                            <input type="number" id="coinCountInput" name="coinCountInput" min="1" max="20" value="0" readonly>
+
+                            <label class="setting-label" for="bottleCountInput">Count of minimum Bottles:</label>
+                            <input type="number" id="bottleCountInput" name="bottleCountInput" min="1" max="20" value="0" readonly>
+                        </div>
+                        
+
                     </aside> 
+
+                    <div class="option-button-container">
+                        <button type="button" class="btn btn-orange btn-lg">Save</button>
+                    </div>
+
+                    
 
                 </div>
             </main>
 
-            <footer>
-                <div class="footer-content">
-                    <button type="button" class="btn btn-yellow">Impressum</button>
-                    <button type="button" class="btn btn-yellow">Privacy Policy</button>
-                </div>
-            </footer>
+            
 
 
         </div>

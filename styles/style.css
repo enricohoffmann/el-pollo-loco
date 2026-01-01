@@ -76,10 +76,10 @@ main {
     background-position: center center;
 }
 
-footer {
+nav {
     background-color: rgba(84, 18, 27, 0.7);
     position: absolute;
-    bottom: 0;
+    top: 0;
     left: 0;
     width: 100%;
     text-align: center;
@@ -91,7 +91,7 @@ footer {
     align-items: center;
 }
 
-.footer-content {
+.nav-content {
     height: 64px;
     max-width: 1440px;
     width: 100%;
@@ -150,6 +150,12 @@ footer {
     padding: 15px 30px;
     font-size: 24px;
     border-radius: 12px;
+}
+
+.btn-lg{
+    width: 100%;
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 .button-group {
