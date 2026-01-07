@@ -36,19 +36,19 @@
                             <div class="select-container" id="audioSelectContainer">
                                 <input id="audioInput" class="select-container-input" type="text" value=""
                                     placeholder="Select Audio Setting" readonly
-                                    onclick="showOrHideAudioList(audioListOpen ? 'hide' : 'show', 'audioShowOrHideBtn')">
+                                    onclick="showOrHideSelectedList('audio', audioListOpen ? 'hide' : 'show')">
                                 <button id="audioShowOrHideBtn" class="select-container-button btn-show" type="button"
-                                    title="show or hide audio list" onclick="showOrHideAudioList(audioListOpen ? 'hide' : 'show', 'audioShowOrHideBtn')">
+                                    title="show or hide audio list" onclick="showOrHideSelectedList('audio', audioListOpen ? 'hide' : 'show')">
                                     <div title="show or hide icon"></div>
                                 </button>
                             </div>
 
                             <div class="select-list-container" id="audioListContainer">
                                 <div class="select-list" id="audioButtonList">
-                                    <button id="btnAudioOn" class="btn btn-yellow" type="button" title="select Audio On" data-selected="false" onclick="selectAudioSetting('Audio On', this)">
+                                    <button id="btnAudioOn" class="btn btn-yellow" type="button" title="select Audio On" data-selected="false" onclick="selectOption('audio', 'Audio On', this)">
                                         <span>Audio On</span>
                                     </button>
-                                    <button id="btnAudioOff" class="btn btn-yellow" type="button" title="select Audio Off" data-selected="false" onclick="selectAudioSetting('Audio Off', this)">
+                                    <button id="btnAudioOff" class="btn btn-yellow" type="button" title="select Audio Off" data-selected="false" onclick="selectOption('audio', 'Audio Off', this)">
                                         <span>Audio Off</span>
                                     </button>
                                 </div>
@@ -62,22 +62,22 @@
                             <div class="select-container" id="themeSelectContainer">
                                 <input id="themeInput" class="select-container-input" type="text" value=""
                                     placeholder="Select Theme" readonly
-                                    onclick="showOrHideThemeList(themeListOpen ? 'hide' : 'show', 'themeShowHideBtn')">
+                                    onclick="showOrHideSelectedList('theme', themeListOpen ? 'hide' : 'show')">
                                 <button id="themeShowHideBtn" class="select-container-button btn-show" type="button"
-                                    title="show or hide theme list" onclick="showOrHideThemeList(themeListOpen ? 'hide' : 'show', 'themeShowHideBtn')">
+                                    title="show or hide theme list" onclick="showOrHideSelectedList('theme', themeListOpen ? 'hide' : 'show')">
                                     <div title="show or hide icon"></div>
                                 </button>
                             </div>
 
                             <div class="select-list-container" id="themeListContainer">
                                 <div class="select-list" id="themeButtonList">
-                                    <button id="btnThemeBlue" class="btn btn-yellow" type="button" title="select Blue theme"  data-selected="false" onclick="selectTheme('Blue', this)">
+                                    <button id="btnThemeBlue" class="btn btn-yellow" type="button" title="select Blue theme"  data-selected="false" onclick="selectOption('theme', 'Blue', this)">
                                         <span>Blue</span>
                                     </button>
-                                    <button id="btnThemeGreen" class="btn btn-yellow" type="button" title="select Green theme" data-selected="false" onclick="selectTheme('Green', this)">
+                                    <button id="btnThemeGreen" class="btn btn-yellow" type="button" title="select Green theme" data-selected="false" onclick="selectOption('theme', 'Green', this)">
                                         <span>Green</span>
                                     </button>
-                                    <button id="btnThemeOrange" class="btn btn-yellow" type="button" title="select Orange theme" data-selected="false" onclick="selectTheme('Orange', this)">
+                                    <button id="btnThemeOrange" class="btn btn-yellow" type="button" title="select Orange theme" data-selected="false" onclick="selectOption('theme', 'Orange', this)">
                                         <span>Orange</span>
                                     </button>
                                 </div>
@@ -91,24 +91,24 @@
                             <div class="select-container" id="difficultySelectContainer">
                                 <input id="difficultyInput" class="select-container-input" type="text" value=""
                                     placeholder="Select Difficulty" readonly
-                                    onclick="showOrHideDifficultyList(difficultyListOpen ? 'hide' : 'show', 'difficultyShowHideBtn')">
+                                    onclick="showOrHideSelectedList('difficulty', difficultyListOpen ? 'hide' : 'show')">
                                 <button id="difficultyShowHideBtn" class="select-container-button btn-show" type="button"
-                                    title="show or hide difficulty list" onclick="showOrHideDifficultyList(difficultyListOpen ? 'hide' : 'show', 'difficultyShowHideBtn')">
+                                    title="show or hide difficulty list" onclick="showOrHideSelectedList('difficulty', difficultyListOpen ? 'hide' : 'show')">
                                     <div title="show or hide icon"></div>
                                 </button>
                             </div>
                             <div class="select-list-container" id="difficultyListContainer">
                                 <div class="select-list" id="difficultyButtonList">
-                                    <button id="btnDifficultyEasy" class="btn btn-yellow" type="button" title="select Easy difficulty" data-selected="false" onclick="selectDifficulty('Easy', this)">
+                                    <button id="btnDifficultyEasy" class="btn btn-yellow" type="button" title="select Easy difficulty" data-selected="false" onclick="selectOption('difficulty', 'Easy', this)">
                                         <span>Easy</span>
                                     </button>
-                                    <button id="btnDifficultyMedium" class="btn btn-yellow" type="button" title="select Medium difficulty" data-selected="false" onclick="selectDifficulty('Medium', this)">
+                                    <button id="btnDifficultyMedium" class="btn btn-yellow" type="button" title="select Medium difficulty" data-selected="false" onclick="selectOption('difficulty', 'Medium', this)">
                                         <span>Medium</span>
                                     </button>
-                                    <button id="btnDifficultyHard" class="btn btn-yellow" type="button" title="select Hard difficulty" data-selected="false" onclick="selectDifficulty('Hard', this)">
+                                    <button id="btnDifficultyHard" class="btn btn-yellow" type="button" title="select Hard difficulty" data-selected="false" onclick="selectOption('difficulty', 'Hard', this)">
                                         <span>Hard</span>
                                     </button>
-                                    <button id="btnDifficultyCustom" class="btn btn-yellow" type="button" title="select Custom difficulty" data-selected="false" onclick="selectDifficulty('Custom', this)">
+                                    <button id="btnDifficultyCustom" class="btn btn-yellow" type="button" title="select Custom difficulty" data-selected="false" onclick="selectOption('difficulty', 'Custom', this)">
                                         <span>Custom</span>
                                     </button>
                                 </div>

@@ -15,6 +15,9 @@ input {
     color: black;
     font-family: 'Baloo-2-medium', sans-serif;
     font-size: 16px;
+    padding: 4px 8px;
+    border: 1px solid var(--border-normal);
+    border-radius: 4px;
 }
 
 .option-group{

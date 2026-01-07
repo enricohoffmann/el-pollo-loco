@@ -1,7 +1,7 @@
 let difficultyListOpen = false;
 let audioListOpen = false;
 let themeListOpen = false;
-let currentDifficulty = {};
+let currentDifficulty = 'Easy';
 let currentAudioSetting = '';
 let currentTheme = '';
 let safeDialogOpen = false;
@@ -30,89 +30,86 @@ const difficultySettings = {
     }
 };
 
+const selectLists = {
+    difficulty: {
+        openFlag: () => difficultyListOpen,
+        setOpenFlag: v => (difficultyListOpen = v),
+        containerId: 'difficultyListContainer',
+        listId: 'difficultyButtonList',
+        selectContainerId: 'difficultySelectContainer',
+        toggleBtnId: 'difficultyShowHideBtn',
+        inputId: 'difficultyInput',
+    },
+    audio: {
+        openFlag: () => audioListOpen,
+        setOpenFlag: v => (audioListOpen = v),
+        containerId: 'audioListContainer',
+        listId: 'audioButtonList',
+        selectContainerId: 'audioSelectContainer',
+        toggleBtnId: 'audioShowOrHideBtn',
+        inputId: 'audioInput',
+    },
+    theme: {
+        openFlag: () => themeListOpen,
+        setOpenFlag: v => (themeListOpen = v),
+        containerId: 'themeListContainer',
+        listId: 'themeButtonList',
+        selectContainerId: 'themeSelectContainer',
+        toggleBtnId: 'themeShowHideBtn',
+        inputId: 'themeInput',
+    }
+};
+
+
 
 function initOptions() {
     loadCurrentGameSettings();
     updateGameSettingFields();
-    updateAudoSetting();
+    updateAudioSetting();
     updateThemeSetting();
     updateDifficultySetting();
 }
 
+function showOrHideSelectedList(key, showOrHide = 'show') {
+    const config = selectLists[key];
+    if (!config) return;
 
-function showOrHideDifficultyList(showOrHide = 'show', buttonID = '') {
     if (showOrHide === 'show') {
-        hideNotSelectedLists('difficulty');
-        setShowOrHideButtonIcon(showOrHide, buttonID);
-        showDifficultyListForSelection();
+        hideNotSelectedLists(key);
+        setShowOrHideButtonIcon(showOrHide, config.toggleBtnId);
+        openListForSelection(config);
+
     } else {
-        hideDifficultyListForSelection();
-        setShowOrHideButtonIcon(showOrHide, buttonID);
+        closeListForSelection(config);
+        setShowOrHideButtonIcon(showOrHide, config.toggleBtnId);
     }
 }
 
-function showOrHideAudioList(showOrHide = 'show', buttonID = '') {
-    if (showOrHide === 'show') {
-        hideNotSelectedLists('audio');
-        setShowOrHideButtonIcon(showOrHide, buttonID);
-        showAudioListForSelection();
-    } else {
-        hideAudioListForSelection();
-        setShowOrHideButtonIcon(showOrHide, buttonID);
+function openListForSelection(config) {
+    config.setOpenFlag(true);
+    const listContainer = document.querySelector(`#${config.containerId}`);
+    const height = getHeightOfSelectButtons(config.listId) + 29;
+    if (listContainer) {
+        listContainer.style.maxHeight = `${height}px`;
     }
+    const buttonsList = document.querySelector(`#${config.listId}`);
+    if (buttonsList) {
+        buttonsList.style.maxHeight = `${height}px`;
+    }
+    setBorderActiveState(config.selectContainerId, true);
 }
 
-function showOrHideThemeList(showOrHide = 'show', buttonID = '') {
-    if (showOrHide === 'show') {
-        hideNotSelectedLists('theme');
-        setShowOrHideButtonIcon(showOrHide, buttonID);
-        showThemeListForSelection();
-    } else {
-        hideThemeListForSelection();
-        setShowOrHideButtonIcon(showOrHide, buttonID);
+function closeListForSelection(config) {
+    config.setOpenFlag(false);
+    const listContainer = document.querySelector(`#${config.containerId}`);
+    if (listContainer) {
+        listContainer.style.maxHeight = '0';
     }
-}
-
-function showDifficultyListForSelection() {
-    difficultyListOpen = true;
-    const difficultyListContainer = document.querySelector('#difficultyListContainer');
-    const height = getHeightOfSelectButtons('difficultyButtonList') + 29;
-    if (difficultyListContainer) {
-        difficultyListContainer.style.maxHeight = `${height}px`;
+    const buttonsList = document.querySelector(`#${config.listId}`);
+    if (buttonsList) {
+        buttonsList.style.maxHeight = '0';
     }
-    const difficultyButtonsList = document.querySelector('#difficultyButtonList');
-    if (difficultyButtonsList) {
-        difficultyButtonsList.style.maxHeight = `${height}px`;
-    }
-    setBorderActiveState('difficultySelectContainer', true);
-}
-
-function showAudioListForSelection() {
-    audioListOpen = true;
-    const audioListContainer = document.querySelector('#audioListContainer');
-    const height = getHeightOfSelectButtons('audioButtonList') + 29;
-    if (audioListContainer) {
-        audioListContainer.style.maxHeight = `${height}px`;
-    }
-    const audioButtonsList = document.querySelector('#audioButtonList');
-    if (audioButtonsList) {
-        audioButtonsList.style.maxHeight = `${height}px`;
-    }
-    setBorderActiveState('audioSelectContainer', true);
-}
-
-function showThemeListForSelection() {
-    themeListOpen = true;
-    const themeListContainer = document.querySelector('#themeListContainer');
-    const height = getHeightOfSelectButtons('themeButtonList') + 29;
-    if (themeListContainer) {
-        themeListContainer.style.maxHeight = `${height}px`;
-    }
-    const themeButtonsList = document.querySelector('#themeButtonList');
-    if (themeButtonsList) {
-        themeButtonsList.style.maxHeight = `${height}px`;
-    }
-    setBorderActiveState('themeSelectContainer', true);
+    setBorderActiveState(config.selectContainerId, false);
 }
 
 function getHeightOfSelectButtons(listId) {
@@ -135,76 +132,13 @@ function getHeightOfSelectButtons(listId) {
 }
 
 
-function hideDifficultyListForSelection() {
-    difficultyListOpen = false;
-    const difficultyListContainer = document.querySelector('#difficultyListContainer');
-    if (difficultyListContainer) {
-        difficultyListContainer.style.maxHeight = '0px';
-    }
-    const difficultyButtonsList = document.querySelector('#difficultyButtonList');
-    if (difficultyButtonsList) {
-        difficultyButtonsList.style.maxHeight = '0px';
-    }
-    setBorderActiveState('difficultySelectContainer', false);
-}
-
-function hideAudioListForSelection() {
-    audioListOpen = false;
-    const audioListContainer = document.querySelector('#audioListContainer');
-    if (audioListContainer) {
-        audioListContainer.style.maxHeight = '0px';
-    }
-    const audioButtonsList = document.querySelector('#audioButtonList');
-    if (audioButtonsList) {
-        audioButtonsList.style.maxHeight = '0px';
-    }
-    setBorderActiveState('audioSelectContainer', false);
-}
-
-function hideThemeListForSelection() {
-    themeListOpen = false;
-    const themeListContainer = document.querySelector('#themeListContainer');
-    if (themeListContainer) {
-        themeListContainer.style.maxHeight = '0px';
-    }
-    const themeButtonsList = document.querySelector('#themeButtonList');
-    if (themeButtonsList) {
-        themeButtonsList.style.maxHeight = '0px';
-    }
-    setBorderActiveState('themeSelectContainer', false);
-}
-
-
 function hideNotSelectedLists(exceptList = '') {
-    const currentListState = getCurrentlyOpenList();
-    for (const [key, value] of Object.entries(currentListState)) {
-        if (key !== exceptList && value === true) {
-            switch (key) {
-                case 'difficulty':
-                    hideDifficultyListForSelection();
-                    setShowOrHideButtonIcon('hide', 'difficultyShowHideBtn');
-                    break;
-                case 'audio':
-                    hideAudioListForSelection();
-                    setShowOrHideButtonIcon('hide', 'audioShowOrHideBtn');
-                    break;
-                case 'theme':
-                    hideThemeListForSelection();
-                    setShowOrHideButtonIcon('hide', 'themeShowHideBtn');
-                    break;
-                default:
-                    break;
-            }
+    Object.entries(selectLists).forEach(([key, cfg]) => {
+        if (key !== exceptList && cfg.openFlag()) {
+            closeList(cfg);
+            setShowOrHideButtonIcon('hide', cfg.toggleBtnId);
         }
-    }
-}
-
-function getCurrentlyOpenList() {
-    return {
-        "difficulty": difficultyListOpen,
-        "audio": audioListOpen,
-        "theme": themeListOpen
-    };
+    });
 }
 
 function setShowOrHideButtonIcon(showOrHide = 'show', buttonID = '') {
@@ -239,42 +173,23 @@ function updateSelectedOption(inputID = '', selectedValue = '') {
     }
 }
 
+function selectOption(key, value, button) {
+    if (button?.getAttribute('data-selected') === 'true') { return; }
 
-function selectDifficulty(difficultyName = '', button = null) {
-    if (button.getAttribute('data-selected') === 'true') {
-        return;
-    }
-    currentDifficulty = difficultyName;
-    updateSelectedOption('difficultyInput', difficultyName);
-    hideDifficultyListForSelection();
-    updateGameDifficultySettings(difficultyName);
-    if (button) {
-        updateActiveButtons(button);
-    }
-}
+    const config = selectLists[key];
+    if (!config) return;
 
-function selectAudioSetting(audioSettingName = '', button = null) {
-    if (button.getAttribute('data-selected') === 'true') {
-        return;
-    }
-    currentAudioSetting = audioSettingName;
-    updateSelectedOption('audioInput', audioSettingName);
-    hideAudioListForSelection();
-    if (button) {
-        updateActiveButtons(button);
-    }
-}
+    if (key === 'difficulty') { currentDifficulty = value; }
+    if (key === 'audio') { currentAudioSetting = value; }
+    if (key === 'theme') { currentTheme = value; }
 
-function selectTheme(themeName = '', button = null) {
-    if (button.getAttribute('data-selected') === 'true') {
-        return;
-    }
-    currentTheme = themeName;
-    updateSelectedOption('themeInput', themeName);
-    hideThemeListForSelection();
-    if (button) {
-        updateActiveButtons(button);
-    }
+    updateSelectedOption(config.inputId, value);
+    closeListForSelection(config);
+
+    if (button) { updateActiveButtons(button); }
+
+    if (key === 'difficulty') { updateGameSettingFields(); }
+
 }
 
 function updateActiveButtons(selectedButton) {
@@ -287,30 +202,35 @@ function updateActiveButtons(selectedButton) {
     selectedButton.setAttribute('data-selected', 'true');
 }
 
-function updateGameDifficultySettings(difficultyName = '') {
-    currentDifficulty = difficultySettings[difficultyName];
-    updateGameSettingFields();
+function updateGameSettingFields() {
+
+    const difficulty = difficultySettings[currentDifficulty];
+
+    document.getElementById('enemyCountInput').value = difficulty.countOfEnemies;
+    document.getElementById('coinCountInput').value = difficulty.countOfMinCoins;
+    document.getElementById('bottleCountInput').value = difficulty.countOfMinBottles;
+
+    const isCustom = currentDifficulty === 'Custom';
+    setInputfieldReadonly('enemyCountInput', !isCustom);
+    setInputfieldReadonly('coinCountInput', !isCustom);
+    setInputfieldReadonly('bottleCountInput', !isCustom);
+
 }
 
-function updateGameSettingFields() {
-    document.getElementById('enemyCountInput').value = currentDifficulty.countOfEnemies;
-    document.getElementById('coinCountInput').value = currentDifficulty.countOfMinCoins;
-    document.getElementById('bottleCountInput').value = currentDifficulty.countOfMinBottles;
+function setInputfieldReadonly(id, readonly = true) {
+    const inputField = document.getElementById(id);
+    if (!inputField) return;
 
-    if (currentDifficulty === difficultySettings.Custom) {
-        document.getElementById('enemyCountInput').removeAttribute('readonly');
-        document.getElementById('coinCountInput').removeAttribute('readonly');
-        document.getElementById('bottleCountInput').removeAttribute('readonly');
+    if (readonly) {
+        inputField.setAttribute('readonly', true);
     } else {
-        document.getElementById('enemyCountInput').setAttribute('readonly', true);
-        document.getElementById('coinCountInput').setAttribute('readonly', true);
-        document.getElementById('bottleCountInput').setAttribute('readonly', true);
+        inputField.removeAttribute('readonly');
     }
 }
 
 function createGameSettingsObject() {
     return {
-        difficulty: getDifficultyNameBySettings(currentDifficulty),
+        difficulty: currentDifficulty,
         audioSetting: currentAudioSetting,
         theme: currentTheme
     };
@@ -328,72 +248,49 @@ function safeCurrentGameSettings() {
 function loadCurrentGameSettings() {
     const settings = loadGameSettings();
     if (settings) {
-        currentDifficulty = difficultySettings[settings.difficulty];
-        currentAudioSetting = settings.audioSetting;
-        currentTheme = settings.theme;
+        currentDifficulty = settings.difficulty || 'Easy';
+        currentAudioSetting = settings.audioSetting || 'Audio On';
+        currentTheme = settings.theme || 'Blue';
     } else {
         createDeafaultGameSettings();
     }
 }
 
 function createDeafaultGameSettings() {
-    currentDifficulty = difficultySettings.Easy;
+    currentDifficulty = 'Easy';
     currentAudioSetting = 'Audio On';
     currentTheme = 'Blue';
 }
 
-function updateAudoSetting() {
-    if (currentAudioSetting === 'Audio On') {
-        document.getElementById('btnAudioOn').classList.add('btn-yellow-active');
-        document.getElementById('btnAudioOn').setAttribute('data-selected', 'true');
-    } else if (currentAudioSetting === 'Audio Off') {
-        document.getElementById('btnAudioOff').classList.add('btn-yellow-active');
-        document.getElementById('btnAudioOff').setAttribute('data-selected', 'true');
-    }
+function setActiveButton(buttonId) {
+    const button = document.getElementById(buttonId);
+    if (!button) return;
 
+    button.classList.add('btn-yellow-active');
+    button.setAttribute('data-selected', 'true');
+}
+
+function updateAudioSetting() {
+    const map = { 'Audio On': 'btnAudioOn', 'Audio Off': 'btnAudioOff' };
+    setActiveButton(map[currentAudioSetting]);
     document.getElementById('audioInput').value = currentAudioSetting;
 }
 
 function updateThemeSetting() {
-    if (currentTheme === 'Blue') {
-        document.getElementById('btnThemeBlue').classList.add('btn-yellow-active');
-        document.getElementById('btnThemeBlue').setAttribute('data-selected', 'true');
-    } else if (currentTheme === 'Green') {
-        document.getElementById('btnThemeGreen').classList.add('btn-yellow-active');
-        document.getElementById('btnThemeGreen').setAttribute('data-selected', 'true');
-    } else if (currentTheme === 'Orange') {
-        document.getElementById('btnThemeOrange').classList.add('btn-yellow-active');
-        document.getElementById('btnThemeOrange').setAttribute('data-selected', 'true');
-    }
-
+    const map = { Blue: 'btnThemeBlue', Green: 'btnThemeGreen', Orange: 'btnThemeOrange' };
+    setActiveButton(map[currentTheme]);
     document.getElementById('themeInput').value = currentTheme;
 }
 
 function updateDifficultySetting() {
-    if (currentDifficulty === difficultySettings.Easy) {
-        document.getElementById('btnDifficultyEasy').classList.add('btn-yellow-active');
-        document.getElementById('btnDifficultyEasy').setAttribute('data-selected', 'true');
-    } else if (currentDifficulty === difficultySettings.Medium) {
-        document.getElementById('btnDifficultyMedium').classList.add('btn-yellow-active');
-        document.getElementById('btnDifficultyMedium').setAttribute('data-selected', 'true');
-    } else if (currentDifficulty === difficultySettings.Hard) {
-        document.getElementById('btnDifficultyHard').classList.add('btn-yellow-active');
-        document.getElementById('btnDifficultyHard').setAttribute('data-selected', 'true');
-    } else if (currentDifficulty === difficultySettings.Custom) {
-        document.getElementById('btnDifficultyCustom').classList.add('btn-yellow-active');
-        document.getElementById('btnDifficultyCustom').setAttribute('data-selected', 'true');
-    }
-
-    document.getElementById('difficultyInput').value = getDifficultyNameBySettings(currentDifficulty);
-}
-
-function getDifficultyNameBySettings(difficultySettingsObj) {
-    for (const [key, value] of Object.entries(difficultySettings)) {
-        if (value === difficultySettingsObj) {
-            return key;
-        }   
-    }
-    return '';
+    const map = {
+        Easy: 'btnDifficultyEasy',
+        Medium: 'btnDifficultyMedium',
+        Hard: 'btnDifficultyHard',
+        Custom: 'btnDifficultyCustom'
+    };
+    setActiveButton(map[currentDifficulty]);
+    document.getElementById('difficultyInput').value = currentDifficulty;
 }
 
 function safeDialogClose() {
