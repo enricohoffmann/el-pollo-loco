@@ -1,11 +1,10 @@
-let languageListOpen = false;
 let difficultyListOpen = false;
 let audioListOpen = false;
 let themeListOpen = false;
-let currentLanguage = '';
 let currentDifficulty = {};
 let currentAudioSetting = '';
 let currentTheme = '';
+let safeDialogOpen = false;
 
 
 const difficultySettings = {
@@ -25,29 +24,21 @@ const difficultySettings = {
         countOfMinBottles: 10,
     },
     Custom: {
-        countOfEnemies: 0,  
+        countOfEnemies: 0,
         countOfMinCoins: 0,
         countOfMinBottles: 0,
     }
 };
 
 
-
-//Beim Start der Seite prüfen, ob schon eine Sprache ausgewählt wurde, sonst Englisch als Standard setzen
-//Beim Start prüfen, ob schon eine Schwierigkeit ausgewählt wurde, sonst Easy als Standard setzen
-//Themes und Audio ebenfalls prüfen, sonst Audio: On und Theme: blue als Standard setzen
-
-
-function showOrHideLanguageList(showOrHide = 'show', buttonID = '') {
-    if (showOrHide === 'show') {
-        hideNotSelectedLists('lang');
-        setShowOrHideButtonIcon(showOrHide, buttonID);
-        showLanguageListForSelection();
-    } else {
-        hideLanguageListForSelection();
-        setShowOrHideButtonIcon(showOrHide, buttonID);
-    }
+function initOptions() {
+    loadCurrentGameSettings();
+    updateGameSettingFields();
+    updateAudoSetting();
+    updateThemeSetting();
+    updateDifficultySetting();
 }
+
 
 function showOrHideDifficultyList(showOrHide = 'show', buttonID = '') {
     if (showOrHide === 'show') {
@@ -80,20 +71,6 @@ function showOrHideThemeList(showOrHide = 'show', buttonID = '') {
         hideThemeListForSelection();
         setShowOrHideButtonIcon(showOrHide, buttonID);
     }
-}
-
-function showLanguageListForSelection() {
-    languageListOpen = true;
-    const languageListContainer = document.querySelector('#langListContainer');
-    const height = getHeightOfSelectButtons('langButtonList') + 29;
-    if (languageListContainer) {
-        languageListContainer.style.maxHeight = `${height}px`;
-    }
-    const languageButtonsList = document.querySelector('#langButtonList');
-    if (languageButtonsList) {
-        languageButtonsList.style.maxHeight = `${height}px`;
-    }
-    setBorderActiveState('langSelectContainer', true);
 }
 
 function showDifficultyListForSelection() {
@@ -157,18 +134,6 @@ function getHeightOfSelectButtons(listId) {
     return totalHeight;
 }
 
-function hideLanguageListForSelection() {
-    languageListOpen = false;
-    const languageListContainer = document.querySelector('#langListContainer');
-    if (languageListContainer) {
-        languageListContainer.style.maxHeight = '0px';
-    }
-    const languageButtonsList = document.querySelector('#langButtonList');
-    if (languageButtonsList) {
-        languageButtonsList.style.maxHeight = '0px';
-    }
-    setBorderActiveState('langSelectContainer', false);
-}
 
 function hideDifficultyListForSelection() {
     difficultyListOpen = false;
@@ -215,10 +180,6 @@ function hideNotSelectedLists(exceptList = '') {
     for (const [key, value] of Object.entries(currentListState)) {
         if (key !== exceptList && value === true) {
             switch (key) {
-                case 'lang':
-                    hideLanguageListForSelection();
-                    setShowOrHideButtonIcon('hide', 'langShowOrHideBtn');
-                    break;
                 case 'difficulty':
                     hideDifficultyListForSelection();
                     setShowOrHideButtonIcon('hide', 'difficultyShowHideBtn');
@@ -240,7 +201,6 @@ function hideNotSelectedLists(exceptList = '') {
 
 function getCurrentlyOpenList() {
     return {
-        "lang": languageListOpen,
         "difficulty": difficultyListOpen,
         "audio": audioListOpen,
         "theme": themeListOpen
@@ -250,7 +210,7 @@ function getCurrentlyOpenList() {
 function setShowOrHideButtonIcon(showOrHide = 'show', buttonID = '') {
     const button = document.getElementById(buttonID);
     if (button) {
-       if (showOrHide === 'hide') {
+        if (showOrHide === 'hide') {
             button.classList.remove('btn-hide');
             button.classList.add('btn-show');
         } else {
@@ -279,17 +239,6 @@ function updateSelectedOption(inputID = '', selectedValue = '') {
     }
 }
 
-function selectLanguage(languageName = '', button = null) {
-    if (button.getAttribute('data-selected') === 'true') {
-        return;
-    }
-    currentLanguage = languageName;
-    updateSelectedOption('languageInput', languageName);
-    hideLanguageListForSelection();
-    if (button) {
-        updateActiveButtons(button);
-    }
-}
 
 function selectDifficulty(difficultyName = '', button = null) {
     if (button.getAttribute('data-selected') === 'true') {
@@ -348,7 +297,7 @@ function updateGameSettingFields() {
     document.getElementById('coinCountInput').value = currentDifficulty.countOfMinCoins;
     document.getElementById('bottleCountInput').value = currentDifficulty.countOfMinBottles;
 
-    if(currentDifficulty === difficultySettings.custom) {
+    if (currentDifficulty === difficultySettings.Custom) {
         document.getElementById('enemyCountInput').removeAttribute('readonly');
         document.getElementById('coinCountInput').removeAttribute('readonly');
         document.getElementById('bottleCountInput').removeAttribute('readonly');
@@ -359,3 +308,108 @@ function updateGameSettingFields() {
     }
 }
 
+function createGameSettingsObject() {
+    return {
+        difficulty: getDifficultyNameBySettings(currentDifficulty),
+        audioSetting: currentAudioSetting,
+        theme: currentTheme
+    };
+}
+
+function safeCurrentGameSettings() {
+    const settings = createGameSettingsObject();
+    safeGameSettings(settings);
+    showSafeDialog();
+    setTimeout(() => {
+        safeDialogClose();
+    }, 5000);
+}
+
+function loadCurrentGameSettings() {
+    const settings = loadGameSettings();
+    if (settings) {
+        currentDifficulty = difficultySettings[settings.difficulty];
+        currentAudioSetting = settings.audioSetting;
+        currentTheme = settings.theme;
+    } else {
+        createDeafaultGameSettings();
+    }
+}
+
+function createDeafaultGameSettings() {
+    currentDifficulty = difficultySettings.Easy;
+    currentAudioSetting = 'Audio On';
+    currentTheme = 'Blue';
+}
+
+function updateAudoSetting() {
+    if (currentAudioSetting === 'Audio On') {
+        document.getElementById('btnAudioOn').classList.add('btn-yellow-active');
+        document.getElementById('btnAudioOn').setAttribute('data-selected', 'true');
+    } else if (currentAudioSetting === 'Audio Off') {
+        document.getElementById('btnAudioOff').classList.add('btn-yellow-active');
+        document.getElementById('btnAudioOff').setAttribute('data-selected', 'true');
+    }
+
+    document.getElementById('audioInput').value = currentAudioSetting;
+}
+
+function updateThemeSetting() {
+    if (currentTheme === 'Blue') {
+        document.getElementById('btnThemeBlue').classList.add('btn-yellow-active');
+        document.getElementById('btnThemeBlue').setAttribute('data-selected', 'true');
+    } else if (currentTheme === 'Green') {
+        document.getElementById('btnThemeGreen').classList.add('btn-yellow-active');
+        document.getElementById('btnThemeGreen').setAttribute('data-selected', 'true');
+    } else if (currentTheme === 'Orange') {
+        document.getElementById('btnThemeOrange').classList.add('btn-yellow-active');
+        document.getElementById('btnThemeOrange').setAttribute('data-selected', 'true');
+    }
+
+    document.getElementById('themeInput').value = currentTheme;
+}
+
+function updateDifficultySetting() {
+    if (currentDifficulty === difficultySettings.Easy) {
+        document.getElementById('btnDifficultyEasy').classList.add('btn-yellow-active');
+        document.getElementById('btnDifficultyEasy').setAttribute('data-selected', 'true');
+    } else if (currentDifficulty === difficultySettings.Medium) {
+        document.getElementById('btnDifficultyMedium').classList.add('btn-yellow-active');
+        document.getElementById('btnDifficultyMedium').setAttribute('data-selected', 'true');
+    } else if (currentDifficulty === difficultySettings.Hard) {
+        document.getElementById('btnDifficultyHard').classList.add('btn-yellow-active');
+        document.getElementById('btnDifficultyHard').setAttribute('data-selected', 'true');
+    } else if (currentDifficulty === difficultySettings.Custom) {
+        document.getElementById('btnDifficultyCustom').classList.add('btn-yellow-active');
+        document.getElementById('btnDifficultyCustom').setAttribute('data-selected', 'true');
+    }
+
+    document.getElementById('difficultyInput').value = getDifficultyNameBySettings(currentDifficulty);
+}
+
+function getDifficultyNameBySettings(difficultySettingsObj) {
+    for (const [key, value] of Object.entries(difficultySettings)) {
+        if (value === difficultySettingsObj) {
+            return key;
+        }   
+    }
+    return '';
+}
+
+function safeDialogClose() {
+    if (safeDialogOpen) {
+        const dialog = document.getElementById('safeOptionDialog');
+        dialog.close();
+        dialog.classList.add('visually-hidden');
+        dialog.classList.remove('safe-dialog-show');
+        safeDialogOpen = false;
+    }
+}
+
+function showSafeDialog() {
+    const dialog = document.getElementById('safeOptionDialog');
+    dialog.classList.remove('visually-hidden');
+    dialog.classList.add('safe-dialog-show');
+    dialog.showModal();
+    safeDialogOpen = true;
+}

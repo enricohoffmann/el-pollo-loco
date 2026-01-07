@@ -11,7 +11,7 @@
     <link rel="icon" type="image/png" href="./img/2_character_pepe/1_idle/idle/I-1.png">
 </head>
 
-<body>
+<body onload="initOptions()">
 
     <div class="option-overlay">
 
@@ -29,35 +29,6 @@
                 <div class="option-group">
 
                     <aside class="option-group-container">
-                        <!-- Language Settings -->
-                        <div class="option-fieldset">
-                            <label for="languageInput">Choose Language:</label>
-
-                            <div class="select-container" id="langSelectContainer">
-                                <input id="languageInput" class="select-container-input" type="text" value=""
-                                    placeholder="Select Language" readonly
-                                    onclick="showOrHideLanguageList(languageListOpen ? 'hide' : 'show', 'langShowOrHideBtn')">
-                                <button id="langShowOrHideBtn" class="select-container-button btn-show" type="button"
-                                    title="show or hide language list" onclick="showOrHideLanguageList(languageListOpen ? 'hide' : 'show', 'langShowOrHideBtn')">
-                                    <div title="show or hide icon"></div>
-                                </button>
-                            </div>
-
-                            <div class="select-list-container" id="langListContainer">
-                                <div class="select-list" id="langButtonList">
-                                    <button class="btn btn-yellow" type="button" title="select English language" data-selected="false" onclick="selectLanguage('English', this)">
-                                        <span>English</span>
-                                    </button>
-                                    <button class="btn btn-yellow" type="button" title="select Deutsch language" data-selected="false" onclick="selectLanguage('Deutsch', this)">
-                                        <span>Deutsch</span>
-                                    </button>
-                                    <button class="btn btn-yellow" type="button" title="select Español language" data-selected="false" onclick="selectLanguage('Español', this)">
-                                        <span>Español</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
                         <!-- Audio Settings -->
                         <div class="option-fieldset">
                             <label for="audioInput">Audio:</label>
@@ -74,10 +45,10 @@
 
                             <div class="select-list-container" id="audioListContainer">
                                 <div class="select-list" id="audioButtonList">
-                                    <button class="btn btn-yellow" type="button" title="select Audio On" data-selected="false" onclick="selectAudioSetting('Audio On', this)">
+                                    <button id="btnAudioOn" class="btn btn-yellow" type="button" title="select Audio On" data-selected="false" onclick="selectAudioSetting('Audio On', this)">
                                         <span>Audio On</span>
                                     </button>
-                                    <button class="btn btn-yellow" type="button" title="select Audio Off" data-selected="false" onclick="selectAudioSetting('Audio Off', this)">
+                                    <button id="btnAudioOff" class="btn btn-yellow" type="button" title="select Audio Off" data-selected="false" onclick="selectAudioSetting('Audio Off', this)">
                                         <span>Audio Off</span>
                                     </button>
                                 </div>
@@ -100,13 +71,13 @@
 
                             <div class="select-list-container" id="themeListContainer">
                                 <div class="select-list" id="themeButtonList">
-                                    <button class="btn btn-yellow" type="button" title="select Blue theme"  data-selected="false" onclick="selectTheme('Blue', this)">
+                                    <button id="btnThemeBlue" class="btn btn-yellow" type="button" title="select Blue theme"  data-selected="false" onclick="selectTheme('Blue', this)">
                                         <span>Blue</span>
                                     </button>
-                                    <button class="btn btn-yellow" type="button" title="select Green theme" data-selected="false" onclick="selectTheme('Green', this)">
+                                    <button id="btnThemeGreen" class="btn btn-yellow" type="button" title="select Green theme" data-selected="false" onclick="selectTheme('Green', this)">
                                         <span>Green</span>
                                     </button>
-                                    <button class="btn btn-yellow" type="button" title="select Orange theme" data-selected="false" onclick="selectTheme('Orange', this)">
+                                    <button id="btnThemeOrange" class="btn btn-yellow" type="button" title="select Orange theme" data-selected="false" onclick="selectTheme('Orange', this)">
                                         <span>Orange</span>
                                     </button>
                                 </div>
@@ -128,16 +99,16 @@
                             </div>
                             <div class="select-list-container" id="difficultyListContainer">
                                 <div class="select-list" id="difficultyButtonList">
-                                    <button class="btn btn-yellow" type="button" title="select Easy difficulty" data-selected="false" onclick="selectDifficulty('Easy', this)">
+                                    <button id="btnDifficultyEasy" class="btn btn-yellow" type="button" title="select Easy difficulty" data-selected="false" onclick="selectDifficulty('Easy', this)">
                                         <span>Easy</span>
                                     </button>
-                                    <button class="btn btn-yellow" type="button" title="select Medium difficulty" data-selected="false" onclick="selectDifficulty('Medium', this)">
+                                    <button id="btnDifficultyMedium" class="btn btn-yellow" type="button" title="select Medium difficulty" data-selected="false" onclick="selectDifficulty('Medium', this)">
                                         <span>Medium</span>
                                     </button>
-                                    <button class="btn btn-yellow" type="button" title="select Hard difficulty" data-selected="false" onclick="selectDifficulty('Hard', this)">
+                                    <button id="btnDifficultyHard" class="btn btn-yellow" type="button" title="select Hard difficulty" data-selected="false" onclick="selectDifficulty('Hard', this)">
                                         <span>Hard</span>
                                     </button>
-                                    <button class="btn btn-yellow" type="button" title="select Custom difficulty" data-selected="false" onclick="selectDifficulty('Custom', this)">
+                                    <button id="btnDifficultyCustom" class="btn btn-yellow" type="button" title="select Custom difficulty" data-selected="false" onclick="selectDifficulty('Custom', this)">
                                         <span>Custom</span>
                                     </button>
                                 </div>
@@ -160,7 +131,7 @@
                     </aside> 
 
                     <div class="option-button-container">
-                        <button type="button" class="btn btn-orange btn-lg">Save</button>
+                        <button type="button" class="btn btn-orange btn-lg" onclick="safeCurrentGameSettings()">Save</button>
                     </div>
 
                     
@@ -173,11 +144,19 @@
 
         </div>
 
+        <dialog id="safeOptionDialog" class="safe-options-dialog safe-dialog-show visually-hidden" role="dialog" aria-describedby="safeOptions" aria-modal="true">
+            <div>
+                <span id="safeOptions">Options saved successfully!</span>
+                <button type="button" class="btn btn-yellow" onclick="safeDialogClose()">OK</button>
+            </div>
+        </dialog>
+
 
     </div>
 
 
     <script src="./js/script.js"></script>
+    <script src="./js/localStorage.js"></script>
     <script src="./js/options.js"></script>
 </body>
 

@@ -158,3 +158,12 @@ function clearGameState() {
     localStorage.removeItem('statusBarState');
     localStorage.removeItem('levelState');
 }
+
+function safeGameSettings(settings) {
+    localStorage.setItem('gameSettings', JSON.stringify(settings));
+}
+
+function loadGameSettings() {
+    const settings = localStorage.getItem('gameSettings');
+    return JSON.parse(settings);
+}

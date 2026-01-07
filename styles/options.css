@@ -163,3 +163,46 @@ input {
     overflow: hidden;
     transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+.safe-options-dialog{
+    width: 300px;
+    height: 150px;
+    border: none;
+    border-radius: 18px;
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
+    background-color: white;
+}
+
+.safe-options-dialog::backdrop{
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.safe-options-dialog>div{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    gap: 24px;
+    padding-left: 16px; 
+    padding-right: 16px;
+}
+
+.safe-options-dialog span{
+    font-size: 18px;
+    text-align: center;
+}
+
+.safe-dialog-show {
+    animation: slide-Dialog-in-from-bottom 900ms ease-in;
+}
+
+@keyframes slide-Dialog-in-from-bottom {
+    from {
+        transform: translateY(1000%);
+    }
+
+    to {
+        transform: translateY(0%);
+    }
+}
