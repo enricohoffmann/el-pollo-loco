@@ -157,6 +157,7 @@ function clearGameState() {
     localStorage.removeItem('cloudsState');
     localStorage.removeItem('statusBarState');
     localStorage.removeItem('levelState');
+    localStorage.setItem('gameRunning', JSON.stringify(false));
 }
 
 function safeGameSettings(settings) {

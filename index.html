@@ -7,31 +7,41 @@
     <link rel="icon" type="image/png" href="./img/2_character_pepe/1_idle/idle/I-1.png">
     <title>Pollo Loco</title>
     <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="./styles/mediaQuerys.css">
 </head>
 
-<body>
+<body onload="init(), siteLoaded()">
     <div class="site-content">
         <nav>
             <div class="nav-content">
-                <button type="button" class="btn btn-yellow">Impressum</button>
-                <button type="button" class="btn btn-yellow">Privacy Policy</button>
+                <button type="button" class="btn btn-yellow" onclick="navigateTo('impressum')">Impressum</button>
+                <button type="button" class="btn btn-yellow" onclick="navigateTo('privacy')">Privacy Policy</button>
             </div>
         </nav>
 
 
         <main>
             <h1>Welcome to Pollo Loco</h1>
+
+            <section class="start-image-container">
+                <div class="start-image"></div>
+            </section>
+
             <div class="button-group">
-                <button type="button" class="btn btn-lager btn-orange">Start Game</button>
+                <button type="button" class="btn btn-lager btn-orange" onclick="navigateTo('game')">Start Game</button>
                 <button type="button" class="btn btn-lager btn-orange" onclick="navigateTo('options')">Options</button>
                 <button type="button" class="btn btn-lager btn-orange">Help</button>
             </div>
         </main>
 
-        
+
     </div>
 
-<script src="./js/script.js"></script>
-</body>
+    <div class="portrait-warning" hidden>Please rotate your device to landscape mode.📱</div>
 
+    <script src="./js/portraitBlock.js" defer></script>
+    <script src="./js/localStorage.js"></script>
+    <script src="./js/script.js"></script>
+</body>
+    
 </html>

@@ -1,12 +1,11 @@
 class LevelCreator {
-    difficulty = 'easy';
+    difficulty = 'Easy';
     canvas;
     xPosition = 0;
     currentLevel = new Level();
     levelSetting;
 
-    constructor(difficulty, canvas) {
-        this.difficulty = difficulty;
+    constructor(canvas) {
         this.canvas = canvas;
     }
 
@@ -18,15 +17,19 @@ class LevelCreator {
     }
 
     readLevelSetting(){
-        const setting = new LevelSetting();
-        if (this.difficulty === 'easy') {
+
+        const config = loadGameSettings();
+        this.difficulty = config.difficulty || 'Easy';
+
+        const setting = new LevelSetting(config.countOfEnemies, config.countOfMinBottles, config.countOfMinCoins, config.gameLengthFrames, this.difficulty);
+        if (this.difficulty === 'Easy') {
             this.levelSetting = setting.getEasyLevelSettings();
-        } else if (this.difficulty === 'medium') {
+        } else if (this.difficulty === 'Medium') {
             this.levelSetting = setting.getMediumLevelSettings();
-        } else if (this.difficulty === 'hard') {
+        } else if (this.difficulty === 'Hard') {
             this.levelSetting = setting.getHardLevelSettings();
         }else{
-            this.levelSetting = setting.getCustomLevelSettings();
+            //this.levelSetting = setting.getCustomLevelSettings(config.damage, config.initialHealth, config.initialBottleCount, config.countOfClouds);
         }
     }
 
@@ -112,6 +115,10 @@ class LevelCreator {
             new BackgroundObject('../img/5_background/layers/2_second_layer/2.png', this.xPosition, this.canvas),
             new BackgroundObject('../img/5_background/layers/1_first_layer/2.png', this.xPosition, this.canvas)
         ]
+    }
+
+    get getCurrentDifficulty() {
+        return this.difficulty;
     }
 
     createEnemys(countOfEnemys) {

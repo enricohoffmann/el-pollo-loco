@@ -7,29 +7,6 @@ let currentTheme = '';
 let safeDialogOpen = false;
 
 
-const difficultySettings = {
-    Easy: {
-        countOfEnemies: 3,
-        countOfMinCoins: 5,
-        countOfMinBottles: 5,
-    },
-    Medium: {
-        countOfEnemies: 5,
-        countOfMinCoins: 10,
-        countOfMinBottles: 7,
-    },
-    Hard: {
-        countOfEnemies: 7,
-        countOfMinCoins: 15,
-        countOfMinBottles: 10,
-    },
-    Custom: {
-        countOfEnemies: 0,
-        countOfMinCoins: 0,
-        countOfMinBottles: 0,
-    }
-};
-
 const selectLists = {
     difficulty: {
         openFlag: () => difficultyListOpen,
@@ -64,10 +41,10 @@ const selectLists = {
 
 function initOptions() {
     loadCurrentGameSettings();
-    updateGameSettingFields();
     updateAudioSetting();
     updateThemeSetting();
     updateDifficultySetting();
+    updateGameSettingFields();
 }
 
 function showOrHideSelectedList(key, showOrHide = 'show') {
@@ -209,11 +186,13 @@ function updateGameSettingFields() {
     document.getElementById('enemyCountInput').value = difficulty.countOfEnemies;
     document.getElementById('coinCountInput').value = difficulty.countOfMinCoins;
     document.getElementById('bottleCountInput').value = difficulty.countOfMinBottles;
+    document.getElementById('gameLengthInput').value = difficulty.gameLengthFrames;
 
     const isCustom = currentDifficulty === 'Custom';
     setInputfieldReadonly('enemyCountInput', !isCustom);
     setInputfieldReadonly('coinCountInput', !isCustom);
     setInputfieldReadonly('bottleCountInput', !isCustom);
+    setInputfieldReadonly('gameLengthInput', !isCustom);
 
 }
 
@@ -228,11 +207,16 @@ function setInputfieldReadonly(id, readonly = true) {
     }
 }
 
+
 function createGameSettingsObject() {
     return {
         difficulty: currentDifficulty,
         audioSetting: currentAudioSetting,
-        theme: currentTheme
+        theme: currentTheme,
+        countOfEnemies: parseInt(document.getElementById('enemyCountInput').value) || difficultySettings[currentDifficulty].countOfEnemies,
+        countOfMinCoins: parseInt(document.getElementById('coinCountInput').value) || difficultySettings[currentDifficulty].countOfMinCoins,
+        countOfMinBottles: parseInt(document.getElementById('bottleCountInput').value) || difficultySettings[currentDifficulty].countOfMinBottles,
+        gameLengthFrames: parseInt(document.getElementById('gameLengthInput').value) || difficultySettings[currentDifficulty].gameLengthFrames
     };
 }
 
@@ -251,6 +235,10 @@ function loadCurrentGameSettings() {
         currentDifficulty = settings.difficulty || 'Easy';
         currentAudioSetting = settings.audioSetting || 'Audio On';
         currentTheme = settings.theme || 'Blue';
+        difficultySettings[currentDifficulty].countOfEnemies = settings.countOfEnemies || 3;
+        difficultySettings[currentDifficulty].countOfMinCoins = settings.countOfMinCoins || 5;
+        difficultySettings[currentDifficulty].countOfMinBottles = settings.countOfMinBottles || 5;
+        difficultySettings[currentDifficulty].gameLengthFrames = settings.gameLengthFrames || 3;
     } else {
         createDeafaultGameSettings();
     }

@@ -11,16 +11,17 @@
     <link rel="icon" type="image/png" href="./img/2_character_pepe/1_idle/idle/I-1.png">
 </head>
 
-<body onload="initOptions()">
+<body onload="initOptions(), siteLoaded()">
 
-    <div class="option-overlay">
+    <div class="site-overlay">
 
         <div class="site-content">
 
             <nav>
                 <div class="nav-content">
-                    <button type="button" class="btn btn-yellow">Impressum</button>
-                    <button type="button" class="btn btn-yellow">Privacy Policy</button>
+                    <button type="button" class="btn btn-yellow" onclick="navigateTo('index')">Back</button>
+                    <button type="button" class="btn btn-yellow" onclick="navigateTo('impressum')">Impressum</button>
+                    <button type="button" class="btn btn-yellow" onclick="navigateTo('privacy')">Privacy Policy</button>
                 </div>
             </nav>
 
@@ -125,6 +126,9 @@
 
                             <label class="setting-label" for="bottleCountInput">Count of minimum Bottles:</label>
                             <input type="number" id="bottleCountInput" name="bottleCountInput" min="1" max="20" value="0" readonly>
+
+                            <label class="setting-label" for="gameLengthInput">Game Length (frames):</label>
+                            <input type="number" id="gameLengthInput" name="gameLengthInput" min="1" max="12" value="0" readonly>
                         </div>
                         
 
@@ -154,8 +158,10 @@
 
     </div>
 
+    <div class="portrait-warning" hidden>Please rotate your device to landscape mode.📱</div>
 
     <script src="./js/script.js"></script>
+    <script src="./js/difficultySettings.js"></script>
     <script src="./js/localStorage.js"></script>
     <script src="./js/options.js"></script>
 </body>

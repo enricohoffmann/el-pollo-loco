@@ -28,7 +28,7 @@ canvas{
 .gameOverImg{
     width: 800px;
     height: 600px;
-    background-image: url('./img/You won, you lost/Game-Over.png');
+    background-image: url('../img/You won, you lost/Game-Over.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center center;
@@ -37,10 +37,18 @@ canvas{
 .gameWinImg{
     width: 800px;
     height: 600px;
-    background-image: url('./img/You won, you lost/You Win A.png');
+    background-image: url('../img/You won, you lost/You Win A.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center center;
+}
+
+.game-container{
+    padding: 30px 30px;
+    background-color: rgba(84, 18, 27, 1);
+    border-radius: 15px;
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
+    margin-top: 28px;
 }
 
 .winLostGameAnimation{
@@ -52,7 +60,7 @@ canvas{
         transform: scale(1);
     }
     50% {
-        transform: scale(1.2);
+        transform: scale(1.1);
     }
     100% {
         transform: scale(1);

@@ -35,6 +35,16 @@ body {
     background-image: url('../img/custom/cactus-background.jpg');
     background-size: cover;
     background-position: center center;
+    color: black;
+    font-family: 'Baloo-2-medium', sans-serif;
+    font-size: 16px;
+}
+
+a{
+    text-decoration: none;
+    color: rgb(190, 102, 51);
+    word-wrap: break-word;
+    word-break: break-all;
 }
 
 h1 {
@@ -43,25 +53,48 @@ h1 {
     color: rgba(12, 12, 12, 1);
     text-shadow: 0px 4px 4px rgba(246, 150, 45, 0.6);
     margin: 20px 0;
+    transition: all 0.3s ease;
+}
+
+h2 {
+    font-family: 'Lilita-One', cursive;
+    font-size: 1.5em;
+    color: rgba(12, 12, 12, 1);
+    text-shadow: 0px 4px 4px rgba(246, 150, 45, 0.6);
+    margin: 20px 0;
+    margin-block-start: 0;
+    ;
+    margin-block-end: 0;
+    ;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+}
+
+.site-overlay {
+    min-height: 100vh;
+    background-color: rgba(255, 255, 255, 0.4);
 }
 
 .site-content {
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
 }
 
 main {
     max-width: 1440px;
     width: 100%;
-    margin: 0 auto;
+    min-height: 100vh;
+    padding-top: 64px;
+    margin-left: auto;
+    margin-right: auto;
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
 }
 
 .logo-div {
@@ -76,9 +109,27 @@ main {
     background-position: center center;
 }
 
+.start-image {
+    width: 780px;
+    height: 480px;
+    background-image: url('../img/9_intro_outro_screens/start/startscreen_1.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+    transition: all 0.3s ease;
+}
+
+.start-image-container {
+    padding: 10px 30px;
+    background-color: rgba(84, 18, 27, 1);
+    border-radius: 15px;
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
+}
+
 nav {
+    height: 64px;
     background-color: rgba(84, 18, 27, 0.7);
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -89,10 +140,11 @@ nav {
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1000;
 }
 
 .nav-content {
-    height: 64px;
+    height: 100%;
     max-width: 1440px;
     width: 100%;
     display: flex;
@@ -140,7 +192,7 @@ nav {
     background-color: rgb(241, 215, 64);
     box-shadow: 5px 6px 15px 6px rgba(0, 0, 0, 0.1);
     color: rgb(44, 11, 2);
-    
+
 }
 
 
@@ -150,9 +202,10 @@ nav {
     padding: 15px 30px;
     font-size: 24px;
     border-radius: 12px;
+    transition: all 0.3s ease;
 }
 
-.btn-lg{
+.btn-lg {
     width: 100%;
     margin-left: 20px;
     margin-right: 20px;
@@ -168,4 +221,35 @@ nav {
 .visually-hidden {
     position: absolute;
     left: -9999px;
+}
+
+.text-background {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin-left: 24px;
+    margin-right: 24px;
+    margin-bottom: 24px;
+    overflow-y: auto;
+}
+
+.portrait-warning {
+    display: none;
+}
+
+
+html.portrait-blocked main {
+    display: none !important;
+}
+
+html.portrait-blocked .portrait-warning {
+    display: block !important;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #000;
+    z-index: 9999;
+    font-size: 2rem;
+    text-align: center;
+    padding-top: 40vh;
 }

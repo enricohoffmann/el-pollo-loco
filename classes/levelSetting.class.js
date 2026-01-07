@@ -1,8 +1,15 @@
 class LevelSetting extends LevelProperties {
 
 
-    constructor(){
+    constructor(countOfEnemies, minBottles, minCoins, gameLengthFrames, difficulty) {
         super();
+        this.countOfEnemies = countOfEnemies;
+        const minBottlesInt = minBottles || difficultySettings[difficulty].countOfMinBottles;
+        const minCoinsInt = minCoins || difficultySettings[difficulty].countOfMinCoins;
+        this.bottlesOnScreenRange = [minBottlesInt, minBottlesInt + 5];
+        this.coinsOnScreenRange = [minCoinsInt, minCoinsInt + 10];
+        this.gameLengthFrames = gameLengthFrames || difficultySettings[difficulty].gameLengthFrames;
+        this.difficulty = difficulty;
     }
 
 
@@ -12,10 +19,10 @@ class LevelSetting extends LevelProperties {
         easySettings.damage = 10;
         easySettings.initialHealth = 100;
         easySettings.initialBottleCount = 10;
-        easySettings.bottlesOnScreenRange = [8, 15];
-        easySettings.coinsOnScreenRange = [5, 20];
-        easySettings.contOfBackgroundObjects = 3;
-        easySettings.countOfEnemies = 3;
+        easySettings.bottlesOnScreenRange = this.bottlesOnScreenRange;
+        easySettings.coinsOnScreenRange = this.coinsOnScreenRange;
+        easySettings.contOfBackgroundObjects = this.gameLengthFrames;
+        easySettings.countOfEnemies = this.countOfEnemies;
         easySettings.countOfClouds = 2;
         return easySettings;
     }
@@ -26,10 +33,10 @@ class LevelSetting extends LevelProperties {
         mediumSettings.damage = 20;
         mediumSettings.initialHealth = 100;
         mediumSettings.initialBottleCount = 7;
-        mediumSettings.bottlesOnScreenRange = [5, 10];
-        mediumSettings.coinsOnScreenRange = [10, 25];
-        mediumSettings.contOfBackgroundObjects = 5;
-        mediumSettings.countOfEnemies = 5;
+        mediumSettings.bottlesOnScreenRange = this.bottlesOnScreenRange;
+        mediumSettings.coinsOnScreenRange = this.coinsOnScreenRange;
+        mediumSettings.contOfBackgroundObjects = this.gameLengthFrames;
+        mediumSettings.countOfEnemies = this.countOfEnemies;
         mediumSettings.countOfClouds = 2;
         return mediumSettings;
     }
@@ -39,23 +46,23 @@ class LevelSetting extends LevelProperties {
         hardSettings.damage = 30;
         hardSettings.initialHealth = 100;
         hardSettings.initialBottleCount = 5;
-        hardSettings.bottlesOnScreenRange = [3, 8];
-        hardSettings.coinsOnScreenRange = [15, 30];
-        hardSettings.contOfBackgroundObjects = 8;
-        hardSettings.countOfEnemies = 8;
+        hardSettings.bottlesOnScreenRange = this.bottlesOnScreenRange;
+        hardSettings.coinsOnScreenRange = this.coinsOnScreenRange;
+        hardSettings.contOfBackgroundObjects = this.gameLengthFrames;
+        hardSettings.countOfEnemies = this.countOfEnemies;
         hardSettings.countOfClouds = 2;
         return hardSettings;
     }
 
-    getCustomLevelSettings(damage, initialHealth, initialBottleCount, bottlesOnScreenRange, coinsOnScreenRange, contOfBackgroundObjects, countOfEnemies, countOfClouds){
+    getCustomLevelSettings(damage, initialHealth, initialBottleCount, countOfClouds){
         const customSettings = new LevelProperties();
         customSettings.damage = damage;
         customSettings.initialHealth = initialHealth;
         customSettings.initialBottleCount = initialBottleCount;
-        customSettings.bottlesOnScreenRange = bottlesOnScreenRange;
-        customSettings.coinsOnScreenRange = coinsOnScreenRange;
-        customSettings.contOfBackgroundObjects = contOfBackgroundObjects;
-        customSettings.countOfEnemies = countOfEnemies;
+        customSettings.bottlesOnScreenRange = this.bottlesOnScreenRange;
+        customSettings.coinsOnScreenRange = this.coinsOnScreenRange;
+        customSettings.contOfBackgroundObjects = this.gameLengthFrames;
+        customSettings.countOfEnemies = this.countOfEnemies;
         customSettings.countOfClouds = countOfClouds;
         return customSettings;
     }

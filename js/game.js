@@ -19,8 +19,12 @@ function init() {
 function newGameStart() {
     safeGameRunningState(true);
     getCanvas();
-    const levelCreator = new LevelCreator('easy', canvas);
-    const level = levelCreator.createLevel()
+    const levelCreator = new LevelCreator(canvas);
+    const level = levelCreator.createLevel();
+
+    let t = levelCreator.getCurrentDifficulty;
+
+
     world = new World(canvas, keyboard, level, 'orange');
     world.createNewGameObjects();
     world.run();
@@ -29,8 +33,11 @@ function newGameStart() {
 function savedGameStart(){
     safeGameRunningState(true);
     getCanvas();
-    const levelCreator = new LevelCreator('easy', canvas);
+    const levelCreator = new LevelCreator(canvas);
     const level = levelCreator.createLevelFromState();
+
+    let t = levelCreator.getCurrentDifficulty;
+
     world = new World(canvas, keyboard, level, 'orange');
     world.character = new Character(world);
     world.character.pos_x = loadCharacterState().character.x;
@@ -71,6 +78,7 @@ function closeGameOverDialog() {
     dialog.close();
     safeGameRunningState(false);
     world = null;
+    navigateTo('index');
 }
 
 function openGameWinDialog() {
@@ -88,6 +96,7 @@ function closeGameWinDialog() {
     dialog.close();
     safeGameRunningState(false);
     world = null;
+    navigateTo('index');
 }
 
 

@@ -132,12 +132,11 @@ class World {
     }
 
     characterHitEnemyOnTop(enemy) {
+        if(enemy instanceof Endboss) {return;}
         enemy.damage = 100;
         enemy.hit();
         this.bounceOffEnemy(enemy);
     }
-
-
 
     bounceOffEnemy(enemy) {
         this.character.speedY = 20;
