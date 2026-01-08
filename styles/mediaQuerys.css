@@ -15,7 +15,7 @@
 
 }
 
-@media(max-width: 870px) {
+@media(max-width: 870px), (max-height: 840px) {
 
     h1 {
         font-size: 76px;
@@ -38,7 +38,7 @@
 }
 
 
-@media(max-width: 710px) {
+@media(max-width: 710px), (max-height: 720px) {
 
     h1 {
         font-size: 58px;
@@ -58,10 +58,45 @@
 }
 
 
-@media(max-height: 500px) {
+@media(max-height: 580px) {
 
     h1 {
         font-size: 56px;
     }
 
+    .h1-start {
+        display: none;
+    }
+
+    .nav-content {
+        justify-content: space-between;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .nav-desktop {
+        display: none;
+    }
+
+    .nav-mobile {
+        display: flex;
+    }
+
+    :root {
+        --height-header: 32px;
+    }
+
+    .button-group{
+        display: none;
+    }
+
+    .option-group{
+        margin-top: 10px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mobile-menu-box {
+        transition: none;
+    }
 }

@@ -1,4 +1,4 @@
-body{
+body {
     color: black;
     font-family: 'Baloo-2-medium', sans-serif;
     font-size: 16px;
@@ -13,7 +13,14 @@ input {
     border-radius: 4px;
 }
 
-.option-group{
+.h1-options {
+    margin-block-start: 0;
+    margin-block-end: 0;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+}
+
+.option-group {
     margin-top: 24px;
     height: 487px;
     width: 400px;
@@ -23,7 +30,7 @@ input {
     box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
 }
 
-.option-group-container{
+.option-group-container {
     display: flex;
     flex-direction: column;
     margin-bottom: 20px;
@@ -35,31 +42,31 @@ input {
     gap: 24px;
 }
 
-.option-fieldset{
+.option-fieldset {
     border: none;
     outline: none;
 }
 
-.game-settings-container{
+.game-settings-container {
     display: flex;
     flex-direction: column;
 }
 
-.setting-label{
+.setting-label {
     margin-top: 16px;
 }
 
-.option-button-container{
+.option-button-container {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
 }
 
-.select-container{
+.select-container {
     position: relative;
     width: 100%;
-    height:45px;
+    height: 45px;
     box-sizing: border-box;
     display: flex;
     justify-content: flex-start;
@@ -70,11 +77,11 @@ input {
     background-color: white;
 }
 
-.select-container-active{
+.select-container-active {
     border: 2.5px solid var(--border-active) !important;
 }
 
-.select-container-input{
+.select-container-input {
     width: calc(100% - 40px);
     height: 100%;
     margin-left: 2px;
@@ -86,13 +93,13 @@ input {
     cursor: pointer;
 }
 
-.select-container-input::placeholder{
+.select-container-input::placeholder {
     color: black;
     font-family: 'Baloo-2-medium', sans-serif;
     font-size: 16px;
 }
 
-.select-container-button{
+.select-container-button {
     position: absolute;
     right: 0;
     width: 36px;
@@ -106,7 +113,7 @@ input {
     align-items: center;
 }
 
-.btn-show div{
+.btn-show div {
     width: 24px;
     height: 24px;
     background-image: url('../img/custom/arrow-down.svg');
@@ -115,7 +122,7 @@ input {
     background-position: center center;
 }
 
-.btn-hide div{
+.btn-hide div {
     width: 24px;
     height: 24px;
     background-image: url('../img/custom/arrow-up.svg');
@@ -124,7 +131,7 @@ input {
     background-position: center center;
 }
 
-.select-list-container{
+.select-list-container {
     background-color: white;
     box-sizing: border-box;
     position: relative;
@@ -138,7 +145,7 @@ input {
     transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.list-scroll{
+.list-scroll {
     overflow: unset !important;
 }
 
@@ -160,7 +167,7 @@ input {
     transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.safe-options-dialog{
+.safe-options-dialog {
     width: 300px;
     height: 150px;
     border: none;
@@ -169,22 +176,22 @@ input {
     background-color: white;
 }
 
-.safe-options-dialog::backdrop{
+.safe-options-dialog::backdrop {
     background-color: rgba(0, 0, 0, 0.4);
 }
 
-.safe-options-dialog>div{
+.safe-options-dialog>div {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100%;
     gap: 24px;
-    padding-left: 16px; 
+    padding-left: 16px;
     padding-right: 16px;
 }
 
-.safe-options-dialog span{
+.safe-options-dialog span {
     font-size: 18px;
     text-align: center;
 }

@@ -40,7 +40,7 @@ body {
     font-size: 16px;
 }
 
-a{
+a {
     text-decoration: none;
     color: rgb(190, 102, 51);
     word-wrap: break-word;
@@ -86,7 +86,7 @@ main {
     max-width: 1440px;
     width: 100%;
     min-height: 100vh;
-    padding-top: 64px;
+    padding-top: var(--height-header);
     margin-left: auto;
     margin-right: auto;
     position: relative;
@@ -127,7 +127,7 @@ main {
 }
 
 nav {
-    height: 64px;
+    height: var(--height-header);
     background-color: rgba(84, 18, 27, 0.7);
     position: fixed;
     top: 0;
@@ -151,6 +151,36 @@ nav {
     justify-content: center;
     align-items: center;
     gap: 24px;
+    transition: all 0.3s ease;
+}
+
+.nav-desktop {
+    display: flex;
+}
+
+.nav-mobile {
+    display: none;
+}
+
+.mobile-menu-box {
+    display: flex;
+    position: fixed;
+    top: var(--height-header);
+    right: 0;
+    background-color: rgba(84, 18, 27, 0.9);
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+    flex-direction: column;
+    padding: 10px;
+    border-radius: 12px 0 0 12px;
+    gap: 4px;
+    transform: translateX(110%);
+    transition: transform 0.3s ease;
+    will-change: transform;
+}
+
+.mobile-menu-box.visible {
+    transform: translateX(0);
 }
 
 .btn {
@@ -158,6 +188,17 @@ nav {
     border: none;
     border-radius: 5px;
     padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-mobile-submenu {
+    background-color: rgb(245, 178, 44);
+    font-family: 'Baloo-2-medium', sans-serif;
+    border: none;
+    border-radius: 2px;
+    padding: 3px 8px;
     font-size: 16px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -195,7 +236,28 @@ nav {
 
 }
 
+.btn-small {
+    width: 36px;
+    height: 28px;
+    padding: 0;
+    font-size: 16px;
+    border-radius: 4px;
+    background-color: rgb(245, 178, 44);
+    box-sizing: border-box;
+}
 
+.btn-mobile-menu {
+    width: 36px;
+    height: 28px;
+    padding: 0;
+    font-size: 16px;
+    border-radius: 4px;
+    background-color: rgb(245, 178, 44);
+    background-image: url('../img/custom/mMenu.svg');
+    background-size: 60% auto;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
 
 .btn-lager {
     width: 208px;

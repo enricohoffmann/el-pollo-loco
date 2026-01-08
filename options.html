@@ -6,8 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Options</title>
     <link rel="stylesheet" href="./styles/color.css">
+    <link rel="stylesheet" href="./styles/sizes.css">
     <link rel="stylesheet" href="./styles/style.css">
     <link rel="stylesheet" href="./styles/options.css">
+    <link rel="stylesheet" href="./styles/mediaQuerys.css">
     <link rel="icon" type="image/png" href="./img/2_character_pepe/1_idle/idle/I-1.png">
 </head>
 
@@ -18,15 +20,28 @@
         <div class="site-content">
 
             <nav>
-                <div class="nav-content">
+                <div class="nav-content nav-desktop">
                     <button type="button" class="btn btn-yellow" onclick="navigateTo('index')">Back</button>
                     <button type="button" class="btn btn-yellow" onclick="navigateTo('impressum')">Impressum</button>
                     <button type="button" class="btn btn-yellow" onclick="navigateTo('privacy')">Privacy Policy</button>
                 </div>
+
+                <div class="nav-content nav-mobile">
+                    <button type="button" class="btn btn-small" onclick="navigateTo('index')">Back</button>
+                    <button type="button" class="btn btn-mobile-menu" title="Mobile Menu"
+                        onclick="mobileMenuClick(event)"></button>
+                </div>
+
             </nav>
 
+            <section id="mobileMenu" class="mobile-menu-box" onclick="">
+                <button type="button" class="btn-mobile-submenu" onclick="navigateTo('impressum')">Impressum</button>
+                <button type="button" class="btn-mobile-submenu" onclick="navigateTo('privacy')">Privacy Policy</button>
+                <button type="button" class="btn-mobile-submenu">Help</button>
+            </section>
+
             <main>
-                <h1>Options</h1>
+                <h1 class="h1-options">Options</h1>
                 <div class="option-group">
 
                     <aside class="option-group-container">
@@ -39,17 +54,21 @@
                                     placeholder="Select Audio Setting" readonly
                                     onclick="showOrHideSelectedList('audio', audioListOpen ? 'hide' : 'show')">
                                 <button id="audioShowOrHideBtn" class="select-container-button btn-show" type="button"
-                                    title="show or hide audio list" onclick="showOrHideSelectedList('audio', audioListOpen ? 'hide' : 'show')">
+                                    title="show or hide audio list"
+                                    onclick="showOrHideSelectedList('audio', audioListOpen ? 'hide' : 'show')">
                                     <div title="show or hide icon"></div>
                                 </button>
                             </div>
 
                             <div class="select-list-container" id="audioListContainer">
                                 <div class="select-list" id="audioButtonList">
-                                    <button id="btnAudioOn" class="btn btn-yellow" type="button" title="select Audio On" data-selected="false" onclick="selectOption('audio', 'Audio On', this)">
+                                    <button id="btnAudioOn" class="btn btn-yellow" type="button" title="select Audio On"
+                                        data-selected="false" onclick="selectOption('audio', 'Audio On', this)">
                                         <span>Audio On</span>
                                     </button>
-                                    <button id="btnAudioOff" class="btn btn-yellow" type="button" title="select Audio Off" data-selected="false" onclick="selectOption('audio', 'Audio Off', this)">
+                                    <button id="btnAudioOff" class="btn btn-yellow" type="button"
+                                        title="select Audio Off" data-selected="false"
+                                        onclick="selectOption('audio', 'Audio Off', this)">
                                         <span>Audio Off</span>
                                     </button>
                                 </div>
@@ -65,20 +84,27 @@
                                     placeholder="Select Theme" readonly
                                     onclick="showOrHideSelectedList('theme', themeListOpen ? 'hide' : 'show')">
                                 <button id="themeShowHideBtn" class="select-container-button btn-show" type="button"
-                                    title="show or hide theme list" onclick="showOrHideSelectedList('theme', themeListOpen ? 'hide' : 'show')">
+                                    title="show or hide theme list"
+                                    onclick="showOrHideSelectedList('theme', themeListOpen ? 'hide' : 'show')">
                                     <div title="show or hide icon"></div>
                                 </button>
                             </div>
 
                             <div class="select-list-container" id="themeListContainer">
                                 <div class="select-list" id="themeButtonList">
-                                    <button id="btnThemeBlue" class="btn btn-yellow" type="button" title="select Blue theme"  data-selected="false" onclick="selectOption('theme', 'Blue', this)">
+                                    <button id="btnThemeBlue" class="btn btn-yellow" type="button"
+                                        title="select Blue theme" data-selected="false"
+                                        onclick="selectOption('theme', 'Blue', this)">
                                         <span>Blue</span>
                                     </button>
-                                    <button id="btnThemeGreen" class="btn btn-yellow" type="button" title="select Green theme" data-selected="false" onclick="selectOption('theme', 'Green', this)">
+                                    <button id="btnThemeGreen" class="btn btn-yellow" type="button"
+                                        title="select Green theme" data-selected="false"
+                                        onclick="selectOption('theme', 'Green', this)">
                                         <span>Green</span>
                                     </button>
-                                    <button id="btnThemeOrange" class="btn btn-yellow" type="button" title="select Orange theme" data-selected="false" onclick="selectOption('theme', 'Orange', this)">
+                                    <button id="btnThemeOrange" class="btn btn-yellow" type="button"
+                                        title="select Orange theme" data-selected="false"
+                                        onclick="selectOption('theme', 'Orange', this)">
                                         <span>Orange</span>
                                     </button>
                                 </div>
@@ -93,23 +119,32 @@
                                 <input id="difficultyInput" class="select-container-input" type="text" value=""
                                     placeholder="Select Difficulty" readonly
                                     onclick="showOrHideSelectedList('difficulty', difficultyListOpen ? 'hide' : 'show')">
-                                <button id="difficultyShowHideBtn" class="select-container-button btn-show" type="button"
-                                    title="show or hide difficulty list" onclick="showOrHideSelectedList('difficulty', difficultyListOpen ? 'hide' : 'show')">
+                                <button id="difficultyShowHideBtn" class="select-container-button btn-show"
+                                    type="button" title="show or hide difficulty list"
+                                    onclick="showOrHideSelectedList('difficulty', difficultyListOpen ? 'hide' : 'show')">
                                     <div title="show or hide icon"></div>
                                 </button>
                             </div>
                             <div class="select-list-container" id="difficultyListContainer">
                                 <div class="select-list" id="difficultyButtonList">
-                                    <button id="btnDifficultyEasy" class="btn btn-yellow" type="button" title="select Easy difficulty" data-selected="false" onclick="selectOption('difficulty', 'Easy', this)">
+                                    <button id="btnDifficultyEasy" class="btn btn-yellow" type="button"
+                                        title="select Easy difficulty" data-selected="false"
+                                        onclick="selectOption('difficulty', 'Easy', this)">
                                         <span>Easy</span>
                                     </button>
-                                    <button id="btnDifficultyMedium" class="btn btn-yellow" type="button" title="select Medium difficulty" data-selected="false" onclick="selectOption('difficulty', 'Medium', this)">
+                                    <button id="btnDifficultyMedium" class="btn btn-yellow" type="button"
+                                        title="select Medium difficulty" data-selected="false"
+                                        onclick="selectOption('difficulty', 'Medium', this)">
                                         <span>Medium</span>
                                     </button>
-                                    <button id="btnDifficultyHard" class="btn btn-yellow" type="button" title="select Hard difficulty" data-selected="false" onclick="selectOption('difficulty', 'Hard', this)">
+                                    <button id="btnDifficultyHard" class="btn btn-yellow" type="button"
+                                        title="select Hard difficulty" data-selected="false"
+                                        onclick="selectOption('difficulty', 'Hard', this)">
                                         <span>Hard</span>
                                     </button>
-                                    <button id="btnDifficultyCustom" class="btn btn-yellow" type="button" title="select Custom difficulty" data-selected="false" onclick="selectOption('difficulty', 'Custom', this)">
+                                    <button id="btnDifficultyCustom" class="btn btn-yellow" type="button"
+                                        title="select Custom difficulty" data-selected="false"
+                                        onclick="selectOption('difficulty', 'Custom', this)">
                                         <span>Custom</span>
                                     </button>
                                 </div>
@@ -118,37 +153,43 @@
 
                         <!-- Game Settings -->
                         <div class="game-settings-container">
-                            <label for="enemyCountInput">Count of Enemies:</label> 
-                            <input type="number" id="enemyCountInput" name="enemyCountInput" min="1" max="20" value="0" readonly>
+                            <label for="enemyCountInput">Count of Enemies:</label>
+                            <input type="number" id="enemyCountInput" name="enemyCountInput" min="1" max="20" value="0"
+                                readonly>
 
                             <label class="setting-label" for="coinCountInput">Count of minimum Coins:</label>
-                            <input type="number" id="coinCountInput" name="coinCountInput" min="1" max="20" value="0" readonly>
+                            <input type="number" id="coinCountInput" name="coinCountInput" min="1" max="20" value="0"
+                                readonly>
 
                             <label class="setting-label" for="bottleCountInput">Count of minimum Bottles:</label>
-                            <input type="number" id="bottleCountInput" name="bottleCountInput" min="1" max="20" value="0" readonly>
+                            <input type="number" id="bottleCountInput" name="bottleCountInput" min="1" max="20"
+                                value="0" readonly>
 
                             <label class="setting-label" for="gameLengthInput">Game Length (frames):</label>
-                            <input type="number" id="gameLengthInput" name="gameLengthInput" min="1" max="12" value="0" readonly>
+                            <input type="number" id="gameLengthInput" name="gameLengthInput" min="1" max="12" value="0"
+                                readonly>
                         </div>
-                        
 
-                    </aside> 
+
+                    </aside>
 
                     <div class="option-button-container">
-                        <button type="button" class="btn btn-orange btn-lg" onclick="safeCurrentGameSettings()">Save</button>
+                        <button type="button" class="btn btn-orange btn-lg"
+                            onclick="safeCurrentGameSettings()">Save</button>
                     </div>
 
-                    
+
 
                 </div>
             </main>
 
-            
+
 
 
         </div>
 
-        <dialog id="safeOptionDialog" class="safe-options-dialog safe-dialog-show visually-hidden" role="dialog" aria-describedby="safeOptions" aria-modal="true">
+        <dialog id="safeOptionDialog" class="safe-options-dialog safe-dialog-show visually-hidden" role="dialog"
+            aria-describedby="safeOptions" aria-modal="true">
             <div>
                 <span id="safeOptions">Options saved successfully!</span>
                 <button type="button" class="btn btn-yellow" onclick="safeDialogClose()">OK</button>

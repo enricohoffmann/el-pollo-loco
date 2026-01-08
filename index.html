@@ -6,22 +6,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="./img/2_character_pepe/1_idle/idle/I-1.png">
     <title>Pollo Loco</title>
+    <link rel="stylesheet" href="./styles/sizes.css">
     <link rel="stylesheet" href="./styles/style.css">
     <link rel="stylesheet" href="./styles/mediaQuerys.css">
 </head>
 
-<body onload="init(), siteLoaded()">
+<body onload="init(), siteLoaded()" onclick="mobileMenuClick(event, true)">
     <div class="site-content">
         <nav>
-            <div class="nav-content">
+            <div class="nav-content nav-desktop">
                 <button type="button" class="btn btn-yellow" onclick="navigateTo('impressum')">Impressum</button>
                 <button type="button" class="btn btn-yellow" onclick="navigateTo('privacy')">Privacy Policy</button>
             </div>
+
+            <div class="nav-content nav-mobile">
+                <button type="button" class="btn btn-small">Play</button>
+                <button type="button" class="btn btn-mobile-menu" title="Mobile Menu" onclick="mobileMenuClick(event)"></button>
+            </div>
+
         </nav>
+
+        <section id="mobileMenu" class="mobile-menu-box" onclick="">
+            <button type="button" class="btn-mobile-submenu" onclick="navigateTo('impressum')">Impressum</button>
+            <button type="button" class="btn-mobile-submenu" onclick="navigateTo('privacy')">Privacy Policy</button>
+            <button type="button" class="btn-mobile-submenu">Options</button>
+            <button type="button" class="btn-mobile-submenu">Help</button>
+        </section>
 
 
         <main>
-            <h1>Welcome to Pollo Loco</h1>
+            <h1 class="h1-start">Welcome to Pollo Loco</h1>
 
             <section class="start-image-container">
                 <div class="start-image"></div>
