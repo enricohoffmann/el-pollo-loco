@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>El Pollo Loco</title>
     <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="./styles/sizes.css">
     <link rel="stylesheet" href="./styles/game.css">
+    <link rel="stylesheet" href="./styles/mediaQuerys.css">
     <link rel="icon" type="image/png" href="./img/2_character_pepe/1_idle/idle/I-1.png">
 </head>
 
@@ -15,23 +17,52 @@
     <div class="site-content">
 
         <nav>
-            <div class="nav-content">
+            <div class="nav-content nav-desktop">
                 <button type="button" class="btn btn-yellow" onclick="navigateTo('index')">Back</button>
                 <button type="button" class="btn btn-yellow" onclick="navigateTo('impressum')">Impressum</button>
                 <button type="button" class="btn btn-yellow" onclick="navigateTo('privacy')">Privacy Policy</button>
                 <button type="button" class="btn btn-yellow" onclick="navigateTo('help')">Help</button>
             </div>
+            <div class="nav-content nav-mobile">
+                <button type="button" class="btn btn-small" onclick="navigateTo('index')">Back</button>
+                <button type="button" class="btn btn-mobile-menu" title="Mobile Menu"
+                    onclick="mobileMenuClick(event)"></button>
+            </div>
+
         </nav>
 
-
-        <h1>Play!</h1>
-        <h2>Current difficulty: Easy</h2>
-
-        <section class="game-container">
-            <canvas width="720" height="480" id="canvas"></canvas>
+        <section id="mobileMenu" class="mobile-menu-box" onclick="">
+            <button type="button" class="btn-mobile-submenu" onclick="navigateTo('privacy')">Privacy Policy</button>
+            <button type="button" class="btn-mobile-submenu" onclick="navigateTo('options')">Options</button>
+            <button type="button" class="btn-mobile-submenu">Help</button>
         </section>
 
+        <main class="main-game">
+           <!--  <h1 class="h1-game">Play!</h1> -->
+            <h2 class="h2-game">Current difficulty: Easy</h2>
+
+            <section class="game-container">
+                <canvas class="game-canvas" id="canvas" width="720" height="480"></canvas>
+            </section>
+        </main>
+
+
+
     </div>
+
+    <dialog id="game-over-dialog" class="gameWinOverDialog" onclick="closeGameOverDialog()">
+        <div class="dialogContent" id="game-over-content">
+            <div class="gameOverImg winLostGameAnimation"></div>
+        </div>
+    </dialog>
+
+    <dialog id="game-win-dialog" class="gameWinOverDialog" onclick="closeGameWinDialog()">
+        <div class="dialogContent" id="game-win-content">
+            <div class="gameWinImg winLostGameAnimation"></div>
+        </div>
+    </dialog>
+
+    <div class="portrait-warning" hidden>Please rotate your device to landscape mode.📱</div>
 
 
     <script src="./js/script.js"></script>
@@ -66,19 +97,7 @@
     <script src="./js/game.js"></script>
 
 
-    <dialog id="game-over-dialog" class="gameWinOverDialog" onclick="closeGameOverDialog()">
-        <div class="dialogContent" id="game-over-content">
-            <div class="gameOverImg winLostGameAnimation"></div>
-        </div>
-    </dialog>
-
-    <dialog id="game-win-dialog" class="gameWinOverDialog" onclick="closeGameWinDialog()">
-        <div class="dialogContent" id="game-win-content">
-            <div class="gameWinImg winLostGameAnimation"></div>
-        </div>
-    </dialog>
-
-    <div class="portrait-warning" hidden>Please rotate your device to landscape mode.📱</div>
+    
 
 </body>
 

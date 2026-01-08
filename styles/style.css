@@ -315,3 +315,7 @@ html.portrait-blocked .portrait-warning {
     text-align: center;
     padding-top: 40vh;
 }
+
+.lock-resize {
+    overflow: hidden;
+}

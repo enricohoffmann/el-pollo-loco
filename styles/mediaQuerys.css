@@ -38,6 +38,33 @@
 }
 
 
+@media only screen and (max-width: 760px) {
+    .game-canvas {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-height: 500px) {
+    .game-canvas {
+        height: calc(100vh - var(--height-header) - 0px);
+    }
+
+    .game-container {
+        width: 100%;
+        height: calc(100vh - var(--height-header) - 0px);
+        padding: 0;
+        border-radius: 0;
+        box-shadow: none;
+        margin-top: 28px;
+
+    }
+
+    .main-game{
+        padding-top: 0 !important;
+    }
+
+}
+
 @media(max-width: 710px), (max-height: 720px) {
 
     h1 {
@@ -64,9 +91,12 @@
         font-size: 56px;
     }
 
-    .h1-start {
+    .h1-start,
+    .h1-game,
+    .h2-game {
         display: none;
     }
+
 
     .nav-content {
         justify-content: space-between;
@@ -86,11 +116,11 @@
         --height-header: 32px;
     }
 
-    .button-group{
+    .button-group {
         display: none;
     }
 
-    .option-group{
+    .option-group {
         margin-top: 10px;
     }
 }

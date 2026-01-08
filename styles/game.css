@@ -1,6 +1,9 @@
-canvas{
+.game-canvas{
     background-color: black;
+    display: block;
 }
+
+
 
 .gameWinOverDialog {
     outline: none;
@@ -25,22 +28,22 @@ canvas{
     background-color: transparent;
 }
 
-.gameOverImg{
-    width: 800px;
-    height: 600px;
-    background-image: url('../img/You won, you lost/Game-Over.png');
+
+.gameOverImg, .gameWinImg {
+    width: min(62vw, 800px);
+    height: min(62vh, 600px);
+    aspect-ratio: 4 / 3;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center center;
 }
 
+.gameOverImg{
+    background-image: url('../img/You won, you lost/Game-Over.png');
+}
+
 .gameWinImg{
-    width: 800px;
-    height: 600px;
     background-image: url('../img/You won, you lost/You Win A.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center center;
 }
 
 .game-container{
@@ -49,6 +52,7 @@ canvas{
     border-radius: 15px;
     box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
     margin-top: 28px;
+    
 }
 
 .winLostGameAnimation{

@@ -3,7 +3,7 @@ class Character extends MoveableObject {
     width = 150;
     speed = 10;
     damage = 0.5;
-
+    energy = 200;
     world;
     animationInterval;
     keyboardReadInterval;

@@ -1,3 +1,5 @@
-:root{
+:root {
     --height-header: 64px;
+    --base-w: 720;
+    --base-h: 480;
 }

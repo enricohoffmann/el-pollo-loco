@@ -16,7 +16,7 @@ class LevelSetting extends LevelProperties {
     getEasyLevelSettings(){
 
         const easySettings = new LevelProperties();
-        easySettings.damage = 10;
+        easySettings.damage = 5;
         easySettings.initialHealth = 100;
         easySettings.initialBottleCount = 10;
         easySettings.bottlesOnScreenRange = this.bottlesOnScreenRange;

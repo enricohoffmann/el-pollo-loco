@@ -1,14 +1,16 @@
 const keyboard = new Keyboard();
 let canvas;
+let ctx;
 let world;
 let canvasWidth = 720;
 let canvasHeight = 480;
 
 
 function init() {
-    
+
     const state = loadGameRunningState();
-    if(!state || state === false){
+    canvas = document.getElementById("canvas");
+    if (!state || state === false) {
         newGameStart();
     } else {
         savedGameStart();
@@ -18,7 +20,6 @@ function init() {
 
 function newGameStart() {
     safeGameRunningState(true);
-    getCanvas();
     const levelCreator = new LevelCreator(canvas);
     const level = levelCreator.createLevel();
 
@@ -26,13 +27,17 @@ function newGameStart() {
 
 
     world = new World(canvas, keyboard, level, 'orange');
+
+    console.log(canvas.width, canvas.height);
+    console.log(canvas.getBoundingClientRect());
+
+
     world.createNewGameObjects();
     world.run();
 }
 
-function savedGameStart(){
+function savedGameStart() {
     safeGameRunningState(true);
-    getCanvas();
     const levelCreator = new LevelCreator(canvas);
     const level = levelCreator.createLevelFromState();
 
@@ -47,13 +52,21 @@ function savedGameStart(){
     world.run();
 }
 
-function getCanvas(){
+function getCanvas() {
     canvas = document.getElementById("canvas");
+
+    const styles = getComputedStyle(canvas);
+    canvas.width = parseInt(styles.width);
+    canvas.height = parseInt(styles.height);
+
     canvasWidth = canvas.width;
     canvasHeight = canvas.height;
+
+    console.log(canvas.width, canvas.height);
+    console.log(canvas.getBoundingClientRect());
 }
 
-function getSavedGameObjects(){
+function getSavedGameObjects() {
     const gameObjects = {
         statusbars: loadStatusbarState(),
         coins: loadCoinState(),
@@ -70,6 +83,7 @@ function openGameOverDialog() {
     const content = document.getElementById('game-over-content');
     content.width = dialog.width * 0.8;
     content.height = dialog.height * 0.8;
+    lockResize();
     dialog.showModal();
 }
 
@@ -78,6 +92,7 @@ function closeGameOverDialog() {
     dialog.close();
     safeGameRunningState(false);
     world = null;
+    unlockResize();
     navigateTo('index');
 }
 
@@ -88,6 +103,7 @@ function openGameWinDialog() {
     const content = document.getElementById('game-win-content');
     content.width = dialog.width * 0.8;
     content.height = dialog.height * 0.8;
+    lockResize();
     dialog.showModal();
 }
 
@@ -96,10 +112,17 @@ function closeGameWinDialog() {
     dialog.close();
     safeGameRunningState(false);
     world = null;
+    unlockResize();
     navigateTo('index');
 }
 
+function lockResize() {
+    document.body.classList.add('lock-resize');
+}
 
+function unlockResize() {
+    document.body.classList.remove('lock-resize');
+}
 
 window.addEventListener("keydown", (e) => { keyboard.setKey(e.key, true); });
 window.addEventListener("keyup", (e) => { keyboard.setKey(e.key, false); });

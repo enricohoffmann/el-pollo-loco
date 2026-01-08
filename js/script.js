@@ -20,7 +20,7 @@ function mobileMenuClick(event, onlyClose = false) {
     const menu = document.getElementById('mobileMenu');
     event.stopPropagation();
 
-    if(onlyClose && !mobileMenuVisible){
+    if (onlyClose && !mobileMenuVisible) {
         return;
     }
 
@@ -37,3 +37,6 @@ function mobileMenuClose(menu) {
 function mobileMenuOpen(menu) {
     menu.classList.add('visible');
 }
+
+
+
