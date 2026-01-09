@@ -22,6 +22,7 @@ class Cloud extends MoveableObject {
 
         const maxAttempts = 35;
         this.pos_x = this.getRandomInt(this.canvas.width, this.end_pos_x) + 200;
+        
 
         if(this.clouds == null || this.clouds.length === 0) return;
 

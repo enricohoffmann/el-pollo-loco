@@ -41,7 +41,7 @@ class Endboss extends MoveableObject {
 
     animate() {
         setTimeout(() => {
-            this.walkingAnimation();
+            //this.walkingAnimation();
         }, 5000);
 
     }

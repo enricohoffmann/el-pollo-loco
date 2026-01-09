@@ -52,7 +52,6 @@ class World {
         }, 2000);
     }
 
-
     checkIfNewBottleCollected() {
         if (this.currentCollectedBottles < this.bottleManager.collectedItems) {
 

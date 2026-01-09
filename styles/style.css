@@ -158,7 +158,15 @@ nav {
     display: flex;
 }
 
-.nav-mobile {
+.nav-mobile{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap:8px;
+    padding-right: 36px;
+}
+
+.nav-mobile-game {
     display: none;
 }
 
@@ -293,6 +301,10 @@ nav {
     margin-right: 24px;
     margin-bottom: 24px;
     overflow-y: auto;
+}
+
+.text-white {
+    color: rgb(207, 203, 203);
 }
 
 .portrait-warning {

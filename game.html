@@ -12,36 +12,58 @@
     <link rel="icon" type="image/png" href="./img/2_character_pepe/1_idle/idle/I-1.png">
 </head>
 
-<body onload="init()">
+<body onload="init()" class="body-game">
 
     <div class="site-content">
 
-        <nav>
+        <nav class="nav-game">
             <div class="nav-content nav-desktop">
                 <button type="button" class="btn btn-yellow" onclick="navigateTo('index')">Back</button>
                 <button type="button" class="btn btn-yellow" onclick="navigateTo('impressum')">Impressum</button>
                 <button type="button" class="btn btn-yellow" onclick="navigateTo('privacy')">Privacy Policy</button>
                 <button type="button" class="btn btn-yellow" onclick="navigateTo('help')">Help</button>
             </div>
-            <div class="nav-content nav-mobile">
-                <button type="button" class="btn btn-small" onclick="navigateTo('index')">Back</button>
-                <button type="button" class="btn btn-mobile-menu" title="Mobile Menu"
-                    onclick="mobileMenuClick(event)"></button>
-            </div>
-
         </nav>
 
-        <section id="mobileMenu" class="mobile-menu-box" onclick="">
+        <section id="mobileMenu" class="mobile-menu-box isGame" onclick="">
             <button type="button" class="btn-mobile-submenu" onclick="navigateTo('privacy')">Privacy Policy</button>
             <button type="button" class="btn-mobile-submenu" onclick="navigateTo('options')">Options</button>
             <button type="button" class="btn-mobile-submenu">Help</button>
         </section>
 
         <main class="main-game">
-           <!--  <h1 class="h1-game">Play!</h1> -->
-            <h2 class="h2-game">Current difficulty: Easy</h2>
-
             <section class="game-container">
+
+                <header class="game-header">
+                    <div class="game-controls">
+                        <button id="pauseButton" type="button" class="btn-control" onclick="pauseGame()"
+                            title="Pause/Play">
+                            <div class="icon-play"></div>
+                        </button>
+                        <button type="button" class="btn-control" onclick="reloadGame()" title="Reload Game">
+                            <div class="icon-reload"></div>
+                        </button>
+                        <button id="muteButton" type="button" class="btn-control" onclick="toggleMute()"
+                            title="Mute / Unmute">
+                            <div class="icon-audio-on"></div>
+                        </button>
+                        <button id="fullScreenButton" type="button" class="btn-control" onclick="toggleFullScreen()"
+                            title="Toggle Fullscreen">
+                            <div class="icon-fullscreen"></div>
+                        </button>
+                        <span id="difficultyState" class="text-white">difficulty: Easy</span>
+                    </div>
+                    <div class="nav-mobile nav-mobile-game">
+                        <button type="button" class="btn btn-small" onclick="navigateTo('index')">Back</button>
+                        <button type="button" class="btn btn-mobile-menu" title="Mobile Menu"
+                            onclick="mobileMenuClick(event)"></button>
+                    </div>
+                </header>
+
+
+
+
+
                 <canvas class="game-canvas" id="canvas" width="720" height="480"></canvas>
             </section>
         </main>
@@ -97,7 +119,7 @@
     <script src="./js/game.js"></script>
 
 
-    
+
 
 </body>
 

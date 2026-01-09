@@ -1,9 +1,17 @@
-.game-canvas{
+.game-canvas {
     background-color: black;
     display: block;
+    aspect-ratio: 720 / 480;
 }
 
-
+.game-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-left: 36px;
+    margin-right: 36px;
+}
 
 .gameWinOverDialog {
     outline: none;
@@ -18,7 +26,7 @@
     background: rgba(0, 0, 0, 0.8);
 }
 
-.dialogContent{
+.dialogContent {
     padding: 50px;
     display: flex;
     flex-direction: column;
@@ -29,7 +37,8 @@
 }
 
 
-.gameOverImg, .gameWinImg {
+.gameOverImg,
+.gameWinImg {
     width: min(62vw, 800px);
     height: min(62vh, 600px);
     aspect-ratio: 4 / 3;
@@ -38,34 +47,124 @@
     background-position: center center;
 }
 
-.gameOverImg{
+.gameOverImg {
     background-image: url('../img/You won, you lost/Game-Over.png');
 }
 
-.gameWinImg{
+.gameWinImg {
     background-image: url('../img/You won, you lost/You Win A.png');
 }
 
-.game-container{
-    padding: 30px 30px;
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
     background-color: rgba(84, 18, 27, 1);
     border-radius: 15px;
     box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
     margin-top: 28px;
-    
+    gap: 12px;
+    box-sizing: border-box;
 }
 
-.winLostGameAnimation{
+.main-game:fullscreen{
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  background: black;
+  display: grid;
+  place-items: center;
+}
+
+.main-game:fullscreen .game-canvas{
+  width: 100vw;
+  height: 86vh;
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 720 / 480;
+}
+
+.game-controls {
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 30px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 36px;
+    gap: 12px;
+}
+
+.btn-control {
+    width: 32px;
+    height: 32px;
+    padding: 8px;
+    border: none;
+    border-radius: 50%;
+    background-color: rgb(245, 178, 44);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-control:hover {
+    background-color: rgb(196, 74, 55);
+    box-shadow: 0 0 10px 5px rgba(245, 178, 44, 0.2);
+}
+
+.icon-audio-on, .icon-audio-off, .icon-reload, .icon-play, .icon-pause, .icon-fullscreen, .icon-exit-fullscreen {
+    height: 20px;
+    width: 20px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.icon-audio-on {
+    background-image: url('../img/custom/volume_up.svg');
+}
+.icon-audio-off {
+    background-image: url('../img/custom/volume_off.svg');
+}
+
+.icon-reload{
+    background-image: url('../img/custom/reload.svg');
+}
+
+.icon-play{
+    background-image: url('../img/custom/play.svg');
+}
+
+.icon-pause{
+    background-image: url('../img/custom/pause.svg');
+}
+
+.icon-fullscreen{
+    background-image: url('../img/custom/open_in_full.svg');
+}
+
+.icon-exit-fullscreen{
+    background-image: url('../img/custom/close_fullscreen.svg');
+}
+
+.winLostGameAnimation {
     animation: winLostGameAnimation 2s ease-in-out;
 }
 
 @keyframes winLostGameAnimation {
-    0%{
+    0% {
         transform: scale(1);
     }
+
     50% {
         transform: scale(1.1);
     }
+
     100% {
         transform: scale(1);
     }

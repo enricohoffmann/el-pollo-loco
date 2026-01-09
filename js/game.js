@@ -4,12 +4,18 @@ let ctx;
 let world;
 let canvasWidth = 720;
 let canvasHeight = 480;
-
+let pause = false;
+let muted = false;
+let isFullScreen = false;
+let gameSettings;
 
 function init() {
 
     const state = loadGameRunningState();
+    audioSettingsInit();
+    updateDifficultyState();
     canvas = document.getElementById("canvas");
+
     if (!state || state === false) {
         newGameStart();
     } else {
@@ -18,20 +24,27 @@ function init() {
 
 }
 
+function audioSettingsInit() {
+    gameSettings = loadGameSettings();
+    if (gameSettings) {
+        muted = gameSettings.audioSetting === 'Audio Off' ? true : false;
+    }
+    toggleMuteButtonIcon();
+}
+
+function updateDifficultyState() {
+    const difficultyStateElement = document.getElementById('difficultyState');
+    if (difficultyStateElement && gameSettings) {
+        difficultyStateElement.textContent = `difficulty: ${gameSettings.difficulty}`;
+    }
+}
+
+
 function newGameStart() {
     safeGameRunningState(true);
     const levelCreator = new LevelCreator(canvas);
     const level = levelCreator.createLevel();
-
-    let t = levelCreator.getCurrentDifficulty;
-
-
     world = new World(canvas, keyboard, level, 'orange');
-
-    console.log(canvas.width, canvas.height);
-    console.log(canvas.getBoundingClientRect());
-
-
     world.createNewGameObjects();
     world.run();
 }
@@ -40,9 +53,6 @@ function savedGameStart() {
     safeGameRunningState(true);
     const levelCreator = new LevelCreator(canvas);
     const level = levelCreator.createLevelFromState();
-
-    let t = levelCreator.getCurrentDifficulty;
-
     world = new World(canvas, keyboard, level, 'orange');
     world.character = new Character(world);
     world.character.pos_x = loadCharacterState().character.x;
@@ -124,8 +134,111 @@ function unlockResize() {
     document.body.classList.remove('lock-resize');
 }
 
+function pauseGame() {
+    pause = !pause;
+    togglePauseButtonIcon();
+}
+
+function isGamePaused() {
+    return pause;
+}
+
+function togglePauseButtonIcon() {
+    const pauseButtonDiv = document.querySelector('#pauseButton div');
+    if (pause) {
+        pauseButtonDiv.classList.remove('icon-pause');
+        pauseButtonDiv.classList.add('icon-play');
+    } else {
+        pauseButtonDiv.classList.remove('icon-play');
+        pauseButtonDiv.classList.add('icon-pause');
+    }
+}
+
+function reloadGame() {
+    if (world) {
+        clearInterval(world.runInterval);
+        world = null;
+        clearGameState();
+        init();
+    }
+
+}
+
+function toggleMute() {
+    muted = !muted;
+    gameSettings.audioSetting = muted ? 'Audio Off' : 'Audio On';
+    safeGameSettings(gameSettings);
+    toggleMuteButtonIcon();
+}
+
+function toggleMuteButtonIcon() {
+    const muteButtonDiv = document.querySelector('#muteButton div');
+    if (muted) {
+        muteButtonDiv.classList.remove('icon-audio-onh');
+        muteButtonDiv.classList.add('icon-audio-off');
+    } else {
+        muteButtonDiv.classList.remove('icon-audio-off');
+        muteButtonDiv.classList.add('icon-audio-on');
+    }
+
+}
+
+function isGameMuted() {
+    return muted;
+}
+
+function toggleFullScreen() {
+    isFullScreen = !isFullScreen;
+    const gameContainer = document.querySelector('.main-game');
+    if (isFullScreen) {
+        openFullscreen(gameContainer);
+        toggleFullScreenButtonIcon(true);
+    } else {
+        closeFullscreen();
+        toggleFullScreenButtonIcon(false);
+    }
+
+}
+
+function openFullscreen(element) {
+    if (element.requestFullscreen) {
+        element.requestFullscreen();
+    } else if (element.webkitRequestFullscreen) { /* Safari */
+        element.webkitRequestFullscreen();
+    } else if (element.msRequestFullscreen) { /* IE11 */
+        element.msRequestFullscreen();
+    }
+}
+
+function closeFullscreen() {
+    if (document.exitFullscreen) {
+        document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) { /* Safari */
+        document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) { /* IE11 */
+        document.msExitFullscreen();
+    }
+}
+
+function toggleFullScreenButtonIcon(isFullScreen) {
+    const fullScreenButtonDiv = document.querySelector('#fullScreenButton div');
+    if (isFullScreen) {
+        fullScreenButtonDiv.classList.remove('icon-fullscreen');
+        fullScreenButtonDiv.classList.add('icon-exit-fullscreen');
+    } else {
+        fullScreenButtonDiv.classList.remove('icon-exit-fullscreen');
+        fullScreenButtonDiv.classList.add('icon-fullscreen');
+    }
+}
+
+
+
+
+
 window.addEventListener("keydown", (e) => { keyboard.setKey(e.key, true); });
 window.addEventListener("keyup", (e) => { keyboard.setKey(e.key, false); });
 
 window.openGameOverDialog = openGameOverDialog;
 window.openGameWinDialog = openGameWinDialog;
+window.isGamePaused = isGamePaused;
+window.isGameMuted = isGameMuted;

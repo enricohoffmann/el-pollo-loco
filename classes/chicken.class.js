@@ -35,7 +35,7 @@ class Chicken extends MoveableObject {
                 this.die();
                 return;
             }
-            this.moveLeft();
+            //this.moveLeft();
         }, 1000 / 60);
 
         this.chickenAnimationInterval = setInterval(() => {
