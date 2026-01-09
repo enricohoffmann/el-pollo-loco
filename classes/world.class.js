@@ -20,6 +20,7 @@ class World {
     currentCollectedBottles = 0;
     lastBounceTime = 0;
     runInterval;
+    pauseImg;
 
     constructor(canvas, keyboard, level, colorTheme) {
         this.level = level;
@@ -34,6 +35,7 @@ class World {
     run() {
 
         this.runInterval = setInterval(() => {
+
             this.character.applyGravity();
             this.level.enemies.forEach((enemy) => {
                 this.checkColisions(enemy);
@@ -129,7 +131,7 @@ class World {
     }
 
     characterHitEnemyOnTop(enemy) {
-        if(enemy instanceof Endboss) {return;}
+        if (enemy instanceof Endboss) { return; }
         enemy.damage = 100;
         enemy.hit();
         this.bounceOffEnemy(enemy);
@@ -186,14 +188,35 @@ class World {
         this.addObjectsToMap(this.level.clouds);
         this.addToMap(this.character);
         this.drawEnemies();
-        this.ctx.translate(-this.camera_x, 0);
-        this.drawStatusBars(this.statusBars);
-        this.ctx.translate(this.camera_x, 0);
         this.drawBottle();
         this.drawCoins();
         this.drawBottles();
         this.drawEndbossHealthBar();
-        this.ctx.translate(-this.camera_x, 0); 
+        this.ctx.translate(-this.camera_x, 0);
+        this.drawStatusBars(this.statusBars);
+        if (window.isGamePaused()) {
+            this.drawPauseScreen();
+        }
+        this.ctx.translate(this.camera_x, 0);
+        this.ctx.translate(-this.camera_x, 0);
+    }
+
+
+
+    drawPauseScreen() {
+        this.ctx.save();
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        this.ctx.fillStyle = '#ffffff';
+        this.ctx.font = `${this.canvas.width * 0.12}px Lilita-One`;
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+        this.ctx.shadowColor = 'rgba(0,0,0,0.9)';
+        this.ctx.shadowBlur = 8;
+        this.ctx.fillText('PAUSE', this.canvas.width / 2, this.canvas.height / 2);
+
+        this.ctx.restore();
     }
 
     drawEnemies() {
@@ -296,7 +319,7 @@ class World {
 
     }
 
-    
+
 
 
 }

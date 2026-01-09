@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <!-- semi-transparent black overlay -->
+  <rect x="0" y="0" width="800" height="600" fill="rgba(0,0,0,0.6)"></rect>
+
+  <!-- pause text -->
+  <text x="400" y="300" text-anchor="middle" dominant-baseline="middle" font-family="Lilita-One, 'Lilita-One', sans-serif" font-size="96" fill="#ffffff" letter-spacing="6">
+    PAUSE
+  </text>
+</svg>

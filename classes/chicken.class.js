@@ -31,14 +31,18 @@ class Chicken extends MoveableObject {
 
     animate() {
         this.chickenWalkInterval = setInterval(() => {
+
+            if(window.isGamePaused()) return;
+
             if (this.isDead) {
                 this.die();
                 return;
             }
-            //this.moveLeft();
+            this.moveLeft();
         }, 1000 / 60);
 
         this.chickenAnimationInterval = setInterval(() => {
+            if(window.isGamePaused()) return;
             this.playAnimation(this.EMEMY_WALKING_IMAGES);
         }, 200);
     }

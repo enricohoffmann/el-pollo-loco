@@ -46,12 +46,12 @@
 
 @media only screen and (max-height: 500px) {
     .game-canvas {
-        height: calc(100vh - var(--height-header) - 54px);
+        height: calc(100vh - var(--height-header) - 72px);
     }
 
     .game-container {
         width: 100%;
-        height: calc(100vh - var(--height-header) - 54px);
+        height: calc(100vh - var(--height-header) - 72px);
         padding: 0;
         border-radius: 0;
         box-shadow: none;
@@ -59,7 +59,17 @@
 
     }
 
-    .main-game{
+    .mobile-game-button-panel {
+        display: flex;
+        width: 90%;
+    }
+
+    .mobile-btn-left,
+    .mobile-btn-right {
+        padding: 6px;
+    }
+
+    .main-game {
         padding-top: 0 !important;
     }
 
@@ -82,7 +92,7 @@
         font-size: 20px;
     }
 
-    .body-game{
+    .body-game {
         background-image: none;
         background-color: rgb(84, 18, 27);
     }
@@ -115,11 +125,12 @@
     .nav-mobile {
         display: flex;
     }
-    .nav-game{
+
+    .nav-game {
         display: none;
     }
 
-    .main-game{
+    .main-game {
         position: fixed;
         top: 0;
         left: 0;
@@ -129,17 +140,18 @@
         margin-top: 0 !important;
     }
 
-    #fullScreenButton{
+    #fullScreenButton {
         display: none;
     }
 
-    .mobile-menu-box.isGame{
-        top:60px
+    .mobile-menu-box.isGame {
+        top: 60px
     }
 
-    .game-container{
+    .game-container {
         padding: 0;
         margin-top: 0;
+        gap: 5px;
     }
 
     :root {

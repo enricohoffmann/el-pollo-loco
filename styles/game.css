@@ -4,7 +4,7 @@
     aspect-ratio: 720 / 480;
 }
 
-.game-header{
+.game-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -60,7 +60,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 30px;
+    padding: 30px 30px;
     background-color: rgba(84, 18, 27, 1);
     border-radius: 15px;
     box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
@@ -69,22 +69,22 @@
     box-sizing: border-box;
 }
 
-.main-game:fullscreen{
-  width: 100vw;
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-  background: black;
-  display: grid;
-  place-items: center;
+.main-game:fullscreen {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    background: black;
+    display: grid;
+    place-items: center;
 }
 
-.main-game:fullscreen .game-canvas{
-  width: 100vw;
-  height: 86vh;
-  max-width: 100%;
-  max-height: 100%;
-  aspect-ratio: 720 / 480;
+.main-game:fullscreen .game-canvas {
+    width: 100vw;
+    height: 86vh;
+    max-width: 100%;
+    max-height: 100%;
+    aspect-ratio: 720 / 480;
 }
 
 .game-controls {
@@ -110,6 +110,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    outline: none;
 }
 
 .btn-control:hover {
@@ -117,7 +118,17 @@
     box-shadow: 0 0 10px 5px rgba(245, 178, 44, 0.2);
 }
 
-.icon-audio-on, .icon-audio-off, .icon-reload, .icon-play, .icon-pause, .icon-fullscreen, .icon-exit-fullscreen {
+.icon-audio-on,
+.icon-audio-off,
+.icon-reload,
+.icon-play,
+.icon-pause,
+.icon-fullscreen,
+.icon-exit-fullscreen,
+.left-icon,
+.right-icon,
+.jump-icon,
+.throw-icon {
     height: 20px;
     width: 20px;
     background-size: cover;
@@ -128,29 +139,63 @@
 .icon-audio-on {
     background-image: url('../img/custom/volume_up.svg');
 }
+
 .icon-audio-off {
     background-image: url('../img/custom/volume_off.svg');
 }
 
-.icon-reload{
+.icon-reload {
     background-image: url('../img/custom/reload.svg');
 }
 
-.icon-play{
+.icon-play {
     background-image: url('../img/custom/play.svg');
 }
 
-.icon-pause{
+.icon-pause {
     background-image: url('../img/custom/pause.svg');
 }
 
-.icon-fullscreen{
+.icon-fullscreen {
     background-image: url('../img/custom/open_in_full.svg');
 }
 
-.icon-exit-fullscreen{
+.icon-exit-fullscreen {
     background-image: url('../img/custom/close_fullscreen.svg');
 }
+
+.left-icon {
+    background-image: url('../img/custom/walk-left-icon.svg');
+}
+
+.right-icon {
+    background-image: url('../img/custom/walk-right-icon.svg');
+}
+
+.jump-icon {
+    background-image: url('../img/custom/jump-icon.svg');
+}
+
+.throw-icon {
+    background-image: url('../img/custom/throw-icon.svg');
+}
+
+.mobile-game-button-panel {
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.mobile-btn-left,
+.mobile-btn-right {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
 
 .winLostGameAnimation {
     animation: winLostGameAnimation 2s ease-in-out;

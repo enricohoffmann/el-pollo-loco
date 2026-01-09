@@ -41,12 +41,14 @@ class Endboss extends MoveableObject {
 
     animate() {
         setTimeout(() => {
-            //this.walkingAnimation();
+            this.walkingAnimation();
         }, 5000);
 
     }
 
     walkingAnimation() {
+
+        
 
         if (this.state === 'dead') return;
         this.state = 'walk';
@@ -56,11 +58,13 @@ class Endboss extends MoveableObject {
 
         this.animationInterval = setInterval(() => {
             if (this.state !== 'walk') return;
+            if(window.isGamePaused()) return;
             this.playAnimation(this.imagesOfType.ENDBOSS_WALKING_IMAGES);
         }, 160);
 
         this.walkingInterval = setInterval(() => {
             if (this.state !== 'walk') return;
+            if(window.isGamePaused()) return;
             this.moveLeft();
             this.moveStatusBar();
             this.checkEndbossReachedLeftEdge();

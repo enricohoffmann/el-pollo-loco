@@ -37,12 +37,14 @@ class Character extends MoveableObject {
     animate() {
 
         this.keyboardReadInterval = setInterval(() => {
+            if(window.isGamePaused()) return;
             this.keyboardReadLoop();
             this.checkIdleTime();
             this.lastPosY = this.pos_y;
         }, 1000 / 60);
 
         this.animationInterval = setInterval(() => {
+            if(window.isGamePaused()) return;
             this.animationLoop();
         }, 40);
 
@@ -145,6 +147,7 @@ class Character extends MoveableObject {
         if (!this.isIdle) {
             this.isIdle = true;
             this.idleInterval = setInterval(() => {
+                if(window.isGamePaused()) return;
                 this.idleLoop();
             }, 100);
         }

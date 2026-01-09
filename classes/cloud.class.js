@@ -38,6 +38,9 @@ class Cloud extends MoveableObject {
 
     animate() {
         setInterval(() => {
+
+            if(window.isGamePaused()) return;
+
             if (this.pos_x < -500) {
                 this.pos_x = this.end_pos_x;
                 this.loadCloudImage();

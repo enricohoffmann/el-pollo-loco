@@ -149,6 +149,16 @@ function loadStatusbarState() {
     return JSON.parse(statusbarState);
 }
 
+
+function safePauseState(isPaused) {
+    localStorage.setItem('isGamePaused', JSON.stringify(isPaused));
+}
+
+function loadPauseState() {
+    const isPaused = localStorage.getItem('isGamePaused');
+    return JSON.parse(isPaused);
+}
+
 function clearGameState() {
     localStorage.removeItem('characterState');
     localStorage.removeItem('coinsState');
@@ -158,6 +168,7 @@ function clearGameState() {
     localStorage.removeItem('statusBarState');
     localStorage.removeItem('levelState');
     localStorage.setItem('gameRunning', JSON.stringify(false));
+    localStorage.setItem('isGamePaused', JSON.stringify(false));
 }
 
 function safeGameSettings(settings) {

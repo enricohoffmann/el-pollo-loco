@@ -1,4 +1,4 @@
-const keyboard = new Keyboard();
+let keyboard;
 let canvas;
 let ctx;
 let world;
@@ -8,12 +8,37 @@ let pause = false;
 let muted = false;
 let isFullScreen = false;
 let gameSettings;
+let isControlBind = false;
+
+
+const controls = {
+    pause: {
+        buttonId: 'pauseButton',
+        action: pauseGame
+    },
+    mute: {
+        buttonId: 'muteButton',
+        action: toggleMute
+    },
+    fullScreen: {
+        buttonId: 'fullScreenButton',
+        action: toggleFullScreen
+    },
+    reload : {
+        buttonId: 'reloadButton',
+        action: reloadGame
+    }
+}
+
 
 function init() {
-
+    keyboard = new Keyboard();
     const state = loadGameRunningState();
+    pause = loadPauseState();
+    togglePauseButtonIcon();
     audioSettingsInit();
     updateDifficultyState();
+    bindControls();
     canvas = document.getElementById("canvas");
 
     if (!state || state === false) {
@@ -21,7 +46,24 @@ function init() {
     } else {
         savedGameStart();
     }
+   
 
+}
+
+function bindControls(){
+    if(isControlBind){return;}
+    isControlBind = true;
+
+    for (const control in controls) {
+        const button = document.getElementById(controls[control].buttonId);
+        if (button) {
+            button.addEventListener('click', controls[control].action);
+            button.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                controls[control].action();
+            }); 
+        }
+    }
 }
 
 function audioSettingsInit() {
@@ -137,6 +179,7 @@ function unlockResize() {
 function pauseGame() {
     pause = !pause;
     togglePauseButtonIcon();
+    safePauseState(pause);
 }
 
 function isGamePaused() {
@@ -145,7 +188,7 @@ function isGamePaused() {
 
 function togglePauseButtonIcon() {
     const pauseButtonDiv = document.querySelector('#pauseButton div');
-    if (pause) {
+    if (!pause) {
         pauseButtonDiv.classList.remove('icon-pause');
         pauseButtonDiv.classList.add('icon-play');
     } else {
@@ -155,6 +198,9 @@ function togglePauseButtonIcon() {
 }
 
 function reloadGame() {
+
+    if(isGamePaused()){return;}
+
     if (world) {
         clearInterval(world.runInterval);
         world = null;
@@ -237,6 +283,7 @@ function toggleFullScreenButtonIcon(isFullScreen) {
 
 window.addEventListener("keydown", (e) => { keyboard.setKey(e.key, true); });
 window.addEventListener("keyup", (e) => { keyboard.setKey(e.key, false); });
+window.addEventListener('resize', updatePortraitBlock);
 
 window.openGameOverDialog = openGameOverDialog;
 window.openGameWinDialog = openGameWinDialog;

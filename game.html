@@ -36,19 +36,16 @@
 
                 <header class="game-header">
                     <div class="game-controls">
-                        <button id="pauseButton" type="button" class="btn-control" onclick="pauseGame()"
-                            title="Pause/Play">
+                        <button id="pauseButton" type="button" class="btn-control" title="Pause/Play">
                             <div class="icon-play"></div>
                         </button>
-                        <button type="button" class="btn-control" onclick="reloadGame()" title="Reload Game">
+                        <button id="reloadButton" type="button" class="btn-control" title="Reload Game">
                             <div class="icon-reload"></div>
                         </button>
-                        <button id="muteButton" type="button" class="btn-control" onclick="toggleMute()"
-                            title="Mute / Unmute">
+                        <button id="muteButton" type="button" class="btn-control" title="Mute / Unmute">
                             <div class="icon-audio-on"></div>
                         </button>
-                        <button id="fullScreenButton" type="button" class="btn-control" onclick="toggleFullScreen()"
-                            title="Toggle Fullscreen">
+                        <button id="fullScreenButton" type="button" class="btn-control" title="Toggle Fullscreen">
                             <div class="icon-fullscreen"></div>
                         </button>
                         <span id="difficultyState" class="text-white">difficulty: Easy</span>
@@ -59,12 +56,20 @@
                             onclick="mobileMenuClick(event)"></button>
                     </div>
                 </header>
-
-
-
-
-
                 <canvas class="game-canvas" id="canvas" width="720" height="480"></canvas>
+
+                <section class="mobile-game-button-panel">
+                    <div class="mobile-btn-left">
+                        <button id="mobile-left-button" title="Mobile move left button" type="button" class="btn-control"><div class="left-icon"></div></button>
+                        <button id="mobile-right-button" title="Mobile move right button" type="button" class="btn-control"><div class="right-icon"></div></button>
+                    </div>
+                    <div class="mobile-btn-right">
+                        <button id="mobile-jump-button" title="Mobile jump button" type="button" class="btn-control"><div class="jump-icon"></div></button>
+                    <button id="mobile-throw-button" title="Mobile throw button" type="button" class="btn-control"><div class="throw-icon"></div></button>
+                    </div>
+                    
+                </section>
+
             </section>
         </main>
 
@@ -86,7 +91,7 @@
 
     <div class="portrait-warning" hidden>Please rotate your device to landscape mode.📱</div>
 
-
+    <script src="./js/portraitBlock.js"></script>
     <script src="./js/script.js"></script>
     <script src="./js/difficultySettings.js"></script>
     <script src="./classes/levelProperties.class.js"></script>
