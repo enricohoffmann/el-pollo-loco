@@ -21,14 +21,16 @@ class World {
     lastBounceTime = 0;
     runInterval;
     pauseImg;
+    audioManager = new AudioManager();
+    isHit;
 
-    constructor(canvas, keyboard, level, colorTheme) {
+    constructor(canvas, keyboard, level, colorTheme, audioManager) {
         this.level = level;
         this.canvas = canvas;
         this.colorTheme = colorTheme;
         this.ctx = canvas.getContext('2d');
         this.keyboard = keyboard;
-
+        this.audioManager = audioManager;
     }
 
 
@@ -52,7 +54,17 @@ class World {
         setInterval(() => {
             safeGameState(this)
         }, 2000);
+
+        this.startBackgroundMusic();
     }
+
+
+    startBackgroundMusic() {
+        if (!window.isGameMuted()) {
+            this.audioManager.playBackgroundMusic();
+        }
+    }
+    
 
     checkIfNewBottleCollected() {
         if (this.currentCollectedBottles < this.bottleManager.collectedItems) {
@@ -71,9 +83,9 @@ class World {
         this.statusBarManager = new StatusbarManager(this.colorTheme, this.level.enemies);
         this.statusBarManager.createNewStatusBars();
         this.statusBars = this.statusBarManager.statusBars;
-        this.coinManager = new ItemsManager(this.character, this.statusBars.find(sb => sb.barType === 'coins'), this.level, this.canvas);
+        this.coinManager = new ItemsManager(this.character, this.statusBars.find(sb => sb.barType === 'coins'), this.level, this.canvas, this.audioManager);
         this.coinsObjects = this.coinManager.createNewItems((height, levelEndX) => new Coin(height, levelEndX), this.level.coinsOnScreen);
-        this.bottleManager = new ItemsManager(this.character, this.statusBars.find(sb => sb.barType === 'bottles'), this.level, this.canvas);
+        this.bottleManager = new ItemsManager(this.character, this.statusBars.find(sb => sb.barType === 'bottles'), this.level, this.canvas, this.audioManager);
         this.bottleObjects = this.bottleManager.createNewItems((height, levelEndX) => new Bottle(height, levelEndX), this.level.bottlesOnScreen);
         const endboss = this.level.enemies.find(e => e instanceof Endboss);
         if (endboss) {
@@ -113,13 +125,28 @@ class World {
         }
 
         if (!this.character.isDead) {
-            this.characterHit(enemy);
+            this.characterIsColliding(enemy);
         }
 
     }
 
+
+    characterIsColliding(enemy) {
+        if(!this.isHit){
+            this.isHit = new Date().getTime();
+            this.characterHit(enemy);
+            return;
+        }
+
+        if( new Date().getTime() - this.isHit < 1500) return;
+        this.isHit = new Date().getTime();
+        this.characterHit(enemy);
+    }
+
+
     characterHit(enemy) {
         this.character.hit();
+        this.character.playHurtSound();
         const bar = this.statusBars.find(sb => sb.barType === 'health');
         bar.setPercentage(this.character.energy);
         if (enemy instanceof Endboss && !this.character.isDead) {
@@ -133,6 +160,7 @@ class World {
     characterHitEnemyOnTop(enemy) {
         if (enemy instanceof Endboss) { return; }
         enemy.damage = 100;
+        this.audioManager.playSoundEffect('../audio/chicken-shrines-01.mp3');
         enemy.hit();
         this.bounceOffEnemy(enemy);
     }
@@ -153,8 +181,10 @@ class World {
 
         if (enemy instanceof Endboss) {
             enemy.entbossHit();
+            this.audioManager.playSoundEffect('../audio/chicken-alarm.mp3');
         } else {
             enemy.hit();
+            this.audioManager.playSoundEffect('../audio/chicken-shrines-01.mp3');
         }
     }
 
@@ -300,8 +330,9 @@ class World {
 
     gameOver() {
         setTimeout(() => {
-            clearInterval(this.runInterval);
+            this.stopGame();
             window.openGameOverDialog();
+            this.audioManager.playSoundEffect('../audio/game-over.mp3');
             return;
         }, 100);
     }
@@ -310,15 +341,25 @@ class World {
         const endboss = this.level.enemies.find(e => e instanceof Endboss);
         if (endboss && endboss.isDead) {
             setTimeout(() => {
-                clearInterval(this.runInterval);
-                this.runInterval = null;
+                this.stopGame();
                 window.openGameWinDialog();
+                this.audioManager.playSoundEffect('../audio/orchestral-win.mp3');
                 return;
             }, 100);
         }
 
     }
 
+    stopGame(){
+        clearInterval(this.runInterval);
+        this.runInterval = null;
+        safeIsGameEnded(true);
+        this.stopAudio();
+    }
+
+    stopAudio() {
+        this.audioManager.stopBackgroundMusic();
+    }
 
 
 

@@ -12,6 +12,7 @@ class Character extends MoveableObject {
     isSleeping = false;
     isIdle = false;
     offset = { top: 120, right: 40, bottom: 10, left: 30 };
+    isHurtTime;
 
 
     constructor(world) {
@@ -121,6 +122,7 @@ class Character extends MoveableObject {
 
     startJump() {
         this.stopIdleLoop();
+        this.world.audioManager.playSoundEffect('../audio/jump.mp3');
         this.jump();
     }
 
@@ -169,7 +171,17 @@ class Character extends MoveableObject {
     }
 
 
+    playHurtSound() {
+        if (!this.isHurtTime){
+            this.isHurtTime = new Date().getTime();
+            this.world.audioManager.playSoundEffect('../audio/character-hurt.mp3');
+            return;
+        };
 
+        if( new Date().getTime() - this.isHurtTime < 4000) return;
+        this.isHurtTime = new Date().getTime();
+        this.world.audioManager.playSoundEffect('../audio/character-hurt.mp3');
+    }
 
 
 }

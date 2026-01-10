@@ -9,6 +9,8 @@ let muted = false;
 let isFullScreen = false;
 let gameSettings;
 let isControlBind = false;
+let audioManager = new AudioManager();
+let gameIsEnded = false;
 
 
 const controls = {
@@ -24,7 +26,7 @@ const controls = {
         buttonId: 'fullScreenButton',
         action: toggleFullScreen
     },
-    reload : {
+    reload: {
         buttonId: 'reloadButton',
         action: reloadGame
     }
@@ -32,13 +34,14 @@ const controls = {
 
 
 function init() {
-    keyboard = new Keyboard();
+    gameIsEnded = loadIsGameEnded() || false;
+    if(gameIsEnded) {
+        navigateTo('index');
+        return;
+    }
+
     const state = loadGameRunningState();
-    pause = loadPauseState();
-    togglePauseButtonIcon();
-    audioSettingsInit();
-    updateDifficultyState();
-    bindControls();
+    loadInitialAssets();
     canvas = document.getElementById("canvas");
 
     if (!state || state === false) {
@@ -46,12 +49,23 @@ function init() {
     } else {
         savedGameStart();
     }
-   
 
 }
 
-function bindControls(){
-    if(isControlBind){return;}
+
+function loadInitialAssets() {
+    keyboard = new Keyboard();
+    pause = loadPauseState();
+    gameSettings = loadGameSettings();
+    togglePauseButtonIcon();
+    audioSettingsInit();
+    updateDifficultyState();
+    bindControls();
+    loadAudio();
+}
+
+function bindControls() {
+    if (isControlBind) { return; }
     isControlBind = true;
 
     for (const control in controls) {
@@ -61,18 +75,23 @@ function bindControls(){
             button.addEventListener('touchstart', (e) => {
                 e.preventDefault();
                 controls[control].action();
-            }); 
+            });
         }
     }
 }
 
 function audioSettingsInit() {
-    gameSettings = loadGameSettings();
     if (gameSettings) {
         muted = gameSettings.audioSetting === 'Audio Off' ? true : false;
     }
     toggleMuteButtonIcon();
+
 }
+
+function loadAudio() {
+    audioManager.loadBackgroundMusic('../audio/retro-game-402454.mp3');
+}
+
 
 function updateDifficultyState() {
     const difficultyStateElement = document.getElementById('difficultyState');
@@ -86,7 +105,8 @@ function newGameStart() {
     safeGameRunningState(true);
     const levelCreator = new LevelCreator(canvas);
     const level = levelCreator.createLevel();
-    world = new World(canvas, keyboard, level, 'orange');
+    const config = levelCreator.getCurrentameSettings;
+    world = new World(canvas, keyboard, level, config.theme.toLowerCase(), audioManager);
     world.createNewGameObjects();
     world.run();
 }
@@ -95,7 +115,8 @@ function savedGameStart() {
     safeGameRunningState(true);
     const levelCreator = new LevelCreator(canvas);
     const level = levelCreator.createLevelFromState();
-    world = new World(canvas, keyboard, level, 'orange');
+    const config = levelCreator.getCurrentameSettings;
+    world = new World(canvas, keyboard, level, config.theme.toLowerCase(), audioManager);
     world.character = new Character(world);
     world.character.pos_x = loadCharacterState().character.x;
     world.character.pos_y = loadCharacterState().character.y;
@@ -199,7 +220,7 @@ function togglePauseButtonIcon() {
 
 function reloadGame() {
 
-    if(isGamePaused()){return;}
+    if (isGamePaused()) { return; }
 
     if (world) {
         clearInterval(world.runInterval);
@@ -215,6 +236,8 @@ function toggleMute() {
     gameSettings.audioSetting = muted ? 'Audio Off' : 'Audio On';
     safeGameSettings(gameSettings);
     toggleMuteButtonIcon();
+    audioManager.toggleMusic(!muted);
+    audioManager.toggleSFX(!muted);
 }
 
 function toggleMuteButtonIcon() {
@@ -249,9 +272,9 @@ function toggleFullScreen() {
 function openFullscreen(element) {
     if (element.requestFullscreen) {
         element.requestFullscreen();
-    } else if (element.webkitRequestFullscreen) { /* Safari */
+    } else if (element.webkitRequestFullscreen) { 
         element.webkitRequestFullscreen();
-    } else if (element.msRequestFullscreen) { /* IE11 */
+    } else if (element.msRequestFullscreen) {
         element.msRequestFullscreen();
     }
 }
@@ -259,9 +282,9 @@ function openFullscreen(element) {
 function closeFullscreen() {
     if (document.exitFullscreen) {
         document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) { /* Safari */
+    } else if (document.webkitExitFullscreen) { 
         document.webkitExitFullscreen();
-    } else if (document.msExitFullscreen) { /* IE11 */
+    } else if (document.msExitFullscreen) {
         document.msExitFullscreen();
     }
 }
@@ -289,3 +312,5 @@ window.openGameOverDialog = openGameOverDialog;
 window.openGameWinDialog = openGameWinDialog;
 window.isGamePaused = isGamePaused;
 window.isGameMuted = isGameMuted;
+
+

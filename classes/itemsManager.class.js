@@ -7,11 +7,12 @@ class ItemsManager {
     statusBar;
     items = [];
 
-    constructor(character, statusBar, level, canvas) {
+    constructor(character, statusBar, level, canvas, audioManager) {
         this.character = character;
         this.statusBar = statusBar;
         this.level = level;
         this.canvas = canvas;
+        this.audioManager = audioManager;
     }
 
     update() {
@@ -38,6 +39,14 @@ class ItemsManager {
         if(!collectedItem || collectedItem.isCollected) return;
         collectedItem.isCollected = true;
         this.collectedItems++;
+
+        if(collectedItem instanceof Coin) {
+            this.audioManager.playSoundEffect('../audio/get-coin.mp3');
+        }
+
+        if(collectedItem instanceof Bottle) {
+            this.audioManager.playSoundEffect('../audio/get-bottle.mp3');
+        }
 
         collectedItem.animateCollectet(() => {
             this.handleCollectedItem(collectedItem);
