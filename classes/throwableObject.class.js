@@ -1,9 +1,20 @@
+
+/**
+ * @class ThrowableObject
+ * @extends MoveableObject
+ * @description Represents a throwable object that can be thrown, fly through the air, and splash upon impact.
+ */
 class ThrowableObject extends MoveableObject {
 
     throwInterval;
     isSplashed = false;
     isFlying = false;
 
+    /**
+     * @description Constructs a ThrowableObject instance with default properties and loads images.
+     * @memberOf ThrowableObject
+     * @constructor
+     */
     constructor() {
         super();
         this.pos_x = 100;
@@ -16,6 +27,15 @@ class ThrowableObject extends MoveableObject {
 
     }
 
+    /**
+     * @description Throws the object from a specified position in a given direction.
+     * @memberOf ThrowableObject
+     * @method fling
+     * @param {number} x 
+     * @param {number} y 
+     * @param {boolean} otherDirection 
+     * @returns {void}
+     */
     fling(x, y, otherDirection = false) {
         this.pos_x = x - this.offset.right;
         this.pos_y = y;
@@ -32,6 +52,12 @@ class ThrowableObject extends MoveableObject {
 
     }
 
+    /**
+     * @description Applies gravity to the throwable object, updating its position over time.
+     * @memberOf ThrowableObject
+     * @method applyGravityBottle
+     * @returns {void}
+     */
     applyGravityBottle() {
         this.gravityInterval = setInterval(() => {
             if (this.isAboveGround() || this.speedY > 0) {
@@ -45,6 +71,12 @@ class ThrowableObject extends MoveableObject {
         }, 1000 / 25);
     }
 
+    /**
+     * @description Checks if the bottle has hit the ground and triggers splashing if so.
+     * @memberOf ThrowableObject
+     * @method checkIfBottleIsOnGround
+     * @returns {void}
+     */
     checkIfBottleIsOnGround() {
         if (this.pos_y >= this.canvas.height - 100 && !this.isSplashed) {
             this.splashing();
@@ -52,6 +84,12 @@ class ThrowableObject extends MoveableObject {
 
     }
 
+    /**
+     * @description Triggers the splashing animation and stops movement.
+     * @memberOf ThrowableObject
+     * @method splashing
+     * @returns {void}
+     */
     splashing() {
         clearInterval(this.gravityInterval);
         clearInterval(this.throwInterval);

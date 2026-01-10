@@ -1,3 +1,8 @@
+/**
+ * @class MoveableObject
+ * @extends DrawableObject
+ * @description Represents a moveable object in the game with properties and methods for movement, collision detection, and state management.
+ */
 class MoveableObject extends DrawableObject {
     speed = 0.15;
     otherDirection = false;
@@ -14,23 +19,55 @@ class MoveableObject extends DrawableObject {
     canvas;
     lastPosY = 0;
 
+    /**
+     * @description Constructs a MoveableObject instance and initializes its properties.
+     * @memberOf MoveableObject
+     * @constructor
+     */
     constructor() {
         super();
     }
 
+    /**
+     * @description Sets the size of the moveable object based on the canvas height and specified ratios.
+     * @memberOf MoveableObject
+     * @method setSize
+     * @param {number} heightInPercent - The height of the object as a percentage of the canvas height.
+     * @param {number} ratioWidthToHeight - The ratio of width to height for the object.
+     * @return {void}
+     */
     setSize(heightInPercent, ratioWidthToHeight) {
         this.height = this.canvas.height * heightInPercent;
         this.width = this.height / ratioWidthToHeight;
     }
 
+    /**
+     * @description Moves the object to the left by its speed.
+     * @memberOf MoveableObject
+     * @method moveLeft
+     * @return {void}
+     */
     moveLeft() {
         this.pos_x -= this.speed;
     }
 
+    /**
+     * @description Moves the object to the right by its speed.
+     * @memberOf MoveableObject
+     * @method moveRight
+     * @return {void}
+     */
     moveRight() {
         this.pos_x += this.speed;
     }
 
+    /**
+     * @description Plays an animation by cycling through an array of image paths.
+     * @memberOf MoveableObject
+     * @method playAnimation
+     * @param {Array<string>} images - An array of image paths for the animation.
+     * @return {void}
+     */
     playAnimation(images) {
         this.currentImagePathIndex = this.currentImageIndex % images.length;
         let path = images[this.currentImagePathIndex];
@@ -38,6 +75,15 @@ class MoveableObject extends DrawableObject {
         this.currentImageIndex++;
     }
 
+    /**
+     * @description Plays an animation once by cycling through an array of image paths and then calls a callback function.
+     * @memberOf MoveableObject
+     * @method playAnimationOnce
+     * @param {Array<string>} images 
+     * @param {Function} onFinished 
+     * @param {number} index 
+     * @returns {void}
+     */
     playAnimationOnce(images, onFinished, index = 0) {
         if (index >= images.length) {
             if (onFinished) {
@@ -54,7 +100,12 @@ class MoveableObject extends DrawableObject {
         }, currentFrameTime);
     }
 
-
+    /**
+     * @description Checks if the object is above the ground level.
+     * @memberOf MoveableObject
+     * @method isAboveGround
+     * @returns {boolean}
+     */
     isAboveGround() {
 
         if (this instanceof ThrowableObject) { return true; }
@@ -64,7 +115,12 @@ class MoveableObject extends DrawableObject {
         return objectBottomY < groundY;
     }
 
-
+    /**
+     * @description Applies gravity to the object, updating its vertical position and speed.
+     * @memberOf MoveableObject
+     * @method applyGravity
+     * @return {void}
+     */
     applyGravity() {
         this.lastPosY = this.pos_y;
 
@@ -77,6 +133,15 @@ class MoveableObject extends DrawableObject {
         }
     }
 
+    /**
+     * @description Checks if this object is colliding with another moveable object, considering optional kill and offset boxes.
+     * @memberOf MoveableObject
+     * @method isColliding
+     * @param {MoveableObject} - The other moveable object to check collision against. 
+     * @param {Object} killBox - Optional kill box offsets for this object.
+     * @param {Object} offsetBox - Optional offset box offsets for the other object.
+     * @returns {boolean}
+     */
     isColliding(mo, killBox = null, offsetBox = null) {
 
         const box_a = killBox ?? this.offset ?? { top: 0, right: 0, bottom: 0, left: 0 };
@@ -89,6 +154,13 @@ class MoveableObject extends DrawableObject {
             this.pos_y + this.offset.top < mo.pos_y + mo.height - mo.offset.bottom;
     }
 
+    /**
+     * @description Checks if this object is colliding with the top of another moveable object.
+     * @memberOf MoveableObject
+     * @method isCollidingTop
+     * @param {MoveableObject} mo 
+     * @returns {boolean}
+     */
     isCollidingTop(mo) {
         const isOverlappingX =
             this.pos_x + this.width - this.offset.right > mo.pos_x + mo.offset.left &&
@@ -106,11 +178,22 @@ class MoveableObject extends DrawableObject {
     }
 
 
-
+    /**
+     * @description Makes the object jump by setting its vertical speed.
+     * @memberOf MoveableObject
+     * @method jump
+     * @return {void}
+     */
     jump() {
         this.speedY = 30;
     }
 
+    /**
+     * @description Reduces the object's energy by its damage value and updates the last hit time.
+     * @memberOf MoveableObject
+     * @method hit
+     * @return {void}
+     */
     hit() {
         this.energy -= this.damage;
         if (this.energy < 0) {
@@ -120,23 +203,53 @@ class MoveableObject extends DrawableObject {
         }
     }
 
+    /**
+     * @description Checks if the object is dead (energy is zero).
+     * @memberOf MoveableObject
+     * @method isDead
+     * @returns {boolean}
+     */
     get isDead() {
         return this.energy == 0;
     }
 
+    /**
+     * @description Checks if the object is currently hurt (within 1 second of last hit).
+     * @memberOf MoveableObject
+     * @method isHurt
+     * @returns {boolean}
+     */
     get isHurt() {
         const timepassed = new Date().getTime() - this.lastHit;
         return timepassed < 1000;
     }
 
+    /**
+     * @description Checks if the object has reached the left end of the level.
+     * @memberOf MoveableObject
+     * @method isEndLeft
+     * @returns {boolean}
+     */
     get isEndLeft() {
         return this.pos_x < 110;
     }
 
+    /**
+     * @description Checks if the object has reached the right end of the level.
+     * @memberOf MoveableObject
+     * @method isEndRight
+     * @returns {boolean}
+     */
     get isEndRight() {
         return this.pos_x + this.width >= this.world.level.level_end_x;
     }
 
+    /**
+     * @description Calculates the ground Y position for the object based on the canvas height and object height.
+     * @memberOf MoveableObject
+     * @method getGroundY
+     * @returns {number}
+     */
     get getGroundY() {
         const groundY = this.canvas.height - 50;
         return groundY - (this.height - this.offset.bottom);

@@ -1,3 +1,8 @@
+/**
+ * @class StatusBar
+ * @description Represents a status bar in the game, such as health or energy.
+ * @extends DrawableObject
+ */
 class StatusBar extends DrawableObject {
 
     percentage = 100;
@@ -5,6 +10,13 @@ class StatusBar extends DrawableObject {
     color;
     currentStatusBarKey;
 
+    /**
+     * @description Constructs a StatusBar instance with specified type and color.
+     * @memberOf StatusBar
+     * @constructor
+     * @param {*} barType 
+     * @param {*} color 
+     */
     constructor(barType, color) {
         super();
         this.currentStatusBarKey = 'STATUSBAR_' + barType.toUpperCase() + '_' + color.toUpperCase();
@@ -18,15 +30,23 @@ class StatusBar extends DrawableObject {
         this.height = 50;
     }
 
-
-
-
+    /**
+     * @description Sets the percentage value of the status bar and updates the displayed image accordingly.
+     * @memberOf StatusBar
+     * @method setPercentage
+     * @param {number} percentage 
+     */
     setPercentage(percentage){
         this.percentage = percentage;
         this.loadImage(this.imagesOfType[this.currentStatusBarKey][this.resolveImageIndex()]);
     }
 
-
+    /**
+     * @description Determines the image index based on the current percentage of the status bar.
+     * @memberOf StatusBar
+     * @method resolveImageIndex
+     * @returns {number}
+     */
     resolveImageIndex(){
         if(this.percentage == 100){
             return 5;}

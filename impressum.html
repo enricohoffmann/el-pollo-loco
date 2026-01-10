@@ -17,13 +17,13 @@
         <div class="site-content">
             <nav>
                 <div class="nav-content nav-desktop">
-                    <button type="button" class="btn btn-yellow" onclick="navigateTo('index')">Back</button>
+                    <button type="button" class="btn btn-yellow" onclick="navigateBack()">Back</button>
                     <button type="button" class="btn btn-yellow btn-yellow-active">Impressum</button>
                     <button type="button" class="btn btn-yellow" onclick="navigateTo('privacy')">Privacy Policy</button>
                 </div>
 
                 <div class="nav-content nav-mobile">
-                    <button type="button" class="btn btn-small" onclick="navigateTo('index')">Back</button>
+                    <button type="button" class="btn btn-small" onclick="navigateBack()">Back</button>
                     <button type="button" class="btn btn-mobile-menu" title="Mobile Menu"
                         onclick="mobileMenuClick(event)"></button>
                 </div>
@@ -33,7 +33,7 @@
             <section id="mobileMenu" class="mobile-menu-box" onclick="">
                 <button type="button" class="btn-mobile-submenu" onclick="navigateTo('privacy')">Privacy Policy</button>
                 <button type="button" class="btn-mobile-submenu" onclick="navigateTo('options')">Options</button>
-                <button type="button" class="btn-mobile-submenu">Help</button>
+                <button type="button" class="btn-mobile-submenu" onclick="navigateTo('help')">Help</button>
             </section>
 
             <main>

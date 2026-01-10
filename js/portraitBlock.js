@@ -1,5 +1,6 @@
 /**
  * @description Blocks portrait mode on touch devices with small screens
+ * @namespace portraitBlock
  */
 
 
@@ -21,7 +22,7 @@ function isPortrait() {
 /**
  * @description Checks if the window width is within the specified maximum width.
  * @function withinMaxWidth
- * @memberof landscapeBlock
+ * @memberof portraitBlock
  * @param {number} px The maximum width in pixels.
  * @returns {boolean} True if the window width is within the maximum width, false otherwise.
  */

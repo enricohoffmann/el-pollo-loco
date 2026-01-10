@@ -1,3 +1,8 @@
+/**
+ * @description This module exports an object containing arrays of image paths for different bottle animations.
+ * @module bottleImages
+ */
+
 const bottleImages = {
     BOTTLE_FLYING: [
         'img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png',

@@ -1,3 +1,7 @@
+/**
+ * @description This module exports an object containing difficulty settings for the game.
+ * @module difficultySettings
+ */
 const difficultySettings = {
     Easy: {
         countOfEnemies: 3,

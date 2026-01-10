@@ -1,3 +1,9 @@
+/**
+ * @class Chicken
+ * @description Represents a chicken enemy in the game. Extends the MoveableObject class.
+ * @extends MoveableObject
+ */
+
 class Chicken extends MoveableObject {
 
     pos_y = 350;
@@ -18,6 +24,13 @@ class Chicken extends MoveableObject {
     chickenWalkInterval;
     chickenAnimationInterval;
 
+    /**
+     * @description Creates an instance of Chicken.
+     * @memberof Chicken
+     * @constructor
+     * @param {HTMLCanvasElement} canvas - The canvas on which the chicken will be drawn.
+     * @param {Number} level_end_x - The x-coordinate representing the end of the level.
+     */
     constructor(canvas, level_end_x) {
         super();
         this.canvas = canvas;
@@ -29,6 +42,12 @@ class Chicken extends MoveableObject {
         this.animate();
     }
 
+    /**
+     * @description Animates the chicken by moving it left and cycling through walking images.
+     * @memberof Chicken
+     * @method animate
+     * @returns {void}
+     */
     animate() {
         this.chickenWalkInterval = setInterval(() => {
 
@@ -47,6 +66,12 @@ class Chicken extends MoveableObject {
         }, 200);
     }
 
+    /**
+     * @description Handles the death of the chicken by playing the death animation and removing it from the game.
+     * @memberof Chicken
+     * @method die
+     * @returns {void}
+     */
     die() {
         clearInterval(this.chickenWalkInterval);
         clearInterval(this.chickenAnimationInterval);

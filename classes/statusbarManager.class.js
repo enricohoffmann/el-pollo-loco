@@ -1,10 +1,30 @@
+/**
+ * @class StatusbarManager
+ * @description Manages the status bars for the game, including health, coins, bottles, and endboss health.
+ * 
+ */
+
 class StatusbarManager {
+
+    /**
+     * @description Constructs a StatusbarManager instance with specified color theme and enemies.
+     * @memberOf StatusbarManager
+     * @constructor 
+     * @param {*} colorTheme 
+     * @param {*} enemies 
+     */
     constructor(colorTheme, enemies) {
         this.colorTheme = colorTheme;
         this.enemies = enemies;
         this.statusBars = [];
     }
 
+    /**
+     * @description Creates new status bars for health, coins, bottles, and endboss health.
+     * @memberOf StatusbarManager
+     * @method createNewStatusBars
+     * @returns {void}
+     */
     createNewStatusBars() {
         const statusHealthBar = new StatusBar('health', this.colorTheme);
         const statusCoinsBar = new StatusBar('coins', this.colorTheme);
@@ -19,6 +39,13 @@ class StatusbarManager {
         this.statusBars.push(this.createNewEndbossHealthBar());
     }
 
+    /**
+     * @description Creates status bars from saved data.
+     * @memberOf StatusbarManager
+     * @method createSavedStatusBars
+     * @param {Array} savedStatusBars 
+     * @returns {void}
+     */
     createSavedStatusBars(savedStatusBars) {
         const statusHealthBar = new StatusBar('health', savedStatusBars.statusBars.find(sb => sb.type === 'health').color, savedStatusBars.statusBars.find(sb => sb.type === 'health'));
         statusHealthBar.setPercentage(savedStatusBars.statusBars.find(sb => sb.type === 'health').value);
@@ -34,6 +61,12 @@ class StatusbarManager {
         this.statusBars.push(this.createSavedEndBossHealthBar(savedStatusBars));
     }
 
+    /**
+     * @description Creates a new endboss health bar.
+     * @memberOf StatusbarManager
+     * @method createNewEndbossHealthBar
+     * @returns {StatusBar}
+     */
     createNewEndbossHealthBar() {
         const endbossHealthBar = new StatusBar('endboss_health', this.colorTheme);
 
@@ -46,6 +79,13 @@ class StatusbarManager {
         return endbossHealthBar;
     }
 
+    /**
+     * @description Creates an endboss health bar from saved data.
+     * @memberOf StatusbarManager
+     * @method createSavedEndBossHealthBar
+     * @param {Array} savedStatusBars 
+     * @returns {StatusBar}
+     */
     createSavedEndBossHealthBar(savedStatusBars) {
         const endbossHealthBar = new StatusBar('endboss_health', savedStatusBars.statusBars.find(sb => sb.type === 'endboss_health').color, savedStatusBars.statusBars.find(sb => sb.type === 'endboss_health'));
         const endboss = this.enemies.find(e => e instanceof Endboss);

@@ -1,3 +1,7 @@
+/**
+ * @description This module exports an object containing arrays of image paths for different character animations.
+ * @module characterImages
+ */
 const characterImages = {
     CHARACTER_WALKING_IMAGES : [
         'img/2_character_pepe/2_walk/W-21.png',

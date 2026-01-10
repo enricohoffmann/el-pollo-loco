@@ -1,3 +1,10 @@
+/**
+ * @class DrawableObject
+ * @description This is the base class for all drawable objects in the game. It provides common properties and methods for loading images,
+ *              drawing on the canvas, and handling image caching.
+ * 
+ */
+
 class DrawableObject {
     img;
     currentImageIndex = 0;
@@ -13,10 +20,22 @@ class DrawableObject {
     offset = { top: 0, right: 0, bottom: 0, left: 0 };
     killbox = { top: 0, right: 0, bottom: 0, left: 0 };
 
+    /**
+     * @description Constructor for DrawableObject class
+     * @constructor
+     * @memberof DrawableObject
+     */
     constructor() {
 
     }
 
+    /**
+     * @description Loads images of different types into the object
+     * @memberof DrawableObject
+     * @method loadTypeImages
+     * @param {{ [key: string]: string[] }} imagesOfType  - An object containing arrays of image paths for different types
+     * @returns {void}
+     */
     loadTypeImages(imagesOfType) {
         this.imagesOfType = imagesOfType;
         for (const [key, value] of Object.entries(imagesOfType)) {
@@ -24,11 +43,24 @@ class DrawableObject {
         }
     }
 
+    /**
+     * @description Loads a single image into the object
+     * @memberof DrawableObject
+     * @method loadImage
+     * @param {string} path - The path to the image file
+     * @returns {void} 
+     */
     loadImage(path) {
         this.img = new Image();
         this.img.src = path;
     }
 
+    /**
+     * @description Loads multiple images into the object's image cache
+     * @memberof DrawableObject
+     * @method loadImages
+     * @param {Array<string>} arr - Array of image paths to load 
+     */
     loadImages(arr) {
         arr.forEach((path) => {
             let img = new Image();
@@ -37,10 +69,24 @@ class DrawableObject {
         });
     }
 
+    /**
+     * @description Draws the object on the canvas
+     * @memberof DrawableObject
+     * @method draw
+     * @param {CanvasRenderingContext2D} ctx 
+     * @return {void}
+     */
     draw(ctx) {
         ctx.drawImage(this.img, this.pos_x, this.pos_y, this.width, this.height);
     }
 
+    /**
+     * @description Draws the frame of the object for debugging purposes
+     * @memberof DrawableObject
+     * @method drawFrame
+     * @param {CanvasRenderingContext2D} ctx 
+     * @return {void}
+     */
     drawFrame(ctx) {
         if (this instanceof Character || this instanceof Chicken || this instanceof Endboss) {
             ctx.beginPath();
@@ -51,6 +97,13 @@ class DrawableObject {
         }
     }
 
+    /**
+     * @description Draws the offset frame of the object for debugging purposes
+     * @memberof DrawableObject
+     * @method drawOffsetFrame
+     * @param {CanvasRenderingContext2D} ctx 
+     * @return {void}
+     */
     drawOffsetFrame(ctx) {
         if (this instanceof Character || this instanceof Chicken || this instanceof Endboss) {
             ctx.beginPath();
@@ -66,6 +119,13 @@ class DrawableObject {
         }
     }
 
+    /**
+     * @description Draws the killbox frame of the object for debugging purposes
+     * @memberof DrawableObject
+     * @method drawKillboxFrame
+     * @param {CanvasRenderingContext2D} ctx 
+     * @return {void}
+     */
     drawKillboxFrame(ctx) {
         if (this instanceof Endboss || this instanceof Chicken) {
             ctx.beginPath();
@@ -81,6 +141,14 @@ class DrawableObject {
         }
     }
 
+    /**
+     * @description Generates a random position for the object within the specified range
+     * @memberof DrawableObject
+     * @method getRandomObjectPosition
+     * @param {Number} min 
+     * @param {Number} max 
+     * @returns {Number}
+     */
     getRandomObjectPosition(min, max) {
         min = Math.ceil(min);
         max = Math.floor(max);

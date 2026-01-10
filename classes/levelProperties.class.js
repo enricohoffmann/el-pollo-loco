@@ -1,3 +1,8 @@
+/**
+ * @class LevelProperties
+ * @description This class serves as a blueprint for level properties in the game.
+ */
+
 class LevelProperties {
 
     damage;
@@ -9,6 +14,11 @@ class LevelProperties {
     countOfEnemies;
     countOfClouds;
 
+    /**
+     * @description Constructor for LevelProperties class.
+     * @constructor
+     * @memberof LevelProperties
+     */
     constructor() {
     }
 }

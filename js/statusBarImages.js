@@ -1,3 +1,9 @@
+/**
+ * @description This module exports an object that maps status bar types and colors to their corresponding image file paths.
+ * Each status bar type (health, coins, bottles, endboss health) has images for three colors: green, blue, and orange.
+ * @module statusBarImages
+ */
+
 const statusBarImages = {
     STATUSBAR_HEALTH_GREEN: [
         'img/7_statusbars/1_statusbar/2_statusbar_health/green/0.png',

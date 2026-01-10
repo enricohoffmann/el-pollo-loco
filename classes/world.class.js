@@ -1,5 +1,9 @@
-class World {
+/**
+ * @class World
+ * @description Represents the game world, managing characters, enemies, items, and game state.
+ */
 
+class World {
     character;
     level;
     canvas;
@@ -24,6 +28,16 @@ class World {
     audioManager = new AudioManager();
     isHit;
 
+    /**
+     * @description Constructs a World instance with specified parameters.
+     * @memberOf World
+     * @constructor
+     * @param {HTMLCanvasElement} canvas 
+     * @param {keyboard} keyboard 
+     * @param {Level} level 
+     * @param {string} colorTheme 
+     * @param {AudioManager} audioManager 
+     */
     constructor(canvas, keyboard, level, colorTheme, audioManager) {
         this.level = level;
         this.canvas = canvas;
@@ -33,11 +47,15 @@ class World {
         this.audioManager = audioManager;
     }
 
-
+    /**
+     * @description Starts the game loop, updating game state and rendering at 60 FPS.
+     * @memberOf World
+     * @method run
+     * @returns {void}
+     */
     run() {
 
         this.runInterval = setInterval(() => {
-
             this.character.applyGravity();
             this.level.enemies.forEach((enemy) => {
                 this.checkColisions(enemy);
@@ -58,14 +76,24 @@ class World {
         this.startBackgroundMusic();
     }
 
-
+    /**
+     * @description Starts the background music if the game is not muted.
+     * @memberOf World
+     * @method startBackgroundMusic
+     * @returns {void}
+     */
     startBackgroundMusic() {
-        if (!window.isGameMuted()) {
+        if (!window.isGameMuted() && !window.isGamePaused()) {
             this.audioManager.playBackgroundMusic();
         }
     }
     
-
+    /**
+     * @description Checks if a new bottle has been collected and updates the throwable objects accordingly.
+     * @memberOf World
+     * @method checkIfNewBottleCollected
+     * @returns {void}
+     */
     checkIfNewBottleCollected() {
         if (this.currentCollectedBottles < this.bottleManager.collectedItems) {
 
@@ -78,6 +106,12 @@ class World {
         }
     }
 
+    /**
+     * @description Creates new game objects including character, status bars, coins, and bottles.
+     * @memberOf World
+     * @method createNewGameObjects
+     * @returns {void}
+     */
     createNewGameObjects() {
         this.character = new Character(this);
         this.statusBarManager = new StatusbarManager(this.colorTheme, this.level.enemies);
@@ -94,6 +128,13 @@ class World {
         }
     }
 
+    /**
+     * @description Creates game objects from a saved game state.
+     * @memberOf World
+     * @method createSavedGameObjects
+     * @param {Object} savedState 
+     * @returns {void}
+     */
     createSavedGameObjects(savedState) {
         this.statusBarManager = new StatusbarManager(this.colorTheme, this.level.enemies);
         this.statusBarManager.createSavedStatusBars(savedState.statusbars);
@@ -110,28 +151,38 @@ class World {
         this.currentCollectedBottles = this.bottleManager.collectedItems;
     }
 
+    /**
+     * @description Checks for collisions between the character and an enemy, handling interactions accordingly.
+     * @memberOf World
+     * @method checkColisions
+     * @param {Enemy} enemy 
+     * @returns {void}
+     */
     checkColisions(enemy) {
-
         if (enemy.isDead == true) return;
-
         const colliding = this.character.isColliding(enemy);
         if (!colliding) return;
-
         const collidingTop = this.character.isCollidingTop(enemy) && !this.character.isDead && !enemy.isDead;
-
         if (collidingTop) {
             this.characterHitEnemyOnTop(enemy);
             return;
         }
-
         if (!this.character.isDead) {
             this.characterIsColliding(enemy);
         }
-
     }
 
-
+    /**
+     * @description Handles the event when the character is colliding with an enemy.
+     * @memberOf World
+     * @method characterIsColliding
+     * @param {Enemy} enemy 
+     * @returns {void}  
+     */
     characterIsColliding(enemy) {
+
+        if(window.isGamePaused()) return;
+
         if(!this.isHit){
             this.isHit = new Date().getTime();
             this.characterHit(enemy);
@@ -143,7 +194,12 @@ class World {
         this.characterHit(enemy);
     }
 
-
+    /**
+     * @description Handles the event when the character is hit by an enemy.
+     * @memberOf World
+     * @method characterHit
+     * @param {Enemy} enemy 
+     */
     characterHit(enemy) {
         this.character.hit();
         this.character.playHurtSound();
@@ -157,6 +213,13 @@ class World {
         }
     }
 
+    /**
+     * @description Handles the event when the character hits an enemy on top.
+     * @memberOf World
+     * @method characterHitEnemyOnTop
+     * @param {Enemy} enemy 
+     * @returns {void}
+     */
     characterHitEnemyOnTop(enemy) {
         if (enemy instanceof Endboss) { return; }
         enemy.damage = 100;
@@ -165,11 +228,25 @@ class World {
         this.bounceOffEnemy(enemy);
     }
 
+    /**
+     * @description Makes the character bounce off an enemy after hitting it on top.
+     * @memberOf World
+     * @method bounceOffEnemy
+     * @param {Enemy} enemy 
+     * @returns {void}
+     */
     bounceOffEnemy(enemy) {
         this.character.speedY = 20;
         this.character.pos_y = (enemy.pos_y + enemy.offset.top) - (this.character.height - this.character.offset.bottom) - 1;
     }
 
+    /**
+     * @description Checks for collisions between throwable objects and an enemy, handling interactions accordingly.
+     * @memberOf World
+     * @method checkColisionsWithThrowableObjects
+     * @param {Enemy} enemy 
+     * @returns {void}
+     */
     checkColisionsWithThrowableObjects(enemy) {
         if (enemy.isDead) return;
         if (this.currentBottle == null) return;
@@ -188,7 +265,12 @@ class World {
         }
     }
 
-
+    /**
+     * @description Checks if the character is throwing a bottle and handles the throwing action.
+     * @memberOf World
+     * @method checkThrowableObjects
+     * @returns {void}
+     */
     checkThrowableObjects() {
         if (this.keyboard.throwing && !this.isThrowing && !this.character.isHurt) {
             if (this.throwableObjects.length <= 0) return;
@@ -210,7 +292,12 @@ class World {
         }
     }
 
-
+    /**
+     * @description Draws the game world, including background, characters, enemies, items, and status bars.
+     * @memberOf World
+     * @method draw
+     * @returns {void}
+     */
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.translate(this.camera_x, 0);
@@ -232,7 +319,12 @@ class World {
     }
 
 
-
+    /**
+     * @description Draws the pause screen overlay.
+     * @memberOf World
+     * @method drawPauseScreen
+     * @returns {void}
+     */
     drawPauseScreen() {
         this.ctx.save();
         this.ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
@@ -249,6 +341,12 @@ class World {
         this.ctx.restore();
     }
 
+    /**
+     * @description Draws all enemies in the level.
+     * @memberOf World
+     * @method drawEnemies
+     * @returns {void}
+     */
     drawEnemies() {
         this.level.enemies.forEach(enemy => {
             if (!enemy.isDead) {
@@ -257,6 +355,12 @@ class World {
         });
     }
 
+    /**
+     * @description Draws the currently thrown bottle if it exists and is not splashed.
+     * @memberOf World
+     * @method drawBottle
+     * @returns {void}
+     */
     drawBottle() {
         if (this.currentBottle && !this.currentBottle.isSplashed) {
             this.addToMap(this.currentBottle);
@@ -265,6 +369,12 @@ class World {
         }
     }
 
+    /**
+     * @description Draws all uncollected and on-screen bottles.
+     * @memberOf World
+     * @method drawBottles
+     * @returns {void}
+     */
     drawBottles() {
         this.bottleObjects.forEach(bottle => {
             if (!bottle.isCollected && !bottle.isOutOfScreen) {
@@ -273,6 +383,12 @@ class World {
         });
     }
 
+    /**
+     * @description Draws all uncollected and on-screen coins.
+     * @memberOf World
+     * @method drawCoins
+     * @returns {void}
+     */
     drawCoins() {
         this.coinsObjects.forEach(coin => {
             if (!coin.isCollected && !coin.isOutOfScreen) {
@@ -281,6 +397,12 @@ class World {
         });
     }
 
+    /**
+     * @description Draws the status bars on the screen, excluding the endboss health bar.
+     * @memberOf World
+     * @method drawStatusBars
+     * @returns {void}
+     */
     drawStatusBars() {
         this.statusBars.forEach(statusBar => {
             if (statusBar.barType === 'endboss_health') {
@@ -290,6 +412,12 @@ class World {
         });
     }
 
+    /**
+     * @description Draws the endboss health bar if it exists.
+     * @memberOf World
+     * @method drawEndbossHealthBar
+     * @returns {void}
+     */
     drawEndbossHealthBar() {
         const endbossHealthBar = this.statusBars.find(sb => sb.barType === 'endboss_health');
         if (endbossHealthBar) {
@@ -297,6 +425,13 @@ class World {
         }
     }
 
+    /**
+     * @description Adds a movable object to the map, handling direction and drawing.
+     * @param {MoveableObject} mo 
+     * @memberOf World
+     * @method addToMap
+     * @returns {void}
+     */
     addToMap(mo) {
 
         if (mo.otherDirection) {
@@ -310,6 +445,13 @@ class World {
         }
     }
 
+    /**
+     * @description Flips the image of a movable object for drawing in the opposite direction.
+     * @memberOf World
+     * @method flipImage
+     * @param {MoveableObject} mo 
+     * @returns {void}
+     */
     flipImage(mo) {
         this.ctx.save();
         this.ctx.translate(mo.pos_x + mo.width, 0);
@@ -317,17 +459,35 @@ class World {
         this.ctx.translate(-mo.pos_x, 0);
     }
 
+    /**
+     * @description Restores the image context after flipping.
+     * @memberOf World
+     * @method flipImageBack
+     * @returns {void}
+     */
     flipImageBack() {
         this.ctx.restore();
     }
 
-
+    /**
+     * @description Adds multiple movable objects to the map.
+     * @memberOf World
+     * @method addObjectsToMap
+     * @param {Array<MoveableObject>} objects 
+     * @returns {void}
+     */
     addObjectsToMap(objects) {
         objects.forEach(object => {
             this.addToMap(object);
         });
     }
 
+    /**
+     * @description Handles the game over sequence, stopping the game and displaying the game over dialog.
+     * @memberOf World
+     * @method gameOver
+     * @returns {void}
+     */
     gameOver() {
         setTimeout(() => {
             this.stopGame();
@@ -337,6 +497,12 @@ class World {
         }, 100);
     }
 
+    /**
+     * @description Checks the win condition by verifying if the endboss is dead and handles the win sequence.
+     * @memberOf World
+     * @method checkWinCondition
+     * @returns {void}
+     */
     checkWinCondition() {
         const endboss = this.level.enemies.find(e => e instanceof Endboss);
         if (endboss && endboss.isDead) {
@@ -350,17 +516,17 @@ class World {
 
     }
 
+    /**
+     * @description Stops the game loop and audio.
+     * @memberOf World
+     * @method stopGame
+     * @returns {void}
+     */
     stopGame(){
         clearInterval(this.runInterval);
         this.runInterval = null;
         safeIsGameEnded(true);
-        this.stopAudio();
-    }
-
-    stopAudio() {
         this.audioManager.stopBackgroundMusic();
     }
-
-
 
 }

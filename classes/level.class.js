@@ -1,3 +1,8 @@
+/**
+ * @class Level
+ * @description Represents a game level with its properties and elements.
+ */
+
 class Level {
     enemies;
     clouds;
@@ -9,6 +14,11 @@ class Level {
     bottlesOnScreen = 0;
     coinsOnScreen = 0;
 
+    /**
+     * @description Initializes a new instance of the Level class.
+     * @constructor
+     * @memberof Level
+     */
     constructor() {
     }
 }

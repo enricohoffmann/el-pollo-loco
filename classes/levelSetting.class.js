@@ -1,6 +1,26 @@
+/**
+ * @class LevelSetting
+ * @extends LevelProperties
+ * @classdesc This class represents the settings for a game level, extending LevelProperties. It allows configuration of enemy count, item ranges, game length, and difficulty.
+ * @param {number} countOfEnemies - The number of enemies in the level.
+ * @param {number} minBottles - The minimum number of bottles on screen.
+ * @param {number} minCoins - The minimum number of coins on screen.
+ * @param {number} gameLengthFrames - The length of the game in frames.
+ * @param {string} difficulty - The difficulty level of the game (e.g., 'easy', 'medium', 'hard').
+ */
+
 class LevelSetting extends LevelProperties {
 
-
+    /**
+     * @description Constructs a LevelSetting instance with specified parameters or defaults based on difficulty.
+     * @memberOf LevelSetting
+     * @constructor
+     * @param {number} countOfEnemies 
+     * @param {number} minBottles 
+     * @param {number} minCoins 
+     * @param {number} gameLengthFrames 
+     * @param {string} difficulty 
+     */
     constructor(countOfEnemies, minBottles, minCoins, gameLengthFrames, difficulty) {
         super();
         this.countOfEnemies = countOfEnemies;
@@ -12,9 +32,13 @@ class LevelSetting extends LevelProperties {
         this.difficulty = difficulty;
     }
 
-
+    /**
+     * @description Retrieves the level settings for easy difficulty.
+     * @memberOf LevelSetting
+     * @method getEasyLevelSettings
+     * @returns {LevelProperties} The settings for easy difficulty level.
+     */
     getEasyLevelSettings(){
-
         const easySettings = new LevelProperties();
         easySettings.damage = 5;
         easySettings.initialHealth = 100;
@@ -27,7 +51,12 @@ class LevelSetting extends LevelProperties {
         return easySettings;
     }
 
-
+    /**
+     * @description Retrieves the level settings for medium difficulty.
+     * @memberOf LevelSetting
+     * @method getMediumLevelSettings
+     * @returns {LevelProperties} The settings for medium difficulty level.
+     */
     getMediumLevelSettings(){
         const mediumSettings = new LevelProperties();
         mediumSettings.damage = 20;
@@ -41,6 +70,12 @@ class LevelSetting extends LevelProperties {
         return mediumSettings;
     }
 
+    /**
+     * @description Retrieves the level settings for hard difficulty.
+     * @memberOf LevelSetting
+     * @method getHardLevelSettings
+     * @returns {LevelProperties} The settings for hard difficulty level.
+     */
     getHardLevelSettings(){
         const hardSettings = new LevelProperties();
         hardSettings.damage = 30;

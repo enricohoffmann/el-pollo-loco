@@ -1,3 +1,8 @@
+/**
+ * @description This module exports an object containing arrays of image paths for different endboss animations.
+ * @module endbossImages
+ */
+
 const endbossImages = {
     ENDBOSS_WALKING_IMAGES : [
         'img/4_enemie_boss_chicken/1_walk/G1.png',

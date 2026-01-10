@@ -1,3 +1,9 @@
+/**
+ * @class Endboss
+ * @extends MoveableObject
+ * @description Represents the end boss character in the game with its behaviors and animations.
+ */
+
 class Endboss extends MoveableObject {
 
     height = 400;
@@ -18,7 +24,13 @@ class Endboss extends MoveableObject {
     world;
 
 
-
+    /**
+     * @description Creates an instance of the Endboss.
+     * @memberOf Endboss
+     * @constructor
+     * @param {HTMLCanvasElement} canvas 
+     * @param {Number} level_end_x 
+     */
     constructor(canvas, level_end_x) {
         super();
         this.canvas = canvas;
@@ -31,7 +43,12 @@ class Endboss extends MoveableObject {
         this.animate();
     }
 
-
+    /**
+     * @description Sets the initial position of the end boss based on the level's end position.
+     * @memberOf Endboss
+     * @method setEndbossPosition
+     * @returns {void}
+     */
     setEndbossPosition() {
         this.pos_x = this.end_pos_x - (this.width + 80);
         const endbossHeight = this.height - (this.offset.top + this.offset.bottom);
@@ -39,6 +56,12 @@ class Endboss extends MoveableObject {
         this.pos_y = this.canvas.height - (bottomMargin + endbossHeight);
     }
 
+    /**
+     * @description Initiates the animation sequence for the end boss after a delay.
+     * @memberOf Endboss
+     * @method animate
+     * @returns {void}
+     */
     animate() {
         setTimeout(() => {
             this.walkingAnimation();
@@ -46,10 +69,13 @@ class Endboss extends MoveableObject {
 
     }
 
+    /**
+     * @description Handles the walking animation of the end boss.
+     * @memberOf Endboss
+     * @method walkingAnimation
+     * @returns {void}
+     */
     walkingAnimation() {
-
-        
-
         if (this.state === 'dead') return;
         this.state = 'walk';
 
@@ -72,6 +98,12 @@ class Endboss extends MoveableObject {
 
     }
 
+    /**
+     * @description Checks if the end boss has reached the left edge of the screen and triggers game over if true.
+     * @memberOf Endboss
+     * @method checkEndbossReachedLeftEdge
+     * @returns {void}
+     */
     checkEndbossReachedLeftEdge() {
         const leftEdgeX = this.pos_x <= 100;
 
@@ -84,14 +116,25 @@ class Endboss extends MoveableObject {
 
     }
 
+    /**
+     * @description Updates the position of the end boss's status bar to match its current position.
+     * @memberOf Endboss
+     * @method moveStatusBar
+     * @returns {void}
+     */
     moveStatusBar() {
         if (this.endBossStatusBar) {
             this.endBossStatusBar.pos_x = this.pos_x;
         }
     }
 
+    /**
+     * @description Initiates the attack sequence of the end boss.
+     * @memberOf Endboss
+     * @method attack
+     * @returns {void}
+     */
     attack() {
-
         if (this.state === 'dead' || this.state === 'hurt') return;
         if (this.state === 'attack') return;
 
@@ -103,6 +146,12 @@ class Endboss extends MoveableObject {
         this.attackAnimation();
     }
 
+    /**
+     * @description Handles the attack animation of the end boss.
+     * @memberOf Endboss
+     * @method attackAnimation
+     * @returns {void}
+     */
     attackAnimation() {
         this.attackAnimationInterval = setInterval(() => {
             this.playAnimation(this.imagesOfType.ENDBOSS_ATTACK_IMAGES);
@@ -121,7 +170,12 @@ class Endboss extends MoveableObject {
 
     }
 
-
+    /**
+     * @description Initiates the hurt animation of the end boss.
+     * @memberOf Endboss
+     * @method hurt
+     * @returns {void}
+     */
     hurt() {
         if (this.state === 'dead') return;
         this.state = 'hurt';
@@ -136,6 +190,12 @@ class Endboss extends MoveableObject {
         this.hurtAnimation();
     }
 
+    /**
+     * @description Handles the hurt animation of the end boss.
+     * @memberOf Endboss
+     * @method hurtAnimation
+     * @returns {void}
+     */
     hurtAnimation() {
         this.hurtAnimationInterval = setInterval(() => {
 
@@ -153,6 +213,12 @@ class Endboss extends MoveableObject {
         }, 160);
     }
 
+    /**
+     * @description Handles the death sequence of the end boss.
+     * @memberOf Endboss
+     * @method endbossDied
+     * @returns {void}
+     */
     endbossDied() {
         this.state = 'dead';
         clearInterval(this.animationInterval);
@@ -171,6 +237,12 @@ class Endboss extends MoveableObject {
 
     }
 
+    /**
+     * @description Handles the event when the end boss is hit.
+     * @memberOf Endboss
+     * @method entbossHit
+     * @returns {void}
+     */
     entbossHit() {
 
         this.hit();

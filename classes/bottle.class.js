@@ -1,3 +1,9 @@
+/**
+ * @class Bottle
+ * @extends DrawableObject
+ * @description Represents a bottle object in the game that can be collected by the player.
+ */
+
 class Bottle extends DrawableObject {
     width = 60;
     height = 80;
@@ -11,6 +17,14 @@ class Bottle extends DrawableObject {
     isOutOfScreen = false;
     bottleImageIndex = 99;
 
+    /**
+     * @description Creates a new Bottle object.
+     * @memberOf Bottle
+     * @constructor
+     * @param {Number} canvasHeight - The height of the canvas.
+     * @param {Number} levelLength - The length of the level.
+     * @param {Number} bottleImageIndex - The index of the bottle image to use. If not provided, a random index will be chosen.
+     */
     constructor(canvasHeight, levelLength, bottleImageIndex = 99) {
         super();
         this.bottleImageIndex = bottleImageIndex;
@@ -21,12 +35,27 @@ class Bottle extends DrawableObject {
         this.setPosition(canvasHeight, levelLength);
     }
 
+    /**
+     * @description Sets the position of the bottle on the canvas.
+     * @memberOf Bottle
+     * @method setPosition
+     * @param {Number} canvasHeight 
+     * @param {Number} levelLength 
+     * @return {void}
+     */
     setPosition(canvasHeight, levelLength) {
         const groundLevel = canvasHeight - 110;
         this.pos_y = groundLevel;
         this.pos_x = this.getRandomObjectPosition(250, levelLength - 500);
     }
 
+    /**
+     * @description Animates the collection of the bottle by moving it upwards until it goes off-screen.
+     * @memberOf Bottle
+     * @method animateCollectet
+     * @param {boolean} onFinished 
+     * @returns 
+     */
     animateCollectet(onFinished) {
         if (this.pos_y < -20) {
             if (onFinished) {

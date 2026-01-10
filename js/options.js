@@ -1,3 +1,9 @@
+/**
+ * @file options.js
+ * @description Manages game options such as difficulty, audio settings, and themes.
+ * @namespace Options
+ */
+
 let difficultyListOpen = false;
 let audioListOpen = false;
 let themeListOpen = false;
@@ -38,7 +44,12 @@ const selectLists = {
 };
 
 
-
+/**
+ * @description Initializes the options page by loading current settings and updating the UI.
+ * @memberOf Options
+ * @function initOptions
+ * @returns {void}
+ */
 function initOptions() {
     loadCurrentGameSettings();
     updateAudioSetting();
@@ -47,6 +58,14 @@ function initOptions() {
     updateGameSettingFields();
 }
 
+/**
+ * @description Shows or hides the selection list for a given option.
+ * @memberOf Options
+ * @function showOrHideSelectedList
+ * @param {string} key 
+ * @param {string} showOrHide 
+ * @returns {void}
+ */
 function showOrHideSelectedList(key, showOrHide = 'show') {
     const config = selectLists[key];
     if (!config) return;
@@ -62,6 +81,13 @@ function showOrHideSelectedList(key, showOrHide = 'show') {
     }
 }
 
+/**
+ * @description Opens the selection list for a given option.
+ * @memberOf Options
+ * @function openListForSelection
+ * @param {object} config 
+ * @returns {void}
+ */
 function openListForSelection(config) {
     config.setOpenFlag(true);
     const listContainer = document.querySelector(`#${config.containerId}`);
@@ -76,6 +102,13 @@ function openListForSelection(config) {
     setBorderActiveState(config.selectContainerId, true);
 }
 
+/**
+ * @description Closes the selection list for a given option.
+ * @memberOf Options
+ * @function closeListForSelection
+ * @param {object} config 
+ * @returns {void}
+ */
 function closeListForSelection(config) {
     config.setOpenFlag(false);
     const listContainer = document.querySelector(`#${config.containerId}`);
@@ -89,6 +122,13 @@ function closeListForSelection(config) {
     setBorderActiveState(config.selectContainerId, false);
 }
 
+/**
+ * @description Calculates the total height of all select buttons within a given list.
+ * @memberOf Options
+ * @function getHeightOfSelectButtons
+ * @param {string} listId 
+ * @returns {number} The total height of the select buttons.
+ */
 function getHeightOfSelectButtons(listId) {
     let totalHeight = 0;
     const listContainer = document.getElementById(listId);
@@ -108,7 +148,12 @@ function getHeightOfSelectButtons(listId) {
     return totalHeight;
 }
 
-
+/**
+ * @description Hides all selection lists except the one specified.
+ * @memberOf Options
+ * @function hideNotSelectedLists
+ * @param {string} exceptList 
+ */
 function hideNotSelectedLists(exceptList = '') {
     Object.entries(selectLists).forEach(([key, cfg]) => {
         if (key !== exceptList && cfg.openFlag()) {
@@ -118,6 +163,14 @@ function hideNotSelectedLists(exceptList = '') {
     });
 }
 
+/**
+ * @description Sets the icon of a button to show or hide state.
+ * @memberOf Options
+ * @function setShowOrHideButtonIcon
+ * @param {boolean} showOrHide 
+ * @param {string} buttonID 
+ * @returns {void}
+ */
 function setShowOrHideButtonIcon(showOrHide = 'show', buttonID = '') {
     const button = document.getElementById(buttonID);
     if (button) {
@@ -132,6 +185,14 @@ function setShowOrHideButtonIcon(showOrHide = 'show', buttonID = '') {
 
 }
 
+/**
+ * @description Sets the active state of the border for a select container.
+ * @memberOf Options
+ * @function setBorderActiveState
+ * @param {string} selectContainerID 
+ * @param {boolean} isActive 
+ * @returns {void}
+ */
 function setBorderActiveState(selectContainerID = '', isActive = false) {
     const selectContainer = document.getElementById(selectContainerID);
     if (selectContainer) {
@@ -143,6 +204,14 @@ function setBorderActiveState(selectContainerID = '', isActive = false) {
     }
 }
 
+/**
+ * @description Updates the selected option in the corresponding input field.
+ * @memberOf Options
+ * @function updateSelectedOption
+ * @param {string} inputID 
+ * @param {number|string} selectedValue 
+ * @returns {void}
+ */
 function updateSelectedOption(inputID = '', selectedValue = '') {
     const inputElement = document.getElementById(inputID);
     if (inputElement) {
@@ -150,6 +219,15 @@ function updateSelectedOption(inputID = '', selectedValue = '') {
     }
 }
 
+/**
+ * @description Selects an option and updates the UI accordingly.
+ * @memberOf Options
+ * @function selectOption
+ * @param {string} key 
+ * @param {number|string} value 
+ * @param {HTMLElement} button 
+ * @returns {void}
+ */
 function selectOption(key, value, button) {
     if (button?.getAttribute('data-selected') === 'true') { return; }
 
@@ -169,6 +247,13 @@ function selectOption(key, value, button) {
 
 }
 
+/**
+ * @description Updates the active state of buttons within a selection list.
+ * @memberOf Options
+ * @function updateActiveButtons
+ * @param {HTMLElement} selectedButton
+ * @returns {void} 
+ */
 function updateActiveButtons(selectedButton) {
     const buttons = selectedButton.parentElement.querySelectorAll('.btn');
     buttons.forEach(button => {
@@ -179,6 +264,12 @@ function updateActiveButtons(selectedButton) {
     selectedButton.setAttribute('data-selected', 'true');
 }
 
+/**
+ * @description Updates the game setting input fields based on the current difficulty.
+ * @memberOf Options
+ * @function updateGameSettingFields
+ * @returns {void}
+ */
 function updateGameSettingFields() {
 
     const difficulty = difficultySettings[currentDifficulty];
@@ -196,6 +287,14 @@ function updateGameSettingFields() {
 
 }
 
+/**
+ * @description Sets an input field to readonly or editable.
+ * @memberOf Options
+ * @function setInputfieldReadonly
+ * @param {string} id 
+ * @param {boolean} readonly 
+ * @returns {void}
+ */
 function setInputfieldReadonly(id, readonly = true) {
     const inputField = document.getElementById(id);
     if (!inputField) return;
@@ -207,7 +306,12 @@ function setInputfieldReadonly(id, readonly = true) {
     }
 }
 
-
+/**
+ * @description Creates an object representing the current game settings.
+ * @memberOf Options
+ * @function createGameSettingsObject
+ * @returns {object}
+ */
 function createGameSettingsObject() {
     return {
         difficulty: currentDifficulty,
@@ -220,6 +324,12 @@ function createGameSettingsObject() {
     };
 }
 
+/**
+ * @description Safes the current game settings and shows a confirmation dialog.
+ * @memberOf Options
+ * @function safeCurrentGameSettings
+ * @returns {void}
+ */
 function safeCurrentGameSettings() {
     const settings = createGameSettingsObject();
     safeGameSettings(settings);
@@ -229,6 +339,12 @@ function safeCurrentGameSettings() {
     }, 5000);
 }
 
+/**
+ * @description Loads the current game settings from storage and updates global variables.
+ * @memberOf Options
+ * @function loadCurrentGameSettings
+ * @returns {void}
+ */
 function loadCurrentGameSettings() {
     const settings = loadGameSettings();
     if (settings) {
@@ -244,12 +360,25 @@ function loadCurrentGameSettings() {
     }
 }
 
+/**
+ * @description Creates default game settings.
+ * @memberOf Options
+ * @function createDeafaultGameSettings
+ * @returns {void}
+ */
 function createDeafaultGameSettings() {
     currentDifficulty = 'Easy';
     currentAudioSetting = 'Audio On';
     currentTheme = 'Blue';
 }
 
+/**
+ * @description Sets a button as active based on its ID.
+ * @memberOf Options
+ * @function setActiveButton
+ * @param {string} buttonId 
+ * @returns {void}
+ */
 function setActiveButton(buttonId) {
     const button = document.getElementById(buttonId);
     if (!button) return;
@@ -258,18 +387,36 @@ function setActiveButton(buttonId) {
     button.setAttribute('data-selected', 'true');
 }
 
+/**
+ * @description Updates the audio setting UI based on the current audio setting.
+ * @memberOf Options
+ * @function updateAudioSetting
+ * @returns {void}
+ */
 function updateAudioSetting() {
     const map = { 'Audio On': 'btnAudioOn', 'Audio Off': 'btnAudioOff' };
     setActiveButton(map[currentAudioSetting]);
     document.getElementById('audioInput').value = currentAudioSetting;
 }
 
+/**
+ * @description Updates the theme setting UI based on the current theme.
+ * @memberOf Options
+ * @function updateThemeSetting
+ * @returns {void}
+ */
 function updateThemeSetting() {
     const map = { Blue: 'btnThemeBlue', Green: 'btnThemeGreen', Orange: 'btnThemeOrange' };
     setActiveButton(map[currentTheme]);
     document.getElementById('themeInput').value = currentTheme;
 }
 
+/**
+ * @description Updates the difficulty setting UI based on the current difficulty.
+ * @memberOf Options
+ * @function updateDifficultySetting
+ * @returns {void}
+ */
 function updateDifficultySetting() {
     const map = {
         Easy: 'btnDifficultyEasy',
@@ -280,6 +427,12 @@ function updateDifficultySetting() {
     document.getElementById('difficultyInput').value = currentDifficulty;
 }
 
+/**
+ * @description Closes the safe confirmation dialog if it is open.
+ * @memberOf Options
+ * @function safeDialogClose
+ * @returns {void}
+ */
 function safeDialogClose() {
     if (safeDialogOpen) {
         const dialog = document.getElementById('safeOptionDialog');
@@ -290,6 +443,12 @@ function safeDialogClose() {
     }
 }
 
+/**
+ * @description Shows the safe confirmation dialog.
+ * @memberOf Options
+ * @function showSafeDialog
+ * @returns {void}
+ */
 function showSafeDialog() {
     const dialog = document.getElementById('safeOptionDialog');
     dialog.classList.remove('visually-hidden');

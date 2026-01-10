@@ -18,17 +18,17 @@
 
         <nav class="nav-game">
             <div class="nav-content nav-desktop">
-                <button type="button" class="btn btn-yellow" onclick="navigateTo('index')">Back</button>
-                <button type="button" class="btn btn-yellow" onclick="navigateTo('impressum')">Impressum</button>
-                <button type="button" class="btn btn-yellow" onclick="navigateTo('privacy')">Privacy Policy</button>
-                <button type="button" class="btn btn-yellow" onclick="navigateTo('help')">Help</button>
+                <button type="button" class="btn btn-yellow" onclick="navigationButtonOnGame('index')">Back</button>
+                <button type="button" class="btn btn-yellow" onclick="navigationButtonOnGame('impressum')">Impressum</button>
+                <button type="button" class="btn btn-yellow" onclick="navigationButtonOnGame('privacy')">Privacy Policy</button>
+                <button type="button" class="btn btn-yellow" onclick="navigationButtonOnGame('help')">Help</button>
             </div>
         </nav>
 
         <section id="mobileMenu" class="mobile-menu-box isGame" onclick="">
-            <button type="button" class="btn-mobile-submenu" onclick="navigateTo('privacy')">Privacy Policy</button>
-            <button type="button" class="btn-mobile-submenu" onclick="navigateTo('options')">Options</button>
-            <button type="button" class="btn-mobile-submenu" onclick="navigateTo('help')">Help</button>
+            <button type="button" class="btn-mobile-submenu" onclick="navigationButtonOnGame('privacy')">Privacy Policy</button>
+            <button type="button" class="btn-mobile-submenu" onclick="navigationButtonOnGame('options')">Options</button>
+            <button type="button" class="btn-mobile-submenu" onclick="navigationButtonOnGame('help')">Help</button>
         </section>
 
         <main class="main-game">
@@ -51,7 +51,7 @@
                         <span id="difficultyState" class="text-white">difficulty: Easy</span>
                     </div>
                     <div class="nav-mobile nav-mobile-game">
-                        <button type="button" class="btn btn-small" onclick="navigateTo('index')">Back</button>
+                        <button type="button" class="btn btn-small" onclick="navigationButtonOnGame('index')">Back</button>
                         <button type="button" class="btn btn-mobile-menu" title="Mobile Menu"
                             onclick="mobileMenuClick(event)"></button>
                     </div>
