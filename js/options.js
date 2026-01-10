@@ -274,8 +274,7 @@ function updateDifficultySetting() {
     const map = {
         Easy: 'btnDifficultyEasy',
         Medium: 'btnDifficultyMedium',
-        Hard: 'btnDifficultyHard',
-        Custom: 'btnDifficultyCustom'
+        Hard: 'btnDifficultyHard'
     };
     setActiveButton(map[currentDifficulty]);
     document.getElementById('difficultyInput').value = currentDifficulty;

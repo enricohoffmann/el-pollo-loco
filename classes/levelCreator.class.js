@@ -28,8 +28,6 @@ class LevelCreator {
             this.levelSetting = setting.getMediumLevelSettings();
         } else if (this.difficulty === 'Hard') {
             this.levelSetting = setting.getHardLevelSettings();
-        }else{
-            //this.levelSetting = setting.getCustomLevelSettings(config.damage, config.initialHealth, config.initialBottleCount, config.countOfClouds);
         }
     }
 

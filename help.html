@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help</title>
+    <link rel="stylesheet" href="./styles/color.css">
+    <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="./styles/sizes.css">
+    <link rel="stylesheet" href="./styles/game.css">
+    <link rel="stylesheet" href="./styles/help.css">
+    <link rel="stylesheet" href="./styles/mediaQuerys.css">
+    <link rel="icon" type="image/png" href="./img/2_character_pepe/1_idle/idle/I-1.png">
+</head>
+
+<body onload="siteLoaded()">
+
+    <div class="site-overlay">
+        <div class="site-content">
+            <nav>
+                <div class="nav-content nav-desktop">
+                    <button type="button" class="btn btn-yellow" onclick="navigateTo('index')">Back</button>
+                    <button type="button" class="btn btn-yellow" onclick="navigateTo('impressum')">Impressum</button>
+                    <button type="button" class="btn btn-yellow" onclick="navigateTo('privacy')">Privacy Policy</button>
+                </div>
+
+                <div class="nav-content nav-mobile">
+                    <button type="button" class="btn btn-small" onclick="navigateTo('index')">Back</button>
+                    <button type="button" class="btn btn-mobile-menu" title="Mobile Menu"
+                        onclick="mobileMenuClick(event)"></button>
+                </div>
+
+            </nav>
+
+            <section id="mobileMenu" class="mobile-menu-box isGame" onclick="">
+                <button type="button" class="btn-mobile-submenu" onclick="navigateTo('privacy')">Privacy Policy</button>
+                <button type="button" class="btn-mobile-submenu" onclick="navigateTo('options')">Options</button>
+            </section>
+
+            <main>
+                <section class="text-background" id="help">
+                    <h1>Help</h1>
+
+                    <!-- Keyboard -->
+                    <article class="help-block" id="help-controls">
+                        <h2>Keyboard Controls</h2>
+
+                        <h3>Move</h3>
+                        <ul>
+                            <li><strong>← Left Arrow</strong>: move left</li>
+                            <li><strong>→ Right Arrow</strong>: move right</li>
+                        </ul>
+
+                        <h3>Jump</h3>
+                        <ul>
+                            <li><strong>Space</strong> or <strong>↑ Up Arrow</strong>: jump</li>
+                        </ul>
+
+                        <h3>Throw</h3>
+                        <ul>
+                            <li><strong>D</strong>: throw a bottle</li>
+                        </ul>
+
+                        <p class="help-note">
+                            Note: The game listens for <strong>d</strong> and <strong>D</strong> for throwing.
+                        </p>
+                    </article>
+
+                    <!-- Mobile -->
+                    <article class="help-block" id="help-mobile">
+                        <h2>Mobile Controls (Touch)</h2>
+                        <p>On mobile/tablet you play with the on-screen buttons:</p>
+
+                        <div class="help-controls-grid">
+                            <div class="help-control">
+                                <div class="help-icon left-icon">
+                                </div>
+                                <span>Move left</span>
+                            </div>
+
+                            <div class="help-control">
+                                <div class="help-icon right-icon">
+                                </div>
+                                <span>Move right</span>
+                            </div>
+
+                            <div class="help-control">
+                                <div class="help-icon jump-icon"></div>
+                                <span>Jump</span>
+                            </div>
+
+                            <div class="help-control">
+                                <div class="help-icon throw-icon">
+                                </div>
+                                <span>Throw bottle</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Gameplay -->
+                    <article class="help-block" id="help-gameplay">
+                        <h2>How to Play</h2>
+                        <ul>
+                            <li><strong>Collect coins</strong> to increase your progress.</li>
+                            <li><strong>Collect bottles</strong> so you can throw them.</li>
+                            <li><strong>Defeat chickens</strong> by <strong>jumping on them from above</strong>.</li>
+                            <li><strong>Defeat the endboss</strong> by <strong>hitting him with thrown bottles</strong>.
+                            </li>
+                        </ul>
+                    </article>
+
+                    <!-- Options -->
+                    <article class="help-block" id="help-options">
+                        <h2>Options</h2>
+                        <ul>
+                            <li><strong>Audio</strong>: turn sound on/off</li>
+                            <li><strong>Choose Theme</strong>: select your visual theme (e.g. <em>Blue</em>)</li>
+                            <li><strong>Choose Difficulty</strong>: select difficulty (e.g. <em>Hard</em>)</li>
+                            <li><strong>Count of Enemies</strong>: set how many enemies spawn</li>
+                            <li><strong>Count of minimum Coins</strong>: set the minimum number of coins in the level
+                            </li>
+                            <li><strong>Save</strong>: save your settings</li>
+                        </ul>
+                    </article>
+
+                    <!-- Ingame Buttons -->
+                    <article class="help-block" id="help-ingame">
+                        <h2>In-Game Buttons</h2>
+
+                        <div class="help-controls-grid">
+                            <div class="help-control">
+                                <div class="help-icon icon-pause"></div>
+                                <span>Pause game</span>
+                            </div>
+
+                            <div class="help-control">
+                                <div class="help-icon icon-reload"></div>
+                                <span>Restart game</span>
+                            </div>
+
+                            <div class="help-control">
+                                <div class="help-icon icon-audio-on"></div>
+                                <span>Sound on/off</span>
+                            </div>
+
+                            <div class="help-control">
+                                <div class="help-icon icon-fullscreen">
+                                </div>
+                                <span>Enter fullscreen</span>
+                            </div>
+
+                            <div class="help-control">
+                                <div class="help-icon icon-exit-fullscreen"></div>
+                                <span>Exit fullscreen</span>
+                            </div>
+
+                            <div class="help-control">
+                                <div class="help-icon icon-menu"></div>
+                                <span>Open menu</span>
+                            </div>
+                        </div>
+                    </article>
+                </section>
+
+            </main>
+
+
+        </div>
+    </div>
+
+
+
+    <div class="portrait-warning" hidden>Please rotate your device to landscape mode.📱</div>
+
+    <script src="./js/portraitBlock.js" defer></script>
+    <script src="./js/script.js"></script>
+
+</body>
+
+</html>

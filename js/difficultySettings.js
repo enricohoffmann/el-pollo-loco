@@ -16,11 +16,5 @@ const difficultySettings = {
         countOfMinCoins: 15,
         countOfMinBottles: 10,
         gameLengthFrames: 9
-    },
-    Custom: {
-        countOfEnemies: 0,
-        countOfMinCoins: 0,
-        countOfMinBottles: 0,
-        gameLengthFrames: 0
     }
 };

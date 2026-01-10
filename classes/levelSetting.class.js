@@ -54,17 +54,4 @@ class LevelSetting extends LevelProperties {
         return hardSettings;
     }
 
-    getCustomLevelSettings(damage, initialHealth, initialBottleCount, countOfClouds){
-        const customSettings = new LevelProperties();
-        customSettings.damage = damage;
-        customSettings.initialHealth = initialHealth;
-        customSettings.initialBottleCount = initialBottleCount;
-        customSettings.bottlesOnScreenRange = this.bottlesOnScreenRange;
-        customSettings.coinsOnScreenRange = this.coinsOnScreenRange;
-        customSettings.contOfBackgroundObjects = this.gameLengthFrames;
-        customSettings.countOfEnemies = this.countOfEnemies;
-        customSettings.countOfClouds = countOfClouds;
-        return customSettings;
-    }
-
 }

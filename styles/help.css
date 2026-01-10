@@ -1,0 +1,40 @@
+.help-page {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.help-block {
+    margin: 24px 0;
+}
+
+.help-note {
+    margin-top: 12px;
+    opacity: 0.85;
+}
+
+.help-controls-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.help-control {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: rgb(245, 178, 44);
+    border-radius: 10px;
+    padding: 10px 14px;
+}
+
+.help-icon {
+    width: 36px;
+    height: 36px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    flex-shrink: 0;
+}
+

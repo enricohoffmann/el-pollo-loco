@@ -128,7 +128,8 @@
 .left-icon,
 .right-icon,
 .jump-icon,
-.throw-icon {
+.throw-icon,
+.icon-menu {
     height: 20px;
     width: 20px;
     background-size: cover;
@@ -178,6 +179,10 @@
 
 .throw-icon {
     background-image: url('../img/custom/throw-icon.svg');
+}
+
+.icon-menu {
+    background-image: url('../img/custom/mMenu.svg');
 }
 
 .mobile-game-button-panel {
