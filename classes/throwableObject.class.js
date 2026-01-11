@@ -44,7 +44,7 @@ class ThrowableObject extends MoveableObject {
         this.isFlying = true;
 
 
-        this.throwInterval = setInterval(() => {
+        this.throwInterval = window.createStoppableInterval(() => {
             otherDirection ? this.pos_x -= 10 : this.pos_x += 10;
             this.playAnimation(this.imagesOfType.BOTTLE_FLYING);
             this.checkIfBottleIsOnGround();
@@ -59,7 +59,7 @@ class ThrowableObject extends MoveableObject {
      * @returns {void}
      */
     applyGravityBottle() {
-        this.gravityInterval = setInterval(() => {
+        this.gravityInterval = window.createStoppableInterval(() => {
             if (this.isAboveGround() || this.speedY > 0) {
                 this.pos_y -= this.speedY;
                 this.speedY -= this.acceleration;
@@ -91,8 +91,8 @@ class ThrowableObject extends MoveableObject {
      * @returns {void}
      */
     splashing() {
-        clearInterval(this.gravityInterval);
-        clearInterval(this.throwInterval);
+        window.removeOneGameInterval(this.gravityInterval);
+        window.removeOneGameInterval(this.throwInterval);
         this.speedY = 0;
         this.playAnimationOnce(this.imagesOfType.BOTTLE_SPLASH, () => {
             if (this.currentImageIndex >= this.imagesOfType.BOTTLE_SPLASH.length) {

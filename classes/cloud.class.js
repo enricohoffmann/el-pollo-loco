@@ -61,16 +61,25 @@ class Cloud extends MoveableObject {
      * @returns {void}
      */
     animate() {
-        setInterval(() => {
+        window.createStoppableInterval(() => {
+            this.cloudMouveInterval();
+        }, 1000 / 60);
+    }
 
-            if(window.isGamePaused()) return;
+    /**
+     * @description Updates the cloud's position for each animation frame.
+     * @memberOf Cloud
+     * @method cloudMouveInterval
+     * @returns {void}
+     */
+    cloudMouveInterval(){
+        if(window.isGamePaused()) return;
 
             if (this.pos_x < -500) {
                 this.pos_x = this.end_pos_x;
                 this.loadCloudImage();
             }
             this.pos_x -= 0.15;
-        }, 1000 / 60);
     }
 
     /**

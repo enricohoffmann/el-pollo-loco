@@ -49,21 +49,28 @@ class Chicken extends MoveableObject {
      * @returns {void}
      */
     animate() {
-        this.chickenWalkInterval = setInterval(() => {
+        this.chickenWalkInterval = window.createStoppableInterval(() => this.chickenWalk(), 1000 / 60);
 
+        this.chickenAnimationInterval = createStoppableInterval(() => {
             if(window.isGamePaused()) return;
+            this.playAnimation(this.EMEMY_WALKING_IMAGES);
+        }, 200);
+    }
+
+    /**
+     * @description Moves the chicken left across the screen. If the chicken is dead, it triggers the die method.
+     * @memberof Chicken
+     * @method chickenWalk
+     * @returns {void}
+     */
+    chickenWalk(){
+        if(window.isGamePaused()) return;
 
             if (this.isDead) {
                 this.die();
                 return;
             }
             this.moveLeft();
-        }, 1000 / 60);
-
-        this.chickenAnimationInterval = setInterval(() => {
-            if(window.isGamePaused()) return;
-            this.playAnimation(this.EMEMY_WALKING_IMAGES);
-        }, 200);
     }
 
     /**
@@ -73,6 +80,8 @@ class Chicken extends MoveableObject {
      * @returns {void}
      */
     die() {
+        windows.removeOneGameInterval(this.chickenWalkInterval);
+        window.removeOneGameInterval(this.chickenAnimationInterval);
         clearInterval(this.chickenWalkInterval);
         clearInterval(this.chickenAnimationInterval);
         this.loadImages(this.ENEMY_DEAD_IMAGES);

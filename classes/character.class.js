@@ -8,8 +8,8 @@ class Character extends MoveableObject {
     height = 320;
     width = 150;
     speed = 10;
-    damage = 0.5;
-    energy = 200;
+    damage = 10;
+    energy = 100;
     world;
     animationInterval;
     keyboardReadInterval;
@@ -59,19 +59,28 @@ class Character extends MoveableObject {
      * @returns {void}
      */
     animate() {
-        this.keyboardReadInterval = setInterval(() => {
-            if(window.isGamePaused()) return;
-            this.keyboardReadLoop();
-            this.checkIdleTime();
-            this.lastPosY = this.pos_y;
-        }, 1000 / 60);
+        this.keyboardReadInterval = window.createStoppableInterval(() => this.keyboardReadLoop(), 1000 / 60);
 
-        this.animationInterval = setInterval(() => {
-            if(window.isGamePaused()) return;
+        this.animationInterval = window.createStoppableInterval(() => {
+            if (window.isGamePaused()) return;
             this.animationLoop();
         }, 40);
 
+   }
+
+   /**
+    * @description Continuously reads keyboard inputs and checks for idle time.
+    * @memberof Character
+    * @method keyboardReadLoop
+    * @returns {void}
+    */
+    keyboardReadLoop() {
+        if (window.isGamePaused()) return;
+        this.keyboardReadLoop();
+        this.checkIdleTime();
+        this.lastPosY = this.pos_y;
     }
+
 
     /**
      * @description Checks if the character has been idle for a specified duration and updates the sleeping state.
@@ -129,10 +138,10 @@ class Character extends MoveableObject {
      * @returns {void}
      */
     keyboardReadLoop() {
-        if (this.world.keyboard.keys.ArrowRight && !this.isEndRight) {this.startMoveRight();}
-        if (this.world.keyboard.keys.ArrowLeft && !this.isEndLeft) {this.startMoveLeft();}
-        if (this.world.keyboard.jumping && !this.isAboveGround()) { this.startJump();}
-        if (this.world.keyboard.throwing) {this.startThrow(); }
+        if (this.world.keyboard.keys.ArrowRight && !this.isEndRight) { this.startMoveRight(); }
+        if (this.world.keyboard.keys.ArrowLeft && !this.isEndLeft) { this.startMoveLeft(); }
+        if (this.world.keyboard.jumping && !this.isAboveGround()) { this.startJump(); }
+        if (this.world.keyboard.throwing) { this.startThrow(); }
         if (this.world.keyboard.allKeysReleased && !this.isDead && !this.isHurt) { this.startIdleLoop(); }
         this.setCamaraPosition();
     }
@@ -220,7 +229,7 @@ class Character extends MoveableObject {
         if (!this.isIdle) {
             this.isIdle = true;
             this.idleInterval = setInterval(() => {
-                if(window.isGamePaused()) return;
+                if (window.isGamePaused()) return;
                 this.idleLoop();
             }, 100);
         }
@@ -247,6 +256,8 @@ class Character extends MoveableObject {
      */
     heDied() {
         this.deathAnimationStarted = true;
+        window.removeOneGameInterval(this.keyboardReadInterval);
+        window.removeOneGameInterval(this.animationInterval);
         this.resetAnyInterval(this.keyboardReadInterval);
         this.resetAnyInterval(this.animationInterval);
         this.playAnimationOnce(this.imagesOfType.CHARACTER_DEAD_IMAGES, () => {
@@ -261,13 +272,13 @@ class Character extends MoveableObject {
      * @returns {void}
      */
     playHurtSound() {
-        if (!this.isHurtTime){
+        if (!this.isHurtTime) {
             this.isHurtTime = new Date().getTime();
             this.world.audioManager.playSoundEffect('../audio/character-hurt.mp3');
             return;
         };
 
-        if( new Date().getTime() - this.isHurtTime < 500) return;
+        if (new Date().getTime() - this.isHurtTime < 500) return;
         this.isHurtTime = new Date().getTime();
         this.world.audioManager.playSoundEffect('../audio/character-hurt.mp3');
     }

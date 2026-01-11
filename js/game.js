@@ -17,6 +17,7 @@ let gameSettings;
 let isControlBind = false;
 let audioManager = new AudioManager();
 let gameIsEnded = false;
+let gameInterval = [];
 
 
 const controls = {
@@ -342,7 +343,8 @@ function reloadGame() {
     if (isGamePaused()) { return; }
 
     if (world) {
-        clearInterval(world.runInterval);
+        clearAllGameIntervals();
+        audioManager.stopBackgroundMusic();
         world = null;
         clearGameState();
         init();
@@ -462,6 +464,47 @@ function toggleFullScreenButtonIcon(isFullScreen) {
 }
 
 /**
+ * @description Creates a stoppable interval and stores its ID for later clearing.
+ * @memberOf Game
+ * @function createStoppableInterval
+ * @param {Function} func 
+ * @param {number} delay 
+ * @returns {number} The interval ID that can be used to clear the interval later.
+ */
+function createStoppableInterval(func, delay) {
+    let intervalId = setInterval(func, delay);
+    gameInterval.push(intervalId);
+    return intervalId;
+}
+
+/**
+ * @description Clears all intervals created during the game.
+ * @memberOf Game
+ * @function clearAllGameIntervals
+ * @return {void}
+ */
+function clearAllGameIntervals() {
+    gameInterval.forEach( (id) => {
+        console.log(id);
+        
+        clearInterval(id);
+    });
+    gameInterval = [];
+}
+
+/**
+ * @description Removes a specific interval ID from the tracking array.
+ * @memberOf Game
+ * @function removeOneGameInterval
+ * @param {number} id 
+ * @return {void}
+ */
+function removeOneGameInterval(id) {
+    clearInterval(id);
+    gameInterval = gameInterval.filter( (intervalId) => intervalId !== id);
+}
+
+/**
  *@description Sets up event listeners for keyboard input and window resize events. Make varialbles and functions globally accessible.
  *@memberOf Game
  *@function setupEventListeners
@@ -474,5 +517,8 @@ window.openGameOverDialog = openGameOverDialog;
 window.openGameWinDialog = openGameWinDialog;
 window.isGamePaused = isGamePaused;
 window.isGameMuted = isGameMuted;
+window.createStoppableInterval = createStoppableInterval;
+window.clearAllGameIntervals = clearAllGameIntervals;
+window.removeOneGameInterval = removeOneGameInterval;
 
 

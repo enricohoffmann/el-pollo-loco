@@ -23,7 +23,6 @@ class World {
     bottleObjects = [];
     currentCollectedBottles = 0;
     lastBounceTime = 0;
-    runInterval;
     pauseImg;
     audioManager = new AudioManager();
     isHit;
@@ -54,9 +53,19 @@ class World {
      * @returns {void}
      */
     run() {
+        window.createStoppableInterval(() => this.runInterval(), 1000 / 60);
+        window.createStoppableInterval(() => this.safeGameInterval(), 2000);
+        this.startBackgroundMusic();
+    }
 
-        this.runInterval = setInterval(() => {
-            this.character.applyGravity();
+    /**
+     * @description Updates the game state, including character movement, enemy interactions, and item management.
+     * @memberOf World
+     * @method runInterval
+     * @returns {void}
+     */
+    runInterval(){
+        this.character.applyGravity();
             this.level.enemies.forEach((enemy) => {
                 this.checkColisions(enemy);
                 this.checkColisionsWithThrowableObjects(enemy);
@@ -66,14 +75,16 @@ class World {
             this.bottleManager.update();
             this.checkIfNewBottleCollected();
             this.draw();
+    }
 
-        }, 1000 / 60);
-
-        setInterval(() => {
-            safeGameState(this)
-        }, 2000);
-
-        this.startBackgroundMusic();
+    /**
+     * @description Safely saves the game state at regular intervals.
+     * @memberOf World
+     * @method safeGameInterval
+     * @returns {void}
+     */
+    safeGameInterval(){
+        safeGameState(this)
     }
 
     /**
@@ -523,8 +534,7 @@ class World {
      * @returns {void}
      */
     stopGame(){
-        clearInterval(this.runInterval);
-        this.runInterval = null;
+        window.clearAllGameIntervals();
         safeIsGameEnded(true);
         this.audioManager.stopBackgroundMusic();
     }
