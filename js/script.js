@@ -34,7 +34,7 @@ function siteLoaded() {
  * @returns {void}
  */
 function navigateTo(page) {
-    window.location.href = `../${page}.html`;
+    window.location.href = `./${page}.html`;
 }
 
 /**

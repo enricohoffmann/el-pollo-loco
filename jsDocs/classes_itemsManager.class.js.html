@@ -111,11 +111,11 @@ class ItemsManager {
         this.collectedItems++;
 
         if(collectedItem instanceof Coin) {
-            this.audioManager.playSoundEffect('../audio/get-coin.mp3');
+            this.audioManager.playSoundEffect('./audio/get-coin.mp3');
         }
 
         if(collectedItem instanceof Bottle) {
-            this.audioManager.playSoundEffect('../audio/get-bottle.mp3');
+            this.audioManager.playSoundEffect('./audio/get-bottle.mp3');
         }
 
         collectedItem.animateCollectet(() => {

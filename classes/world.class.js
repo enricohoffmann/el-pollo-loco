@@ -170,7 +170,7 @@ class World {
      * @returns {void}
      */
     checkColisions(enemy) {
-        if (enemy.isDead == true) return;
+        if (enemy.isDead == true || enemy.energy <= 1) return;
         const colliding = this.character.isColliding(enemy);
         if (!colliding) return;
         const collidingTop = this.character.isCollidingTop(enemy) && !this.character.isDead && !enemy.isDead;
@@ -233,8 +233,8 @@ class World {
      */
     characterHitEnemyOnTop(enemy) {
         if (enemy instanceof Endboss) { return; }
-        enemy.damage = 100;
-        this.audioManager.playSoundEffect('../audio/chicken-shrines-01.mp3');
+        if( enemy.energy <= 1) { return; }
+        this.audioManager.playSoundEffect('./audio/chicken-shrines-01.mp3');
         enemy.hit();
         this.bounceOffEnemy(enemy);
     }
@@ -269,10 +269,10 @@ class World {
 
         if (enemy instanceof Endboss) {
             enemy.entbossHit();
-            this.audioManager.playSoundEffect('../audio/chicken-alarm.mp3');
+            this.audioManager.playSoundEffect('./audio/chicken-alarm.mp3');
         } else {
             enemy.hit();
-            this.audioManager.playSoundEffect('../audio/chicken-shrines-01.mp3');
+            this.audioManager.playSoundEffect('./audio/chicken-shrines-01.mp3');
         }
     }
 
@@ -503,7 +503,7 @@ class World {
         setTimeout(() => {
             this.stopGame();
             window.openGameOverDialog();
-            this.audioManager.playSoundEffect('../audio/game-over.mp3');
+            this.audioManager.playSoundEffect('./audio/game-over.mp3');
             return;
         }, 100);
     }
@@ -520,7 +520,7 @@ class World {
             setTimeout(() => {
                 this.stopGame();
                 window.openGameWinDialog();
-                this.audioManager.playSoundEffect('../audio/orchestral-win.mp3');
+                this.audioManager.playSoundEffect('./audio/orchestral-win.mp3');
                 return;
             }, 100);
         }

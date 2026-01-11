@@ -41,7 +41,11 @@ class LevelCreator {
      * @returns {void}
      */
     readLevelSetting() {
-        this.config = loadGameSettings() || this.createDefaultSettings();
+        this.config = loadGameSettings();
+        if (!this.config) {
+            this.createDefaultSettings();
+            this.config = loadGameSettings();
+        }
         this.difficulty = this.config.difficulty || 'Easy';
 
         const setting = new LevelSetting(this.config.countOfEnemies, this.config.countOfMinBottles, this.config.countOfMinCoins, this.config.gameLengthFrames, this.difficulty);
@@ -169,10 +173,10 @@ class LevelCreator {
      */
     getOddBackgroundObjects() {
         return [
-            new BackgroundObject('../img/5_background/layers/air.png', this.xPosition, this.canvas),
-            new BackgroundObject('../img/5_background/layers/3_third_layer/1.png', this.xPosition, this.canvas),
-            new BackgroundObject('../img/5_background/layers/2_second_layer/1.png', this.xPosition, this.canvas),
-            new BackgroundObject('../img/5_background/layers/1_first_layer/1.png', this.xPosition, this.canvas)
+            new BackgroundObject('./img/5_background/layers/air.png', this.xPosition, this.canvas),
+            new BackgroundObject('./img/5_background/layers/3_third_layer/1.png', this.xPosition, this.canvas),
+            new BackgroundObject('./img/5_background/layers/2_second_layer/1.png', this.xPosition, this.canvas),
+            new BackgroundObject('./img/5_background/layers/1_first_layer/1.png', this.xPosition, this.canvas)
         ]
     }
 
@@ -184,10 +188,10 @@ class LevelCreator {
      */
     getEvenBackgroundObjects() {
         return [
-            new BackgroundObject('../img/5_background/layers/air.png', this.xPosition, this.canvas),
-            new BackgroundObject('../img/5_background/layers/3_third_layer/2.png', this.xPosition, this.canvas),
-            new BackgroundObject('../img/5_background/layers/2_second_layer/2.png', this.xPosition, this.canvas),
-            new BackgroundObject('../img/5_background/layers/1_first_layer/2.png', this.xPosition, this.canvas)
+            new BackgroundObject('./img/5_background/layers/air.png', this.xPosition, this.canvas),
+            new BackgroundObject('./img/5_background/layers/3_third_layer/2.png', this.xPosition, this.canvas),
+            new BackgroundObject('./img/5_background/layers/2_second_layer/2.png', this.xPosition, this.canvas),
+            new BackgroundObject('./img/5_background/layers/1_first_layer/2.png', this.xPosition, this.canvas)
         ]
     }
 

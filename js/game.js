@@ -124,7 +124,7 @@ function audioSettingsInit() {
  * @returns {void}
  */
 function loadAudio() {
-    audioManager.loadBackgroundMusic('../audio/retro-game-402454.mp3');
+    audioManager.loadBackgroundMusic('./audio/retro-game-402454.mp3');
 }
 
 /**

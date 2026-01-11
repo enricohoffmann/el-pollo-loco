@@ -9,7 +9,7 @@ class Chicken extends MoveableObject {
     pos_y = 350;
     height = 75;
     width = 75;
-    damage = 5;
+    damage = 99;
     EMEMY_WALKING_IMAGES = [
         'img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
         'img/3_enemies_chicken/chicken_normal/1_walk/2_w.png',
@@ -66,7 +66,7 @@ class Chicken extends MoveableObject {
     chickenWalk(){
         if(window.isGamePaused()) return;
 
-            if (this.isDead) {
+            if (this.energy <= 1) {
                 this.die();
                 return;
             }
@@ -80,14 +80,13 @@ class Chicken extends MoveableObject {
      * @returns {void}
      */
     die() {
-        windows.removeOneGameInterval(this.chickenWalkInterval);
+        window.removeOneGameInterval(this.chickenWalkInterval);
         window.removeOneGameInterval(this.chickenAnimationInterval);
-        clearInterval(this.chickenWalkInterval);
-        clearInterval(this.chickenAnimationInterval);
         this.loadImages(this.ENEMY_DEAD_IMAGES);
         this.playAnimationOnce(this.ENEMY_DEAD_IMAGES, () => {
             setTimeout(() => {
                 this.pos_y = -1000;
+                this.energy = 0;
             }, 500);
         });
     }
