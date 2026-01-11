@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: classes/keyboard.class.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: classes/keyboard.class.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @class Keyboard
+ * @description Handles keyboard and mobile button inputs for controlling character movement and actions.
+ */
+class Keyboard {
+
+    keys = {
+        ArrowLeft: false,
+        ArrowRight: false,
+        ArrowUp: false,
+        ArrowDown: false,
+        " ": false,
+        "d": false,
+        "D": false,
+    };
+
+    /**
+     * @description Initializes the Keyboard class and binds mobile button events.
+     * @constructor
+     * @memberof Keyboard
+     */
+    constructor() {
+        this.bindMobileButtonsEvents();
+    }
+
+    /**
+     * @description Binds touch and mouse events to mobile control buttons.
+     * @memberof Keyboard
+     * @method bindMobileButtonsEvents
+     * @returns {void}
+     */
+    bindMobileButtonsEvents() {
+        this.bindTouchButton('mobile-left-button', 'ArrowLeft');
+        this.bindTouchButton('mobile-right-button', 'ArrowRight');
+        this.bindTouchButton('mobile-jump-button', ' ');
+        this.bindTouchButton('mobile-throw-button', 'd');
+    }
+
+    /**
+     * @description Binds touch and mouse events to a specific button for a given key.
+     * @memberof Keyboard
+     * @method bindTouchButton
+     * @param {string} buttonId 
+     * @param {string} key 
+     * @returns {void}
+     */
+    bindTouchButton(buttonId, key) {
+        const button = document.getElementById(buttonId);
+        if (!button) return;
+
+        const setKeyTrue = (e) => {
+            e.preventDefault();
+            this.setKey(key, true);
+        }
+        const setKeyFalse = (e) => {
+            e.preventDefault();
+            this.setKey(key, false);
+        }
+
+        button.addEventListener('touchstart', setKeyTrue);
+        button.addEventListener('touchend', setKeyFalse);
+        button.addEventListener('mousedown', setKeyTrue);
+        button.addEventListener('mouseup', setKeyFalse);
+        button.addEventListener('mouseleave', setKeyFalse);
+        button.addEventListener('touchcancel', setKeyFalse);
+    }
+
+
+    /**
+     * @description Sets the status of a specific key.
+     * @memberof Keyboard
+     * @method setKey
+     * @param {string} key 
+     * @param {boolean} status 
+     */
+    setKey(key, status) {
+
+        if (this.keys.hasOwnProperty(key)) {
+            this.keys[key] = status;
+        }
+
+    }
+
+    /**
+     * @description Checks if the left movement key is pressed.
+     * @memberof Keyboard
+     * @method get movingLeft
+     * @returns {boolean}
+     */
+    get jumping() {
+        return this.keys[" "] || this.keys.ArrowUp;
+    }
+
+    /**
+     * @description Checks if the left movement key is pressed.
+     * @memberof Keyboard
+     * @method get movingLeft
+     * @returns {boolean}
+     */
+    get throwing() {
+        return this.keys["d"] || this.keys["D"];
+    }
+
+    /**
+     * @description Checks if no movement or action keys are pressed.
+     * @memberof Keyboard
+     * @method get allKeysReleased
+     * @returns {boolean}
+     */
+    get allKeysReleased() {
+        return !this.keys.ArrowLeft &amp;&amp;
+            !this.keys.ArrowRight &amp;&amp;
+            !this.keys.ArrowUp &amp;&amp;
+            !this.keys.ArrowDown &amp;&amp;
+            !this.keys[" "] &amp;&amp;
+            !this.keys["d"] &amp;&amp;
+            !this.keys["D"];
+    }
+
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-bottleImages.html">bottleImages</a></li><li><a href="module-characterImages.html">characterImages</a></li><li><a href="module-difficultySettings.html">difficultySettings</a></li><li><a href="module-endbossImages.html">endbossImages</a></li><li><a href="module-statusBarImages.html">statusBarImages</a></li></ul><h3>Namespaces</h3><ul><li><a href="Options.html">Options</a></li><li><a href="Script.html">Script</a></li><li><a href="portraitBlock.html">portraitBlock</a></li></ul><h3>Classes</h3><ul><li><a href="AudioManager.html">AudioManager</a></li><li><a href="AudioManager.AudioManager.html">AudioManager</a></li><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="BackgroundObject.BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="Bottle.Bottle.html">Bottle</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Chicken.Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Cloud.Cloud.html">Cloud</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Coin.Coin.html">Coin</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="DrawableObject.DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="Endboss.Endboss.html">Endboss</a></li><li><a href="ItemsManager.html">ItemsManager</a></li><li><a href="ItemsManager.ItemsManager.html">ItemsManager</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Keyboard.Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="Level.Level.html">Level</a></li><li><a href="LevelCreator.html">LevelCreator</a></li><li><a href="LevelCreator.LevelCreator.html">LevelCreator</a></li><li><a href="LevelProperties.html">LevelProperties</a></li><li><a href="LevelProperties.LevelProperties.html">LevelProperties</a></li><li><a href="LevelSetting.html">LevelSetting</a></li><li><a href="LevelSetting.LevelSetting.html">LevelSetting</a></li><li><a href="MoveableObject.html">MoveableObject</a></li><li><a href="MoveableObject.MoveableObject.html">MoveableObject</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="StatusBar.StatusBar.html">StatusBar</a></li><li><a href="StatusbarManager.html">StatusbarManager</a></li><li><a href="StatusbarManager.StatusbarManager.html">StatusbarManager</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="ThrowableObject.ThrowableObject.html">ThrowableObject</a></li><li><a href="World.html">World</a></li><li><a href="World.World.html">World</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sun Jan 11 2026 09:13:30 GMT+0100 (Mitteleuropäische Normalzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

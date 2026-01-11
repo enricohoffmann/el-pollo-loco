@@ -24,6 +24,7 @@ class Bottle extends DrawableObject {
      * @param {Number} canvasHeight - The height of the canvas.
      * @param {Number} levelLength - The length of the level.
      * @param {Number} bottleImageIndex - The index of the bottle image to use. If not provided, a random index will be chosen.
+     * @return {void}
      */
     constructor(canvasHeight, levelLength, bottleImageIndex = 99) {
         super();
@@ -54,7 +55,7 @@ class Bottle extends DrawableObject {
      * @memberOf Bottle
      * @method animateCollectet
      * @param {boolean} onFinished 
-     * @returns 
+     * @returns {void}
      */
     animateCollectet(onFinished) {
         if (this.pos_y < -20) {

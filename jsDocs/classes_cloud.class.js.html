@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: classes/cloud.class.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: classes/cloud.class.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @class Cloud
+ * @extends MoveableObject
+ * @description Represents a cloud object that moves across the screen.
+ */
+class Cloud extends MoveableObject {
+    height = 250;
+    width = 500;
+    pos_y = 25;
+    cloudFiles = [
+        '../img/5_background/layers/4_clouds/1.png',
+        '../img/5_background/layers/4_clouds/2.png'
+    ];
+    currentCloudIndex = 0;
+
+    /**
+     * @description Creates an instance of Cloud.
+     * @memberOf Cloud
+     * @constructor
+     * @param {HTMLCanvasElement} canvas - The canvas on which the cloud will be drawn.
+     * @param {Number} end_pos_x - The x-coordinate representing the end position for the cloud.
+     * @param {Array} clouds - An array of existing cloud objects to check for overlap.
+     */
+    constructor(canvas, end_pos_x, clouds) {
+        super();
+        this.canvas = canvas;
+        this.clouds = clouds;
+        this.end_pos_x = end_pos_x;
+        this.loadCloudImage();
+        this.setCloudPosition();
+        this.animate();
+    }
+
+    /**
+     * @description Sets the cloud's position, ensuring it does not overlap with existing clouds.
+     * @memberOf Cloud
+     * @method setCloudPosition
+     * @returns {void}
+     */
+    setCloudPosition() {
+
+        const maxAttempts = 35;
+        this.pos_x = this.getRandomInt(this.canvas.width, this.end_pos_x) + 200;
+
+        if(this.clouds == null || this.clouds.length === 0) return;
+
+        let attempts = 0;
+        while (this.isObjectOverlapping(this, this.clouds)) {
+            this.pos_x = this.getRandomInt(this.canvas.width, this.end_pos_x) + 200;
+            attempts++;
+            if (attempts >= maxAttempts) {
+                break;
+            }
+        }
+    }
+
+    /**
+     * @description Animates the cloud by moving it across the screen.
+     * @memberOf Cloud
+     * @method animate
+     * @returns {void}
+     */
+    animate() {
+        setInterval(() => {
+
+            if(window.isGamePaused()) return;
+
+            if (this.pos_x &lt; -500) {
+                this.pos_x = this.end_pos_x;
+                this.loadCloudImage();
+            }
+            this.pos_x -= 0.15;
+        }, 1000 / 60);
+    }
+
+    /**
+     * @description Loads a random cloud image from the available cloud files.
+     * @memberOf Cloud
+     * @method loadCloudImage
+     * @returns {void}
+     */
+    loadCloudImage() {
+        this.currentCloudIndex = Math.floor(Math.random() * this.cloudFiles.length);
+        this.loadImage(this.cloudFiles[this.currentCloudIndex]);
+    }
+
+    /**
+     * @description Checks if two rectangles are overlapping with optional padding.
+     * @memberOf Cloud
+     * @method isRectsOverlapping
+     * @param {Element} a 
+     * @param {Element} b 
+     * @param {Number} padding 
+     * @returns {Boolean}
+     */
+    isRectsOverlapping(a, b, padding = 15) {
+        return a.pos_x &lt; b.pos_x + b.width + padding &amp;&amp;
+            a.pos_x + a.width + padding > b.pos_x &amp;&amp;
+            a.pos_y &lt; b.pos_y + b.height + padding &amp;&amp;
+            a.pos_y + a.height + padding > b.pos_y;
+    }
+
+    /**
+     * @description Checks if a new object overlaps with any existing objects.
+     * @memberOf Cloud
+     * @method isObjectOverlapping
+     * @param {Element} newObject 
+     * @param {Array&lt;Element>} existingObjects 
+     * @returns {Boolean}
+     */
+    isObjectOverlapping(newObject, existingObjects) {
+        return existingObjects.some(o => this.isRectsOverlapping(newObject, o));
+    }
+
+    /**
+     * @description Generates a random integer between min (inclusive) and max (exclusive).
+     * @memberOf Cloud
+     * @method getRandomInt
+     * @param {Number} min 
+     * @param {Number} max 
+     * @returns {Number}
+     */
+    getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min)) + min; 
+    }
+
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-bottleImages.html">bottleImages</a></li><li><a href="module-characterImages.html">characterImages</a></li><li><a href="module-difficultySettings.html">difficultySettings</a></li><li><a href="module-endbossImages.html">endbossImages</a></li><li><a href="module-statusBarImages.html">statusBarImages</a></li></ul><h3>Namespaces</h3><ul><li><a href="Options.html">Options</a></li><li><a href="Script.html">Script</a></li><li><a href="portraitBlock.html">portraitBlock</a></li></ul><h3>Classes</h3><ul><li><a href="AudioManager.html">AudioManager</a></li><li><a href="AudioManager.AudioManager.html">AudioManager</a></li><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="BackgroundObject.BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="Bottle.Bottle.html">Bottle</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Chicken.Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Cloud.Cloud.html">Cloud</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Coin.Coin.html">Coin</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="DrawableObject.DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="Endboss.Endboss.html">Endboss</a></li><li><a href="ItemsManager.html">ItemsManager</a></li><li><a href="ItemsManager.ItemsManager.html">ItemsManager</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Keyboard.Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="Level.Level.html">Level</a></li><li><a href="LevelCreator.html">LevelCreator</a></li><li><a href="LevelCreator.LevelCreator.html">LevelCreator</a></li><li><a href="LevelProperties.html">LevelProperties</a></li><li><a href="LevelProperties.LevelProperties.html">LevelProperties</a></li><li><a href="LevelSetting.html">LevelSetting</a></li><li><a href="LevelSetting.LevelSetting.html">LevelSetting</a></li><li><a href="MoveableObject.html">MoveableObject</a></li><li><a href="MoveableObject.MoveableObject.html">MoveableObject</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="StatusBar.StatusBar.html">StatusBar</a></li><li><a href="StatusbarManager.html">StatusbarManager</a></li><li><a href="StatusbarManager.StatusbarManager.html">StatusbarManager</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="ThrowableObject.ThrowableObject.html">ThrowableObject</a></li><li><a href="World.html">World</a></li><li><a href="World.World.html">World</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sun Jan 11 2026 09:13:30 GMT+0100 (Mitteleuropäische Normalzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

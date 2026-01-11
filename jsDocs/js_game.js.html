@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: js/game.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: js/game.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @description Main game logic and initialization.
+ * @namespace Game
+ * @file js/game.js
+ */
+
+let keyboard;
+let canvas;
+let ctx;
+let world;
+let canvasWidth = 720;
+let canvasHeight = 480;
+let isPause = false;
+let muted = false;
+let isFullScreen = false;
+let gameSettings;
+let isControlBind = false;
+let audioManager = new AudioManager();
+let gameIsEnded = false;
+
+
+const controls = {
+    pause: {
+        buttonId: 'pauseButton',
+        action: pauseGame
+    },
+    mute: {
+        buttonId: 'muteButton',
+        action: toggleMute
+    },
+    fullScreen: {
+        buttonId: 'fullScreenButton',
+        action: toggleFullScreen
+    },
+    reload: {
+        buttonId: 'reloadButton',
+        action: reloadGame
+    }
+}
+
+/**
+ * @description Initializes the game by loading assets and starting a new or saved game.
+ * @memberOf Game
+ * @function init
+ * @returns {void}
+ */
+function init() {
+    gameIsEnded = loadIsGameEnded() || false;
+    if(gameIsEnded) {
+        navigateTo('index');
+        return;
+    }
+
+    const state = loadGameRunningState();
+    loadInitialAssets();
+    canvas = document.getElementById("canvas");
+
+    if (!state || state === false) {
+        newGameStart();
+    } else {
+        savedGameStart();
+    }
+
+}
+
+/**
+ * @description Loads initial game assets and settings.
+ * @memberOf Game
+ * @function loadInitialAssets
+ * @returns {void}
+ */
+function loadInitialAssets() {
+    keyboard = new Keyboard();
+    isPause = loadPauseState();
+    gameSettings = loadGameSettings();
+    togglePauseButtonIcon();
+    audioSettingsInit();
+    updateDifficultyState();
+    bindControls();
+    loadAudio();
+}
+
+/**
+ * @description Binds control buttons to their respective actions.
+ * @memberOf Game
+ * @function bindControls
+ * @returns {void}
+ */
+function bindControls() {
+    if (isControlBind) { return; }
+    isControlBind = true;
+
+    for (const control in controls) {
+        const button = document.getElementById(controls[control].buttonId);
+        if (button) {
+            button.addEventListener('click', controls[control].action);
+            button.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                controls[control].action();
+            });
+        }
+    }
+}
+
+/**
+ * @description Initializes audio settings based on saved game settings.
+ * @memberOf Game
+ * @function audioSettingsInit
+ * @returns {void}
+ */
+function audioSettingsInit() {
+    if (gameSettings) {
+        muted = gameSettings.audioSetting === 'Audio Off' ? true : false;
+    }
+    toggleMuteButtonIcon();
+
+}
+
+/**
+ * @description Loads audio assets for the game.
+ * @memberOf Game
+ * @function loadAudio
+ * @returns {void}
+ */
+function loadAudio() {
+    audioManager.loadBackgroundMusic('../audio/retro-game-402454.mp3');
+}
+
+/**
+ * @description Updates the displayed difficulty state in the game UI.
+ * @memberOf Game
+ * @function updateDifficultyState
+ * @returns {void}
+ */
+function updateDifficultyState() {
+    const difficultyStateElement = document.getElementById('difficultyState');
+    if (difficultyStateElement &amp;&amp; gameSettings) {
+        difficultyStateElement.textContent = `difficulty: ${gameSettings.difficulty}`;
+    }
+}
+
+/**
+ * @description Starts a new game with default settings.
+ * @memberOf Game
+ * @function newGameStart
+ * @returns {void}
+ */
+function newGameStart() {
+    safeGameRunningState(true);
+    const levelCreator = new LevelCreator(canvas);
+    const level = levelCreator.createLevel();
+    const config = levelCreator.getCurrentGameSettings;
+    world = new World(canvas, keyboard, level, config.theme.toLowerCase(), audioManager);
+    world.createNewGameObjects();
+    world.run();
+}
+
+/**
+ * @description Starts a saved game by loading the previous state.
+ * @memberOf Game
+ * @function savedGameStart
+ * @returns {void}
+ */
+function savedGameStart() {
+    safeGameRunningState(true);
+    const levelCreator = new LevelCreator(canvas);
+    const level = levelCreator.createLevelFromState();
+    const config = levelCreator.getCurrentGameSettings;
+    world = new World(canvas, keyboard, level, config.theme.toLowerCase(), audioManager);
+    world.character = new Character(world);
+    world.character.pos_x = loadCharacterState().character.x;
+    world.character.pos_y = loadCharacterState().character.y;
+    world.character.energy = loadCharacterState().character.health;
+    world.createSavedGameObjects(getSavedGameObjects());
+    world.run();
+}
+
+
+/**
+ * @description Retrieves saved game objects from local storage.
+ * @memberOf Game
+ * @function getSavedGameObjects
+ * @returns {Object} The saved game objects including status bars, coins, and bottles.
+ */
+function getSavedGameObjects() {
+    const gameObjects = {
+        statusbars: loadStatusbarState(),
+        coins: loadCoinState(),
+        bottles: loadBottleState(),
+    }
+
+    return gameObjects;
+}
+
+/**
+ * @description Opens the game over dialog and locks the screen size.
+ * @memberOf Game
+ * @function openGameOverDialog
+ * @returns {void}
+ */
+function openGameOverDialog() {
+    const dialog = document.getElementById('game-over-dialog');
+    dialog.height = window.innerHeight;
+    dialog.width = window.innerWidth;
+    const content = document.getElementById('game-over-content');
+    content.width = dialog.width * 0.8;
+    content.height = dialog.height * 0.8;
+    lockResize();
+    dialog.showModal();
+}
+
+/**
+ * @description Closes the game over dialog and resets the game state.
+ * @memberOf Game
+ * @function closeGameOverDialog
+ * @returns {void}
+ */
+function closeGameOverDialog() {
+    const dialog = document.getElementById('game-over-dialog');
+    dialog.close();
+    safeGameRunningState(false);
+    world = null;
+    unlockResize();
+    navigateTo('index');
+}
+
+/**
+ * @description Opens the game win dialog and locks the screen size.
+ * @memberOf Game
+ * @function openGameWinDialog
+ * @returns {void}
+ */
+function openGameWinDialog() {
+    const dialog = document.getElementById('game-win-dialog');
+    dialog.height = window.innerHeight;
+    dialog.width = window.innerWidth;
+    const content = document.getElementById('game-win-content');
+    content.width = dialog.width * 0.8;
+    content.height = dialog.height * 0.8;
+    lockResize();
+    dialog.showModal();
+}
+
+/**
+ * @description Closes the game win dialog and resets the game state.
+ * @memberOf Game
+ * @function closeGameWinDialog
+ * @returns {void}
+ */
+function closeGameWinDialog() {
+    const dialog = document.getElementById('game-win-dialog');
+    dialog.close();
+    safeGameRunningState(false);
+    world = null;
+    unlockResize();
+    navigateTo('index');
+}
+
+/**
+ * @description Locks the screen size to prevent resizing.
+ * @memberOf Game
+ * @function lockResize
+ * @returns {void}
+ */
+function lockResize() {
+    document.body.classList.add('lock-resize');
+}
+
+/**
+ * @description Unlocks the screen size to allow resizing.
+ * @memberOf Game
+ * @function unlockResize
+ * @returns {void}
+ */
+function unlockResize() {
+    document.body.classList.remove('lock-resize');
+}
+
+/**
+ * @description Handles navigation button clicks during the game, pausing the game before navigation.
+ * @memberOf Game
+ * @function navigationButtonOnGame
+ * @param {string} target 
+ */
+function navigationButtonOnGame(target) {
+    isPause = true;
+    togglePauseButtonIcon();
+    safeGameState(world);
+    safePauseState(isPause);
+    world.audioManager.pauseBackgroundMusic();
+    navigateTo(target);
+}
+
+/**
+ * @description Toggles the game's pause state and updates the UI accordingly.
+ * @memberOf Game
+ * @function pauseGame
+ * @returns {void}
+ */
+function pauseGame() {
+    isPause = !isPause;
+    togglePauseButtonIcon();
+    safePauseState(isPause);
+    isPause ? world.audioManager.pauseBackgroundMusic() : world.audioManager.playBackgroundMusic();
+}
+
+/**
+ * @description Checks if the game is currently paused.
+ * @memberOf Game
+ * @function isGamePaused
+ * @returns {boolean} True if the game is paused, false otherwise.
+ */
+function isGamePaused() {
+    return isPause;
+}
+
+/**
+ * @description Toggles the pause button icon based on the game's pause state.
+ * @memberOf Game
+ * @function togglePauseButtonIcon
+ * @returns {void}
+ */
+function togglePauseButtonIcon() {
+    const pauseButtonDiv = document.querySelector('#pauseButton div');
+    if (!isPause) {
+        pauseButtonDiv.classList.remove('icon-pause');
+        pauseButtonDiv.classList.add('icon-play');
+    } else {
+        pauseButtonDiv.classList.remove('icon-play');
+        pauseButtonDiv.classList.add('icon-pause');
+    }
+}
+
+/**
+ * @description Reloads the game by clearing the current state and re-initializing.
+ * @memberOf Game
+ * @function reloadGame
+ * @returns {void}
+ */
+function reloadGame() {
+
+    if (isGamePaused()) { return; }
+
+    if (world) {
+        clearInterval(world.runInterval);
+        world = null;
+        clearGameState();
+        init();
+    }
+
+}
+
+/**
+ * @description Toggles the game's mute state and updates the UI and audio accordingly.
+ * @memberOf Game
+ * @function toggleMute
+ * @returns {void}
+ */
+function toggleMute() {
+    muted = !muted;
+    gameSettings.audioSetting = muted ? 'Audio Off' : 'Audio On';
+    safeGameSettings(gameSettings);
+    toggleMuteButtonIcon();
+    audioManager.toggleMusic(!muted);
+    audioManager.toggleSFX(!muted);
+}
+
+/**
+ * @description Toggles the mute button icon based on the game's mute state.
+ * @memberOf Game
+ * @function toggleMuteButtonIcon
+ * @returns {void}
+ */
+function toggleMuteButtonIcon() {
+    const muteButtonDiv = document.querySelector('#muteButton div');
+    if (muted) {
+        muteButtonDiv.classList.remove('icon-audio-on');
+        muteButtonDiv.classList.add('icon-audio-off');
+    } else {
+        muteButtonDiv.classList.remove('icon-audio-off');
+        muteButtonDiv.classList.add('icon-audio-on');
+    }
+
+}
+
+/**
+ * @description Checks if the game is currently muted.
+ * @memberOf Game
+ * @function isGameMuted
+ * @returns {boolean}
+ */
+function isGameMuted() {
+    return muted;
+}
+
+/**
+ * @description Toggles the game's full-screen mode and updates the UI accordingly.
+ * @memberOf Game
+ * @function toggleFullScreen
+ * @returns {void}
+ */
+function toggleFullScreen() {
+    isFullScreen = !isFullScreen;
+    const gameContainer = document.querySelector('.main-game');
+    if (isFullScreen) {
+        openFullscreen(gameContainer);
+        toggleFullScreenButtonIcon(true);
+    } else {
+        closeFullscreen();
+        toggleFullScreenButtonIcon(false);
+    }
+
+}
+
+/**
+ * @description Opens the specified element in full-screen mode.
+ * @memberOf Game
+ * @function openFullscreen
+ * @param {HTMLElement} element 
+ */
+function openFullscreen(element) {
+    if (element.requestFullscreen) {
+        element.requestFullscreen();
+    } else if (element.webkitRequestFullscreen) { 
+        element.webkitRequestFullscreen();
+    } else if (element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+    }
+}
+
+/**
+ * @description Closes full-screen mode.
+ * @memberOf Game
+ * @function closeFullscreen
+ * @returns {void}
+ */
+function closeFullscreen() {
+    if (document.exitFullscreen) {
+        document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) { 
+        document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+    }
+}
+
+/**
+ * @description Toggles the full-screen button icon based on the full-screen state.
+ * @memberOf Game
+ * @function toggleFullScreenButtonIcon
+ * @param {boolean} isFullScreen 
+ */
+function toggleFullScreenButtonIcon(isFullScreen) {
+    const fullScreenButtonDiv = document.querySelector('#fullScreenButton div');
+    if (isFullScreen) {
+        fullScreenButtonDiv.classList.remove('icon-fullscreen');
+        fullScreenButtonDiv.classList.add('icon-exit-fullscreen');
+    } else {
+        fullScreenButtonDiv.classList.remove('icon-exit-fullscreen');
+        fullScreenButtonDiv.classList.add('icon-fullscreen');
+    }
+}
+
+/**
+ *@description Sets up event listeners for keyboard input and window resize events. Make varialbles and functions globally accessible.
+ *@memberOf Game
+ *@function setupEventListeners
+ */
+window.addEventListener("keydown", (e) => { keyboard.setKey(e.key, true); });
+window.addEventListener("keyup", (e) => { keyboard.setKey(e.key, false); });
+window.addEventListener('resize', updatePortraitBlock);
+
+window.openGameOverDialog = openGameOverDialog;
+window.openGameWinDialog = openGameWinDialog;
+window.isGamePaused = isGamePaused;
+window.isGameMuted = isGameMuted;
+
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-bottleImages.html">bottleImages</a></li><li><a href="module-characterImages.html">characterImages</a></li><li><a href="module-difficultySettings.html">difficultySettings</a></li><li><a href="module-endbossImages.html">endbossImages</a></li><li><a href="module-statusBarImages.html">statusBarImages</a></li></ul><h3>Namespaces</h3><ul><li><a href="Options.html">Options</a></li><li><a href="Script.html">Script</a></li><li><a href="portraitBlock.html">portraitBlock</a></li></ul><h3>Classes</h3><ul><li><a href="AudioManager.html">AudioManager</a></li><li><a href="AudioManager.AudioManager.html">AudioManager</a></li><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="BackgroundObject.BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="Bottle.Bottle.html">Bottle</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Chicken.Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Cloud.Cloud.html">Cloud</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Coin.Coin.html">Coin</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="DrawableObject.DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="Endboss.Endboss.html">Endboss</a></li><li><a href="ItemsManager.html">ItemsManager</a></li><li><a href="ItemsManager.ItemsManager.html">ItemsManager</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Keyboard.Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="Level.Level.html">Level</a></li><li><a href="LevelCreator.html">LevelCreator</a></li><li><a href="LevelCreator.LevelCreator.html">LevelCreator</a></li><li><a href="LevelProperties.html">LevelProperties</a></li><li><a href="LevelProperties.LevelProperties.html">LevelProperties</a></li><li><a href="LevelSetting.html">LevelSetting</a></li><li><a href="LevelSetting.LevelSetting.html">LevelSetting</a></li><li><a href="MoveableObject.html">MoveableObject</a></li><li><a href="MoveableObject.MoveableObject.html">MoveableObject</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="StatusBar.StatusBar.html">StatusBar</a></li><li><a href="StatusbarManager.html">StatusbarManager</a></li><li><a href="StatusbarManager.StatusbarManager.html">StatusbarManager</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="ThrowableObject.ThrowableObject.html">ThrowableObject</a></li><li><a href="World.html">World</a></li><li><a href="World.World.html">World</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sun Jan 11 2026 09:13:30 GMT+0100 (Mitteleuropäische Normalzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

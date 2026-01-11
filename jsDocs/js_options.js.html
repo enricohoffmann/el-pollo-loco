@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: js/options.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: js/options.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @file options.js
+ * @description Manages game options such as difficulty, audio settings, and themes.
+ * @namespace Options
+ */
+
+let difficultyListOpen = false;
+let audioListOpen = false;
+let themeListOpen = false;
+let currentDifficulty = 'Easy';
+let currentAudioSetting = '';
+let currentTheme = '';
+let safeDialogOpen = false;
+
+
+const selectLists = {
+    difficulty: {
+        openFlag: () => difficultyListOpen,
+        setOpenFlag: v => (difficultyListOpen = v),
+        containerId: 'difficultyListContainer',
+        listId: 'difficultyButtonList',
+        selectContainerId: 'difficultySelectContainer',
+        toggleBtnId: 'difficultyShowHideBtn',
+        inputId: 'difficultyInput',
+    },
+    audio: {
+        openFlag: () => audioListOpen,
+        setOpenFlag: v => (audioListOpen = v),
+        containerId: 'audioListContainer',
+        listId: 'audioButtonList',
+        selectContainerId: 'audioSelectContainer',
+        toggleBtnId: 'audioShowOrHideBtn',
+        inputId: 'audioInput',
+    },
+    theme: {
+        openFlag: () => themeListOpen,
+        setOpenFlag: v => (themeListOpen = v),
+        containerId: 'themeListContainer',
+        listId: 'themeButtonList',
+        selectContainerId: 'themeSelectContainer',
+        toggleBtnId: 'themeShowHideBtn',
+        inputId: 'themeInput',
+    }
+};
+
+
+/**
+ * @description Initializes the options page by loading current settings and updating the UI.
+ * @memberOf Options
+ * @function initOptions
+ * @returns {void}
+ */
+function initOptions() {
+    loadCurrentGameSettings();
+    updateAudioSetting();
+    updateThemeSetting();
+    updateDifficultySetting();
+    updateGameSettingFields();
+}
+
+/**
+ * @description Shows or hides the selection list for a given option.
+ * @memberOf Options
+ * @function showOrHideSelectedList
+ * @param {string} key 
+ * @param {string} showOrHide 
+ * @returns {void}
+ */
+function showOrHideSelectedList(key, showOrHide = 'show') {
+    const config = selectLists[key];
+    if (!config) return;
+
+    if (showOrHide === 'show') {
+        hideNotSelectedLists(key);
+        setShowOrHideButtonIcon(showOrHide, config.toggleBtnId);
+        openListForSelection(config);
+
+    } else {
+        closeListForSelection(config);
+        setShowOrHideButtonIcon(showOrHide, config.toggleBtnId);
+    }
+}
+
+/**
+ * @description Opens the selection list for a given option.
+ * @memberOf Options
+ * @function openListForSelection
+ * @param {object} config 
+ * @returns {void}
+ */
+function openListForSelection(config) {
+    config.setOpenFlag(true);
+    const listContainer = document.querySelector(`#${config.containerId}`);
+    const height = getHeightOfSelectButtons(config.listId) + 29;
+    if (listContainer) {
+        listContainer.style.maxHeight = `${height}px`;
+    }
+    const buttonsList = document.querySelector(`#${config.listId}`);
+    if (buttonsList) {
+        buttonsList.style.maxHeight = `${height}px`;
+    }
+    setBorderActiveState(config.selectContainerId, true);
+}
+
+/**
+ * @description Closes the selection list for a given option.
+ * @memberOf Options
+ * @function closeListForSelection
+ * @param {object} config 
+ * @returns {void}
+ */
+function closeListForSelection(config) {
+    config.setOpenFlag(false);
+    const listContainer = document.querySelector(`#${config.containerId}`);
+    if (listContainer) {
+        listContainer.style.maxHeight = '0';
+    }
+    const buttonsList = document.querySelector(`#${config.listId}`);
+    if (buttonsList) {
+        buttonsList.style.maxHeight = '0';
+    }
+    setBorderActiveState(config.selectContainerId, false);
+}
+
+/**
+ * @description Calculates the total height of all select buttons within a given list.
+ * @memberOf Options
+ * @function getHeightOfSelectButtons
+ * @param {string} listId 
+ * @returns {number} The total height of the select buttons.
+ */
+function getHeightOfSelectButtons(listId) {
+    let totalHeight = 0;
+    const listContainer = document.getElementById(listId);
+    const styleContainer = window.getComputedStyle(listContainer);
+    const paddingTop = parseFloat(styleContainer.paddingTop);
+    const paddingBottom = parseFloat(styleContainer.paddingBottom);
+    const listGap = parseFloat(styleContainer.gap);
+    totalHeight += paddingTop + paddingBottom;
+    const buttons = document.querySelectorAll(`#${listId} .btn`);
+
+    buttons.forEach(button => {
+        const style = window.getComputedStyle(button);
+        const marginTop = parseFloat(style.marginTop);
+        const marginBottom = parseFloat(style.marginBottom);
+        totalHeight += button.offsetHeight + marginTop + marginBottom + listGap;
+    });
+    return totalHeight;
+}
+
+/**
+ * @description Hides all selection lists except the one specified.
+ * @memberOf Options
+ * @function hideNotSelectedLists
+ * @param {string} exceptList 
+ */
+function hideNotSelectedLists(exceptList = '') {
+    Object.entries(selectLists).forEach(([key, cfg]) => {
+        if (key !== exceptList &amp;&amp; cfg.openFlag()) {
+            closeList(cfg);
+            setShowOrHideButtonIcon('hide', cfg.toggleBtnId);
+        }
+    });
+}
+
+/**
+ * @description Sets the icon of a button to show or hide state.
+ * @memberOf Options
+ * @function setShowOrHideButtonIcon
+ * @param {boolean} showOrHide 
+ * @param {string} buttonID 
+ * @returns {void}
+ */
+function setShowOrHideButtonIcon(showOrHide = 'show', buttonID = '') {
+    const button = document.getElementById(buttonID);
+    if (button) {
+        if (showOrHide === 'hide') {
+            button.classList.remove('btn-hide');
+            button.classList.add('btn-show');
+        } else {
+            button.classList.remove('btn-show');
+            button.classList.add('btn-hide');
+        }
+    }
+
+}
+
+/**
+ * @description Sets the active state of the border for a select container.
+ * @memberOf Options
+ * @function setBorderActiveState
+ * @param {string} selectContainerID 
+ * @param {boolean} isActive 
+ * @returns {void}
+ */
+function setBorderActiveState(selectContainerID = '', isActive = false) {
+    const selectContainer = document.getElementById(selectContainerID);
+    if (selectContainer) {
+        if (isActive) {
+            selectContainer.classList.add('select-container-active');
+        } else {
+            selectContainer.classList.remove('select-container-active');
+        }
+    }
+}
+
+/**
+ * @description Updates the selected option in the corresponding input field.
+ * @memberOf Options
+ * @function updateSelectedOption
+ * @param {string} inputID 
+ * @param {number|string} selectedValue 
+ * @returns {void}
+ */
+function updateSelectedOption(inputID = '', selectedValue = '') {
+    const inputElement = document.getElementById(inputID);
+    if (inputElement) {
+        inputElement.value = selectedValue;
+    }
+}
+
+/**
+ * @description Selects an option and updates the UI accordingly.
+ * @memberOf Options
+ * @function selectOption
+ * @param {string} key 
+ * @param {number|string} value 
+ * @param {HTMLElement} button 
+ * @returns {void}
+ */
+function selectOption(key, value, button) {
+    if (button?.getAttribute('data-selected') === 'true') { return; }
+
+    const config = selectLists[key];
+    if (!config) return;
+
+    if (key === 'difficulty') { currentDifficulty = value; }
+    if (key === 'audio') { currentAudioSetting = value; }
+    if (key === 'theme') { currentTheme = value; }
+
+    updateSelectedOption(config.inputId, value);
+    closeListForSelection(config);
+
+    if (button) { updateActiveButtons(button); }
+
+    if (key === 'difficulty') { updateGameSettingFields(); }
+
+}
+
+/**
+ * @description Updates the active state of buttons within a selection list.
+ * @memberOf Options
+ * @function updateActiveButtons
+ * @param {HTMLElement} selectedButton
+ * @returns {void} 
+ */
+function updateActiveButtons(selectedButton) {
+    const buttons = selectedButton.parentElement.querySelectorAll('.btn');
+    buttons.forEach(button => {
+        button.classList.remove('btn-yellow-active');
+        button.setAttribute('data-selected', 'false');
+    });
+    selectedButton.classList.add('btn-yellow-active');
+    selectedButton.setAttribute('data-selected', 'true');
+}
+
+/**
+ * @description Updates the game setting input fields based on the current difficulty.
+ * @memberOf Options
+ * @function updateGameSettingFields
+ * @returns {void}
+ */
+function updateGameSettingFields() {
+
+    const difficulty = difficultySettings[currentDifficulty];
+
+    document.getElementById('enemyCountInput').value = difficulty.countOfEnemies;
+    document.getElementById('coinCountInput').value = difficulty.countOfMinCoins;
+    document.getElementById('bottleCountInput').value = difficulty.countOfMinBottles;
+    document.getElementById('gameLengthInput').value = difficulty.gameLengthFrames;
+
+    const isCustom = currentDifficulty === 'Custom';
+    setInputfieldReadonly('enemyCountInput', !isCustom);
+    setInputfieldReadonly('coinCountInput', !isCustom);
+    setInputfieldReadonly('bottleCountInput', !isCustom);
+    setInputfieldReadonly('gameLengthInput', !isCustom);
+
+}
+
+/**
+ * @description Sets an input field to readonly or editable.
+ * @memberOf Options
+ * @function setInputfieldReadonly
+ * @param {string} id 
+ * @param {boolean} readonly 
+ * @returns {void}
+ */
+function setInputfieldReadonly(id, readonly = true) {
+    const inputField = document.getElementById(id);
+    if (!inputField) return;
+
+    if (readonly) {
+        inputField.setAttribute('readonly', true);
+    } else {
+        inputField.removeAttribute('readonly');
+    }
+}
+
+/**
+ * @description Creates an object representing the current game settings.
+ * @memberOf Options
+ * @function createGameSettingsObject
+ * @returns {object}
+ */
+function createGameSettingsObject() {
+    return {
+        difficulty: currentDifficulty,
+        audioSetting: currentAudioSetting,
+        theme: currentTheme,
+        countOfEnemies: parseInt(document.getElementById('enemyCountInput').value) || difficultySettings[currentDifficulty].countOfEnemies,
+        countOfMinCoins: parseInt(document.getElementById('coinCountInput').value) || difficultySettings[currentDifficulty].countOfMinCoins,
+        countOfMinBottles: parseInt(document.getElementById('bottleCountInput').value) || difficultySettings[currentDifficulty].countOfMinBottles,
+        gameLengthFrames: parseInt(document.getElementById('gameLengthInput').value) || difficultySettings[currentDifficulty].gameLengthFrames
+    };
+}
+
+/**
+ * @description Safes the current game settings and shows a confirmation dialog.
+ * @memberOf Options
+ * @function safeCurrentGameSettings
+ * @returns {void}
+ */
+function safeCurrentGameSettings() {
+    const settings = createGameSettingsObject();
+    safeGameSettings(settings);
+    showSafeDialog();
+    setTimeout(() => {
+        safeDialogClose();
+    }, 5000);
+}
+
+/**
+ * @description Loads the current game settings from storage and updates global variables.
+ * @memberOf Options
+ * @function loadCurrentGameSettings
+ * @returns {void}
+ */
+function loadCurrentGameSettings() {
+    const settings = loadGameSettings();
+    if (settings) {
+        currentDifficulty = settings.difficulty || 'Easy';
+        currentAudioSetting = settings.audioSetting || 'Audio On';
+        currentTheme = settings.theme || 'Blue';
+        difficultySettings[currentDifficulty].countOfEnemies = settings.countOfEnemies || 3;
+        difficultySettings[currentDifficulty].countOfMinCoins = settings.countOfMinCoins || 5;
+        difficultySettings[currentDifficulty].countOfMinBottles = settings.countOfMinBottles || 5;
+        difficultySettings[currentDifficulty].gameLengthFrames = settings.gameLengthFrames || 3;
+    } else {
+        createDeafaultGameSettings();
+    }
+}
+
+/**
+ * @description Creates default game settings.
+ * @memberOf Options
+ * @function createDeafaultGameSettings
+ * @returns {void}
+ */
+function createDeafaultGameSettings() {
+    currentDifficulty = 'Easy';
+    currentAudioSetting = 'Audio On';
+    currentTheme = 'Blue';
+}
+
+/**
+ * @description Sets a button as active based on its ID.
+ * @memberOf Options
+ * @function setActiveButton
+ * @param {string} buttonId 
+ * @returns {void}
+ */
+function setActiveButton(buttonId) {
+    const button = document.getElementById(buttonId);
+    if (!button) return;
+
+    button.classList.add('btn-yellow-active');
+    button.setAttribute('data-selected', 'true');
+}
+
+/**
+ * @description Updates the audio setting UI based on the current audio setting.
+ * @memberOf Options
+ * @function updateAudioSetting
+ * @returns {void}
+ */
+function updateAudioSetting() {
+    const map = { 'Audio On': 'btnAudioOn', 'Audio Off': 'btnAudioOff' };
+    setActiveButton(map[currentAudioSetting]);
+    document.getElementById('audioInput').value = currentAudioSetting;
+}
+
+/**
+ * @description Updates the theme setting UI based on the current theme.
+ * @memberOf Options
+ * @function updateThemeSetting
+ * @returns {void}
+ */
+function updateThemeSetting() {
+    const map = { Blue: 'btnThemeBlue', Green: 'btnThemeGreen', Orange: 'btnThemeOrange' };
+    setActiveButton(map[currentTheme]);
+    document.getElementById('themeInput').value = currentTheme;
+}
+
+/**
+ * @description Updates the difficulty setting UI based on the current difficulty.
+ * @memberOf Options
+ * @function updateDifficultySetting
+ * @returns {void}
+ */
+function updateDifficultySetting() {
+    const map = {
+        Easy: 'btnDifficultyEasy',
+        Medium: 'btnDifficultyMedium',
+        Hard: 'btnDifficultyHard'
+    };
+    setActiveButton(map[currentDifficulty]);
+    document.getElementById('difficultyInput').value = currentDifficulty;
+}
+
+/**
+ * @description Closes the safe confirmation dialog if it is open.
+ * @memberOf Options
+ * @function safeDialogClose
+ * @returns {void}
+ */
+function safeDialogClose() {
+    if (safeDialogOpen) {
+        const dialog = document.getElementById('safeOptionDialog');
+        dialog.close();
+        dialog.classList.add('visually-hidden');
+        dialog.classList.remove('safe-dialog-show');
+        safeDialogOpen = false;
+    }
+}
+
+/**
+ * @description Shows the safe confirmation dialog.
+ * @memberOf Options
+ * @function showSafeDialog
+ * @returns {void}
+ */
+function showSafeDialog() {
+    const dialog = document.getElementById('safeOptionDialog');
+    dialog.classList.remove('visually-hidden');
+    dialog.classList.add('safe-dialog-show');
+    dialog.showModal();
+    safeDialogOpen = true;
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-bottleImages.html">bottleImages</a></li><li><a href="module-characterImages.html">characterImages</a></li><li><a href="module-difficultySettings.html">difficultySettings</a></li><li><a href="module-endbossImages.html">endbossImages</a></li><li><a href="module-statusBarImages.html">statusBarImages</a></li></ul><h3>Namespaces</h3><ul><li><a href="Options.html">Options</a></li><li><a href="Script.html">Script</a></li><li><a href="portraitBlock.html">portraitBlock</a></li></ul><h3>Classes</h3><ul><li><a href="AudioManager.html">AudioManager</a></li><li><a href="AudioManager.AudioManager.html">AudioManager</a></li><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="BackgroundObject.BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="Bottle.Bottle.html">Bottle</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Chicken.Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Cloud.Cloud.html">Cloud</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Coin.Coin.html">Coin</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="DrawableObject.DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="Endboss.Endboss.html">Endboss</a></li><li><a href="ItemsManager.html">ItemsManager</a></li><li><a href="ItemsManager.ItemsManager.html">ItemsManager</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Keyboard.Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="Level.Level.html">Level</a></li><li><a href="LevelCreator.html">LevelCreator</a></li><li><a href="LevelCreator.LevelCreator.html">LevelCreator</a></li><li><a href="LevelProperties.html">LevelProperties</a></li><li><a href="LevelProperties.LevelProperties.html">LevelProperties</a></li><li><a href="LevelSetting.html">LevelSetting</a></li><li><a href="LevelSetting.LevelSetting.html">LevelSetting</a></li><li><a href="MoveableObject.html">MoveableObject</a></li><li><a href="MoveableObject.MoveableObject.html">MoveableObject</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="StatusBar.StatusBar.html">StatusBar</a></li><li><a href="StatusbarManager.html">StatusbarManager</a></li><li><a href="StatusbarManager.StatusbarManager.html">StatusbarManager</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="ThrowableObject.ThrowableObject.html">ThrowableObject</a></li><li><a href="World.html">World</a></li><li><a href="World.World.html">World</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sun Jan 11 2026 09:13:30 GMT+0100 (Mitteleuropäische Normalzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

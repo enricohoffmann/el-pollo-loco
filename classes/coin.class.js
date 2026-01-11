@@ -39,6 +39,7 @@ class Coin extends DrawableObject {
      * @method setPosition
      * @param {Number} canvasHeight - Height of the game canvas. 
      * @param {Number} levelLength - Length of the game level.
+     * @returns {void}
      */
     setPosition(canvasHeight, levelLength){
         const groundLevel = canvasHeight - 200;
@@ -52,7 +53,7 @@ class Coin extends DrawableObject {
      * @memberof Coin
      * @method getRandomObjectPosition
      * @param {boolean} onFinished 
-     * @returns 
+     * @returns {void}
      */
     animateCollectet(onFinished){
         if(this.pos_y < -20){

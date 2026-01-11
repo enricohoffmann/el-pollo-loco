@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: classes/endboss.class.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: classes/endboss.class.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @class Endboss
+ * @extends MoveableObject
+ * @description Represents the end boss character in the game with its behaviors and animations.
+ */
+
+class Endboss extends MoveableObject {
+
+    height = 400;
+    width = 250;
+    pos_x = 700;
+    pos_y = 60;
+    damage = 20;
+    energy = 100;
+    animationInterval;
+    attackInterval;
+    walkingInterval;
+    offset = { top: 50, right: 10, bottom: 10, left: 10 };
+    killbox = { top: 110, right: 70, bottom: 20, left: 70 };
+    lastAttackTime = 0;
+    isAttacking = false;
+    endBossStatusBar;
+    state;
+    world;
+
+
+    /**
+     * @description Creates an instance of the Endboss.
+     * @memberOf Endboss
+     * @constructor
+     * @param {HTMLCanvasElement} canvas 
+     * @param {Number} level_end_x 
+     */
+    constructor(canvas, level_end_x) {
+        super();
+        this.canvas = canvas;
+        this.end_pos_x = level_end_x;
+        this.loadTypeImages(endbossImages);
+        this.loadImage(this.imagesOfType.ENDBOSS_ALERT_IMAGES[0]);
+        this.setSize(0.75, 1.44);
+        this.setEndbossPosition();
+        this.speed = 0.15;
+        this.animate();
+    }
+
+    /**
+     * @description Sets the initial position of the end boss based on the level's end position.
+     * @memberOf Endboss
+     * @method setEndbossPosition
+     * @returns {void}
+     */
+    setEndbossPosition() {
+        this.pos_x = this.end_pos_x - (this.width + 80);
+        const endbossHeight = this.height - (this.offset.top + this.offset.bottom);
+        const bottomMargin = 80;
+        this.pos_y = this.canvas.height - (bottomMargin + endbossHeight);
+    }
+
+    /**
+     * @description Initiates the animation sequence for the end boss after a delay.
+     * @memberOf Endboss
+     * @method animate
+     * @returns {void}
+     */
+    animate() {
+        setTimeout(() => {
+            this.walkingAnimation();
+        }, 5000);
+
+    }
+
+    /**
+     * @description Handles the walking animation of the end boss.
+     * @memberOf Endboss
+     * @method walkingAnimation
+     * @returns {void}
+     */
+    walkingAnimation() {
+        if (this.state === 'dead') return;
+        this.state = 'walk';
+
+        clearInterval(this.attackAnimationInterval);
+        clearInterval(this.hurtAnimationInterval);
+
+        this.animationInterval = setInterval(() => {
+            if (this.state !== 'walk') return;
+            if(window.isGamePaused()) return;
+            this.playAnimation(this.imagesOfType.ENDBOSS_WALKING_IMAGES);
+        }, 160);
+
+        this.walkingInterval = setInterval(() => {
+            if (this.state !== 'walk') return;
+            if(window.isGamePaused()) return;
+            this.moveLeft();
+            this.moveStatusBar();
+            this.checkEndbossReachedLeftEdge();
+        }, 1000 / 60);
+
+    }
+
+    /**
+     * @description Checks if the end boss has reached the left edge of the screen and triggers game over if true.
+     * @memberOf Endboss
+     * @method checkEndbossReachedLeftEdge
+     * @returns {void}
+     */
+    checkEndbossReachedLeftEdge() {
+        const leftEdgeX = this.pos_x &lt;= 100;
+
+        if (leftEdgeX) {
+            clearInterval(this.walkingInterval);
+            clearInterval(this.animationInterval);
+            this.world.gameOver();
+        }
+
+
+    }
+
+    /**
+     * @description Updates the position of the end boss's status bar to match its current position.
+     * @memberOf Endboss
+     * @method moveStatusBar
+     * @returns {void}
+     */
+    moveStatusBar() {
+        if (this.endBossStatusBar) {
+            this.endBossStatusBar.pos_x = this.pos_x;
+        }
+    }
+
+    /**
+     * @description Initiates the attack sequence of the end boss.
+     * @memberOf Endboss
+     * @method attack
+     * @returns {void}
+     */
+    attack() {
+        if (this.state === 'dead' || this.state === 'hurt') return;
+        if (this.state === 'attack') return;
+
+        this.state = 'attack';
+        this.isAttacking = true;
+        this.lastAttackTime = new Date().getTime();
+        clearInterval(this.animationInterval);
+        clearInterval(this.walkingInterval);
+        this.attackAnimation();
+    }
+
+    /**
+     * @description Handles the attack animation of the end boss.
+     * @memberOf Endboss
+     * @method attackAnimation
+     * @returns {void}
+     */
+    attackAnimation() {
+        this.attackAnimationInterval = setInterval(() => {
+            this.playAnimation(this.imagesOfType.ENDBOSS_ATTACK_IMAGES);
+            const attackDuration = new Date().getTime() - this.lastAttackTime;
+            if (attackDuration >= 3000) {
+                this.isAttacking = false;
+                this.lastAttackTime = 0;
+                clearInterval(this.attackAnimationInterval);
+                this.attackAnimationInterval = null;
+
+                if (this.state === "attack") {
+                    this.walkingAnimation();
+                }
+            }
+        }, 160);
+
+    }
+
+    /**
+     * @description Initiates the hurt animation of the end boss.
+     * @memberOf Endboss
+     * @method hurt
+     * @returns {void}
+     */
+    hurt() {
+        if (this.state === 'dead') return;
+        this.state = 'hurt';
+        this.lastHurtTime = new Date().getTime() + 800;
+
+        clearInterval(this.animationInterval);
+        clearInterval(this.walkingInterval);
+        clearInterval(this.attackAnimationInterval);
+
+        if (this.hurtAnimationInterval) return;
+
+        this.hurtAnimation();
+    }
+
+    /**
+     * @description Handles the hurt animation of the end boss.
+     * @memberOf Endboss
+     * @method hurtAnimation
+     * @returns {void}
+     */
+    hurtAnimation() {
+        this.hurtAnimationInterval = setInterval(() => {
+
+            if (Date.now() &lt; this.lastHurtTime &amp;&amp; this.state === 'hurt') {
+                this.playAnimation(this.imagesOfType.ENDBOSS_HURT_IMAGES);
+                return;
+            }
+
+            clearInterval(this.hurtAnimationInterval);
+            this.hurtAnimationInterval = null;
+
+            if ((this.state !== 'dead')) {
+                this.walkingAnimation();
+            }
+        }, 160);
+    }
+
+    /**
+     * @description Handles the death sequence of the end boss.
+     * @memberOf Endboss
+     * @method endbossDied
+     * @returns {void}
+     */
+    endbossDied() {
+        this.state = 'dead';
+        clearInterval(this.animationInterval);
+        clearInterval(this.walkingInterval);
+        clearInterval(this.attackAnimationInterval);
+        clearInterval(this.hurtAnimationInterval);
+
+        this.attackAnimationInterval = null;
+        this.hurtAnimationInterval = null;
+
+        this.playAnimationOnce(this.imagesOfType.ENDBOSS_DEAD_IMAGES, () => {
+            this.endBossStatusBar.pos_y = -100;
+            this.pos_x = -1000;
+            this.world.checkWinCondition();
+        });
+
+    }
+
+    /**
+     * @description Handles the event when the end boss is hit.
+     * @memberOf Endboss
+     * @method entbossHit
+     * @returns {void}
+     */
+    entbossHit() {
+
+        this.hit();
+        this.hurt();
+
+        if (this.endBossStatusBar) {
+            this.endBossStatusBar.setPercentage(this.energy);
+        }
+
+        if (this.isDead) {
+            this.endbossDied();
+        }
+    }
+
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-bottleImages.html">bottleImages</a></li><li><a href="module-characterImages.html">characterImages</a></li><li><a href="module-difficultySettings.html">difficultySettings</a></li><li><a href="module-endbossImages.html">endbossImages</a></li><li><a href="module-statusBarImages.html">statusBarImages</a></li></ul><h3>Namespaces</h3><ul><li><a href="Options.html">Options</a></li><li><a href="Script.html">Script</a></li><li><a href="portraitBlock.html">portraitBlock</a></li></ul><h3>Classes</h3><ul><li><a href="AudioManager.html">AudioManager</a></li><li><a href="AudioManager.AudioManager.html">AudioManager</a></li><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="BackgroundObject.BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="Bottle.Bottle.html">Bottle</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Chicken.Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Cloud.Cloud.html">Cloud</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Coin.Coin.html">Coin</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="DrawableObject.DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="Endboss.Endboss.html">Endboss</a></li><li><a href="ItemsManager.html">ItemsManager</a></li><li><a href="ItemsManager.ItemsManager.html">ItemsManager</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Keyboard.Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="Level.Level.html">Level</a></li><li><a href="LevelCreator.html">LevelCreator</a></li><li><a href="LevelCreator.LevelCreator.html">LevelCreator</a></li><li><a href="LevelProperties.html">LevelProperties</a></li><li><a href="LevelProperties.LevelProperties.html">LevelProperties</a></li><li><a href="LevelSetting.html">LevelSetting</a></li><li><a href="LevelSetting.LevelSetting.html">LevelSetting</a></li><li><a href="MoveableObject.html">MoveableObject</a></li><li><a href="MoveableObject.MoveableObject.html">MoveableObject</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="StatusBar.StatusBar.html">StatusBar</a></li><li><a href="StatusbarManager.html">StatusbarManager</a></li><li><a href="StatusbarManager.StatusbarManager.html">StatusbarManager</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="ThrowableObject.ThrowableObject.html">ThrowableObject</a></li><li><a href="World.html">World</a></li><li><a href="World.World.html">World</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sun Jan 11 2026 09:13:30 GMT+0100 (Mitteleuropäische Normalzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

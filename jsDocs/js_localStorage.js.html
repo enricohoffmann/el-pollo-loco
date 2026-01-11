@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: js/localStorage.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: js/localStorage.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @description Functions to save and load game state and settings using localStorage.
+ * @namespace LocalStorage
+ * @file js/localStorage.js
+ */
+
+/**
+ * @description Saves the running state of the game.
+ * @memberOf LocalStorage
+ * @function safeGameRunningState
+ * @param {boolean} running 
+ * @returns {void}
+ */
+function safeGameRunningState(running) {
+    localStorage.setItem('gameRunning', JSON.stringify(running));
+    if (!running) {
+        clearGameState();
+    }
+}
+
+/**
+ * @description Loads the running state of the game.
+ * @memberOf LocalStorage
+ * @function loadGameRunningState
+ * @returns {boolean}
+ */
+function loadGameRunningState() {
+    const running = localStorage.getItem('gameRunning');
+    return JSON.parse(running);
+}
+
+/**
+ * @description Saves the entire game state including character, coins, bottles, enemies, and status bars.
+ * @memberOf LocalStorage
+ * @function safeGameState
+ * @param {Object} state 
+ * @returns {void}
+ */
+function safeGameState(state) {
+    safeCharacterState(state.character);
+    safeCoinState(world.coinsObjects, world.coinManager);
+    safeBottleState(world.bottleObjects, world.bottleManager);
+    safeEnemyState(state.level.enemies);
+    safeStatusbarState(state.statusBars);
+}
+
+/**
+ * @description Loads the entire game state including character, coins, bottles, enemies, and status bars.
+ * @memberOf LocalStorage
+ * @function loadGameState
+ * @returns {Object}
+ */
+function loadGameState() {
+    const state = localStorage.getItem('gameState');
+    return JSON.parse(state);
+}
+
+/**
+ * @description Saves the character's state including position and health.
+ * @memberOf LocalStorage
+ * @function safeCharacterState
+ * @param {Character} character
+ * @returns {void} 
+ */
+function safeCharacterState(character) {
+
+    const state = {
+        character: {
+            x: character.pos_x,
+            y: character.pos_y,
+            health: character.energy,
+        }
+    };
+
+    localStorage.setItem('characterState', JSON.stringify(state));
+}
+
+/**
+ * @description Loads the character's state including position and health.
+ * @memberOf LocalStorage
+ * @function loadCharacterState
+ * @returns {Character}
+ */
+function loadCharacterState() {
+    const character = localStorage.getItem('characterState');
+    return JSON.parse(character);
+}
+
+/**
+ * @description Saves the state of coins in the game.
+ * @memberOf LocalStorage
+ * @function safeCoinState
+ * @param {Array&lt;Coins>} coins 
+ * @param {ItemsManager} coinManager 
+ * @returns {void}
+ */
+function safeCoinState(coins, coinManager) {
+    const state = {
+        collectedItems: coinManager.collectedItems,
+        totalItems: coinManager.totalItems,
+        coins: coins.map(coin => ({
+            isCollected: coin.isCollected,
+            pos_x: coin.pos_x,
+            pos_y: coin.pos_y,
+            out: coin.isOutOfScreen
+        }))
+    };
+
+    localStorage.setItem('coinsState', JSON.stringify(state));
+}
+
+/**
+ * @description Loads the state of coins in the game.
+ * @memberOf LocalStorage
+ * @function loadCoinState
+ * @returns {Array&lt;Coins>}
+ */
+function loadCoinState() {
+    const coins = localStorage.getItem('coinsState');
+    return JSON.parse(coins);
+}
+
+/**
+ * @description Saves the state of bottles in the game.
+ * @memberOf LocalStorage
+ * @function safeBottleState
+ * @param {Array&lt;Bottle>} bottles 
+ * @param {ItemsManager} bottleManager 
+ * @returns {void}
+ */
+function safeBottleState(bottles, bottleManager) {
+    const state = {
+        collectedItems: bottleManager.collectedItems,
+        totalItems: bottleManager.totalItems,
+        bottles: bottles.map(bottle => ({
+            isCollected: bottle.isCollected,
+            pos_x: bottle.pos_x,
+            pos_y: bottle.pos_y,
+            out: bottle.isOutOfScreen,
+            bottleImageIndex: bottle.bottleImageIndex
+        }))
+    };
+
+    localStorage.setItem('bottlesState', JSON.stringify(state));
+}
+
+/**
+ * @description Loads the state of bottles in the game.
+ * @memberOf LocalStorage
+ * @function loadBottleState
+ * @returns {Array&lt;Bottle>}
+ */
+function loadBottleState() {
+    const bottles = localStorage.getItem('bottlesState');
+    return JSON.parse(bottles);
+}
+
+/**
+ * @description Saves the state of enemies in the game.
+ * @memberOf LocalStorage
+ * @function safeEnemyState
+ * @param {Array&lt;Enemy>} enemies 
+ * @returns {void}
+ */
+function safeEnemyState(enemies) {
+    const state = {
+        enemies: enemies.map(enemy => ({
+            isDied: enemy.isDied,
+            pos_x: enemy.pos_x,
+            pos_y: enemy.pos_y,
+            energy: enemy.energy,
+            isChicken: enemy instanceof Chicken,
+            isEndboss: enemy instanceof Endboss
+        }))
+    };
+
+    localStorage.setItem('enemiesState', JSON.stringify(state));
+}
+
+/**
+ * @description Loads the state of enemies in the game.
+ * @memberOf LocalStorage
+ * @function loadEnemyState
+ * @returns {Array&lt;Enemy>}
+ */
+function loadEnemiesState() {
+    const enemies = localStorage.getItem('enemiesState');
+    return JSON.parse(enemies);
+}
+
+/**
+ * @description Saves the state of clouds in the game.
+ * @memberOf LocalStorage
+ * @function safeCloudState
+ * @param {Array&lt;Cloud>} clouds
+ * @returns {void} 
+ */
+function safeCloudState(clouds) {
+    const state = {
+        clouds: clouds.map(cloud => ({
+            pos_x: cloud.pos_x,
+            pos_y: cloud.pos_y
+        }))
+    };
+    localStorage.setItem('cloudsState', JSON.stringify(state));
+}
+
+/**
+ * @description Loads the state of clouds in the game.
+ * @memberOf LocalStorage
+ * @function loadCloudsState
+ * @returns {Array&lt;Cloud>}
+ */
+function loadCloudsState() {
+    const clouds = localStorage.getItem('cloudsState');
+    return JSON.parse(clouds);
+}
+
+/**
+ * @description Saves the level state in the game.
+ * @memberOf LocalStorage
+ * @function safeLevelState
+ * @param {Object} levelState 
+ * @returns {void}
+ */
+function safeLevelState(levelState) {
+    localStorage.setItem('levelState', JSON.stringify(levelState));
+}
+
+/**
+ * @description Loads the level state in the game.
+ * @memberOf LocalStorage
+ * @function loadLevelState
+ * @returns {Object}
+ */
+function loadLevelState() {
+    const levelState = localStorage.getItem('levelState');
+    return JSON.parse(levelState);
+}
+
+/**
+ * @description Saves the status bar states in the game.
+ * @memberOf LocalStorage
+ * @function safeStatusbarState
+ * @param {Array&lt;StatusBar>} statusBars 
+ * @returns {void}
+ */
+function safeStatusbarState(statusBars) {
+    const state = {
+        statusBars: statusBars.map(bar => ({
+            type: bar.barType,
+            value: bar.percentage,
+            color: bar.color,
+            x: bar.pos_x,
+            y: bar.pos_y
+        }))
+    }
+
+
+    localStorage.setItem('statusBarState', JSON.stringify(state));
+}
+
+/**
+ * @description Loads the status bar states in the game.
+ * @memberOf LocalStorage
+ * @function loadStatusbarState
+ * @returns {Array&lt;StatusBar>}
+ */
+function loadStatusbarState() {
+    const statusbarState = localStorage.getItem('statusBarState');
+    return JSON.parse(statusbarState);
+}
+
+/**
+ * @description Saves the pause state of the game.
+ * @memberOf LocalStorage
+ * @function safePauseState
+ * @param {boolean} isPaused 
+ * @returns {void}
+ */
+function safePauseState(isPaused) {
+    localStorage.setItem('isGamePaused', JSON.stringify(isPaused));
+}
+
+/**
+ * @description Loads the pause state of the game.
+ * @memberOf LocalStorage
+ * @function loadPauseState
+ * @returns {boolean}
+ */
+function loadPauseState() {
+    const isPaused = localStorage.getItem('isGamePaused');
+    return JSON.parse(isPaused);
+}
+
+/**
+ * @description Saves the ended state of the game.
+ * @memberOf LocalStorage
+ * @function safeIsGameEnded
+ * @param {boolean} isEnded 
+ * @returns {void}
+ */
+function safeIsGameEnded(isEnded) {
+    localStorage.setItem('isGameEnded', JSON.stringify(isEnded));
+}
+
+/**
+ * @description Loads the ended state of the game.
+ * @memberOf LocalStorage
+ * @function loadIsGameEnded
+ * @returns {boolean}
+ */
+function loadIsGameEnded() {
+    const isEnded = localStorage.getItem('isGameEnded');
+    return JSON.parse(isEnded);
+}
+
+/**
+ * @description Clears the saved game state from localStorage.
+ * @memberOf LocalStorage
+ * @function clearGameState
+ * @returns {void}
+ */
+function clearGameState() {
+    localStorage.removeItem('characterState');
+    localStorage.removeItem('coinsState');
+    localStorage.removeItem('bottlesState');
+    localStorage.removeItem('enemiesState');
+    localStorage.removeItem('cloudsState');
+    localStorage.removeItem('statusBarState');
+    localStorage.removeItem('levelState');
+    localStorage.setItem('gameRunning', JSON.stringify(false));
+    localStorage.setItem('isGamePaused', JSON.stringify(false));
+    localStorage.setItem('isGameEnded', JSON.stringify(false));
+}
+
+/**
+ * @description Saves the game settings.
+ * @memberOf LocalStorage
+ * @function safeGameSettings
+ * @param {Object} settings 
+ * @returns {void}
+ */
+function safeGameSettings(settings) {
+    localStorage.setItem('gameSettings', JSON.stringify(settings));
+}
+
+/**
+ * @description Loads the game settings.
+ * @memberOf LocalStorage
+ * @function loadGameSettings
+ * @returns {Object}
+ */
+function loadGameSettings() {
+    const settings = localStorage.getItem('gameSettings');
+    return JSON.parse(settings);
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-bottleImages.html">bottleImages</a></li><li><a href="module-characterImages.html">characterImages</a></li><li><a href="module-difficultySettings.html">difficultySettings</a></li><li><a href="module-endbossImages.html">endbossImages</a></li><li><a href="module-statusBarImages.html">statusBarImages</a></li></ul><h3>Namespaces</h3><ul><li><a href="Options.html">Options</a></li><li><a href="Script.html">Script</a></li><li><a href="portraitBlock.html">portraitBlock</a></li></ul><h3>Classes</h3><ul><li><a href="AudioManager.html">AudioManager</a></li><li><a href="AudioManager.AudioManager.html">AudioManager</a></li><li><a href="BackgroundObject.html">BackgroundObject</a></li><li><a href="BackgroundObject.BackgroundObject.html">BackgroundObject</a></li><li><a href="Bottle.html">Bottle</a></li><li><a href="Bottle.Bottle.html">Bottle</a></li><li><a href="Character.html">Character</a></li><li><a href="Chicken.html">Chicken</a></li><li><a href="Chicken.Chicken.html">Chicken</a></li><li><a href="Cloud.html">Cloud</a></li><li><a href="Cloud.Cloud.html">Cloud</a></li><li><a href="Coin.html">Coin</a></li><li><a href="Coin.Coin.html">Coin</a></li><li><a href="DrawableObject.html">DrawableObject</a></li><li><a href="DrawableObject.DrawableObject.html">DrawableObject</a></li><li><a href="Endboss.html">Endboss</a></li><li><a href="Endboss.Endboss.html">Endboss</a></li><li><a href="ItemsManager.html">ItemsManager</a></li><li><a href="ItemsManager.ItemsManager.html">ItemsManager</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Keyboard.Keyboard.html">Keyboard</a></li><li><a href="Level.html">Level</a></li><li><a href="Level.Level.html">Level</a></li><li><a href="LevelCreator.html">LevelCreator</a></li><li><a href="LevelCreator.LevelCreator.html">LevelCreator</a></li><li><a href="LevelProperties.html">LevelProperties</a></li><li><a href="LevelProperties.LevelProperties.html">LevelProperties</a></li><li><a href="LevelSetting.html">LevelSetting</a></li><li><a href="LevelSetting.LevelSetting.html">LevelSetting</a></li><li><a href="MoveableObject.html">MoveableObject</a></li><li><a href="MoveableObject.MoveableObject.html">MoveableObject</a></li><li><a href="StatusBar.html">StatusBar</a></li><li><a href="StatusBar.StatusBar.html">StatusBar</a></li><li><a href="StatusbarManager.html">StatusbarManager</a></li><li><a href="StatusbarManager.StatusbarManager.html">StatusbarManager</a></li><li><a href="ThrowableObject.html">ThrowableObject</a></li><li><a href="ThrowableObject.ThrowableObject.html">ThrowableObject</a></li><li><a href="World.html">World</a></li><li><a href="World.World.html">World</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sun Jan 11 2026 09:13:30 GMT+0100 (Mitteleuropäische Normalzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
