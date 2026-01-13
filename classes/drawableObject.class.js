@@ -80,7 +80,7 @@ class DrawableObject {
         try {
         ctx.drawImage(this.img, this.pos_x, this.pos_y, this.width, this.height);
         } catch (e) {
-            console.error('Error drawing image:', e);
+            return;
         }
     }
 

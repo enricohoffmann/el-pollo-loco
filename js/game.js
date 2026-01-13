@@ -18,6 +18,7 @@ let isControlBind = false;
 let audioManager = new AudioManager();
 let gameIsEnded = false;
 let gameInterval = [];
+let gameVolume = 5
 
 
 const controls = {
@@ -36,7 +37,27 @@ const controls = {
     reload: {
         buttonId: 'reloadButton',
         action: reloadGame
+    },
+    volumeMinus: {
+        buttonId: 'volumeMinusButton',
+        action: audioVolumeDown
+    },
+    volumePlus: {
+        buttonId: 'volumePlusButton',
+        action: audioVolumeUp
     }
+}
+
+const defaultGameSettings = {
+    audioSetting: "Audio On",
+    countOfEnemies: 3,
+    countOfMinBottles: 6,
+    countOfMinCoins: 5,
+    difficulty: "Easy",
+    gameLengthFrames: 3,
+    theme: "Blue",
+    volume: 5,
+    forMutingVolume: 5
 }
 
 /**
@@ -47,7 +68,7 @@ const controls = {
  */
 function init() {
     gameIsEnded = loadIsGameEnded() || false;
-    if(gameIsEnded) {
+    if (gameIsEnded) {
         navigateTo('index');
         return;
     }
@@ -73,12 +94,29 @@ function init() {
 function loadInitialAssets() {
     keyboard = new Keyboard();
     isPause = loadPauseState();
-    gameSettings = loadGameSettings();
+    handleGameSettings();
     togglePauseButtonIcon();
     audioSettingsInit();
+    updateAudioVolume();
+    bindVolumeSlider();
+    initSlider();
     updateDifficultyState();
     bindControls();
     loadAudio();
+}
+
+/**
+ * @description Handles loading or initializing game settings.
+ * @memberOf Game
+ * @function handleGameSettings
+ * @returns {void}
+ */
+function handleGameSettings() {
+    gameSettings = loadGameSettings();
+    if (!gameSettings) {
+        gameSettings = defaultGameSettings;
+        safeGameSettings(gameSettings);
+    }
 }
 
 /**
@@ -104,6 +142,56 @@ function bindControls() {
 }
 
 /**
+ * @description Binds the volume slider to update the game volume.
+ * @memberOf Game
+ * @function bindVolumeSlider
+ * @returns {void}
+ */
+function bindVolumeSlider() {
+    const volumeSlider = document.getElementById('setVolume');
+    volumeSlider.addEventListener('input', (e) => {
+        const volumeValue = Math.round(parseInt(e.target.value, 10) / 10);
+        gameVolume = volumeValue;
+        updateAudioVolume();
+        updateSliderBackground(volumeSlider);
+    });
+}
+
+/**
+ * @description Initializes the volume slider's background style.
+ * @memberOf Game
+ * @function initSlider
+ * @returns {void}
+ */
+function initSlider() {
+    const volumeSlider = document.getElementById('setVolume');
+    updateSliderBackground(volumeSlider);
+}
+
+/**
+ * @description Updates the background style of a slider element based on its value.
+ * @memberOf Game
+ * @function updateSliderBackground
+ * @param {HTMLElement} slider 
+ */
+function updateSliderBackground(slider) {
+    const min = slider.min || 0;
+    const max = slider.max || 100;
+    const val = slider.value;
+
+    const percentage = ((val - min) * 100) / (max - min);
+
+    slider.style.background = `
+        linear-gradient(
+            to right,
+            var(--button-yellow) ${percentage}%,
+            #ffffff ${percentage}%
+        )
+    `;
+}
+
+
+/**
  * @description Initializes audio settings based on saved game settings.
  * @memberOf Game
  * @function audioSettingsInit
@@ -112,8 +200,13 @@ function bindControls() {
 function audioSettingsInit() {
     if (gameSettings) {
         muted = gameSettings.audioSetting === 'Audio Off' ? true : false;
+        gameVolume = muted ? 0 : gameSettings.volume;
     }
+    audioManager.toggleMusic(!muted);
+    audioManager.setVolume(gameVolume);
+    audioManager.toggleSFX(!muted);
     toggleMuteButtonIcon();
+    updateAudioVolume();
 
 }
 
@@ -126,6 +219,68 @@ function audioSettingsInit() {
 function loadAudio() {
     audioManager.loadBackgroundMusic('./audio/retro-game-402454.mp3');
 }
+
+/**
+ * @description Increases the game audio volume by 1, up to a maximum of 10.
+ * @memberOf Game
+ * @function audioVolumeUp
+ * @returns {void}
+ */
+function audioVolumeUp() {
+    if (gameVolume < 10) {
+        gameVolume += 1;
+        updateAudioVolume();
+    }
+}
+
+/**
+ * @description Decreases the game audio volume by 1, down to a minimum of 0.
+ * @memberOf Game
+ * @function audioVolumeDown
+ * @returns {void}
+ */
+function audioVolumeDown() {
+    if (gameVolume > 0) {
+        gameVolume -= 1;
+        updateAudioVolume();
+    }
+}
+
+/**
+ * @description Updates the game audio volume and related settings.
+ * @memberOf Game
+ * @function updateAudioVolume
+ * @returns {void}
+ */
+function updateAudioVolume() {
+    document.getElementById('setVolume').value = gameVolume * 10;
+    audioManager.setVolume(gameVolume);
+    gameSettings.volume = gameVolume;
+    updateAudioGameSettings();
+    initSlider();
+    if (muted && gameVolume > 0) {
+        muted = false;
+        audioManager.toggleMusic(true);
+        if (isPause) { audioManager.pauseBackgroundMusic(); }
+        audioManager.toggleSFX(true);
+        toggleMuteButtonIcon();
+    } else if (gameVolume === 0) {
+        muted = true;
+        audioManager.toggleMusic(false);
+        audioManager.toggleSFX(false);
+        toggleMuteButtonIcon();
+    }
+}
+
+
+function updateAudioGameSettings() {
+    if (gameSettings) {
+        gameSettings.volume = gameVolume;
+        gameSettings.audioSetting = muted ? 'Audio Off' : 'Audio On';
+        safeGameSettings(gameSettings);
+    }
+}
+
 
 /**
  * @description Updates the displayed difficulty state in the game UI.
@@ -302,7 +457,12 @@ function pauseGame() {
     isPause = !isPause;
     togglePauseButtonIcon();
     safePauseState(isPause);
-    isPause ? world.audioManager.pauseBackgroundMusic() : world.audioManager.playBackgroundMusic();
+
+    if(isPause){
+        world.audioManager.pauseBackgroundMusic()
+    }else if(!isPause && !muted && !audioManager.isMusicPlaying){
+        world.audioManager.playBackgroundMusic()
+    }
 }
 
 /**
@@ -344,7 +504,9 @@ function reloadGame() {
 
     if (world) {
         clearAllGameIntervals();
-        audioManager.stopBackgroundMusic();
+        world.audioManager.stopBackgroundMusic();
+        audioManager = null;
+        audioManager = new AudioManager();
         world = null;
         clearGameState();
         init();
@@ -361,10 +523,20 @@ function reloadGame() {
 function toggleMute() {
     muted = !muted;
     gameSettings.audioSetting = muted ? 'Audio Off' : 'Audio On';
+    gameSettings.forMutingVolume = muted ? gameVolume : gameSettings.forMutingVolume;
+    if (muted) {
+        forMutingVolume = gameVolume;
+        gameVolume = 0;
+    }else {
+        gameVolume = gameSettings.forMutingVolume || 5;
+    }
     safeGameSettings(gameSettings);
     toggleMuteButtonIcon();
     audioManager.toggleMusic(!muted);
+    if(isPause) { audioManager.pauseBackgroundMusic(); }
     audioManager.toggleSFX(!muted);
+    updateAudioVolume();
+    
 }
 
 /**
@@ -423,7 +595,7 @@ function toggleFullScreen() {
 function openFullscreen(element) {
     if (element.requestFullscreen) {
         element.requestFullscreen();
-    } else if (element.webkitRequestFullscreen) { 
+    } else if (element.webkitRequestFullscreen) {
         element.webkitRequestFullscreen();
     } else if (element.msRequestFullscreen) {
         element.msRequestFullscreen();
@@ -439,7 +611,7 @@ function openFullscreen(element) {
 function closeFullscreen() {
     if (document.exitFullscreen) {
         document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) { 
+    } else if (document.webkitExitFullscreen) {
         document.webkitExitFullscreen();
     } else if (document.msExitFullscreen) {
         document.msExitFullscreen();
@@ -484,9 +656,7 @@ function createStoppableInterval(func, delay) {
  * @return {void}
  */
 function clearAllGameIntervals() {
-    gameInterval.forEach( (id) => {
-        console.log(id);
-        
+    gameInterval.forEach((id) => {
         clearInterval(id);
     });
     gameInterval = [];
@@ -501,7 +671,7 @@ function clearAllGameIntervals() {
  */
 function removeOneGameInterval(id) {
     clearInterval(id);
-    gameInterval = gameInterval.filter( (intervalId) => intervalId !== id);
+    gameInterval = gameInterval.filter((intervalId) => intervalId !== id);
 }
 
 /**
@@ -520,5 +690,6 @@ window.isGameMuted = isGameMuted;
 window.createStoppableInterval = createStoppableInterval;
 window.clearAllGameIntervals = clearAllGameIntervals;
 window.removeOneGameInterval = removeOneGameInterval;
+window.defaultGameSettings = defaultGameSettings;
 
 

@@ -11,6 +11,8 @@ let currentDifficulty = 'Easy';
 let currentAudioSetting = '';
 let currentTheme = '';
 let safeDialogOpen = false;
+let currentVolume = 5;
+let forMutingVolume = 5;
 
 
 const selectLists = {
@@ -320,7 +322,9 @@ function createGameSettingsObject() {
         countOfEnemies: parseInt(document.getElementById('enemyCountInput').value) || difficultySettings[currentDifficulty].countOfEnemies,
         countOfMinCoins: parseInt(document.getElementById('coinCountInput').value) || difficultySettings[currentDifficulty].countOfMinCoins,
         countOfMinBottles: parseInt(document.getElementById('bottleCountInput').value) || difficultySettings[currentDifficulty].countOfMinBottles,
-        gameLengthFrames: parseInt(document.getElementById('gameLengthInput').value) || difficultySettings[currentDifficulty].gameLengthFrames
+        gameLengthFrames: parseInt(document.getElementById('gameLengthInput').value) || difficultySettings[currentDifficulty].gameLengthFrames,
+        volume: currentVolume,
+        forMutingVolume: forMutingVolume
     };
 }
 
@@ -353,8 +357,11 @@ function loadCurrentGameSettings() {
         currentTheme = settings.theme || 'Blue';
         difficultySettings[currentDifficulty].countOfEnemies = settings.countOfEnemies || 3;
         difficultySettings[currentDifficulty].countOfMinCoins = settings.countOfMinCoins || 5;
-        difficultySettings[currentDifficulty].countOfMinBottles = settings.countOfMinBottles || 5;
+        difficultySettings[currentDifficulty].countOfMinBottles = settings.countOfMinBottles || 6;
         difficultySettings[currentDifficulty].gameLengthFrames = settings.gameLengthFrames || 3;
+        currentVolume = settings.volume || 5;
+        forMutingVolume = settings.forMutingVolume || 5;
+
     } else {
         createDeafaultGameSettings();
     }
@@ -367,9 +374,10 @@ function loadCurrentGameSettings() {
  * @returns {void}
  */
 function createDeafaultGameSettings() {
-    currentDifficulty = 'Easy';
-    currentAudioSetting = 'Audio On';
-    currentTheme = 'Blue';
+    const defaultSettings = window.defaultGameSettings;
+    currentDifficulty = defaultSettings.difficulty;
+    currentAudioSetting = defaultSettings.audioSetting;
+    currentTheme = defaultSettings.theme;
 }
 
 /**

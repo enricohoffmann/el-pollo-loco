@@ -49,11 +49,11 @@ class Keyboard {
         if (!button) return;
 
         const setKeyTrue = (e) => {
-            e.preventDefault();
+            if (e.cancelable) e.preventDefault();
             this.setKey(key, true);
         }
         const setKeyFalse = (e) => {
-            e.preventDefault();
+            if (e.cancelable) e.preventDefault();
             this.setKey(key, false);
         }
 

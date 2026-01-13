@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>El Pollo Loco</title>
+    <link rel="stylesheet" href="./styles/color.css">
     <link rel="stylesheet" href="./styles/style.css">
     <link rel="stylesheet" href="./styles/sizes.css">
     <link rel="stylesheet" href="./styles/game.css">
@@ -27,7 +28,6 @@
 
         <section id="mobileMenu" class="mobile-menu-box isGame" onclick="">
             <button type="button" class="btn-mobile-submenu" onclick="navigationButtonOnGame('privacy')">Privacy Policy</button>
-            <button type="button" class="btn-mobile-submenu" onclick="navigationButtonOnGame('options')">Options</button>
             <button type="button" class="btn-mobile-submenu" onclick="navigationButtonOnGame('help')">Help</button>
         </section>
 
@@ -45,10 +45,23 @@
                         <button id="muteButton" type="button" class="btn-control" title="Mute / Unmute">
                             <div class="icon-audio-on"></div>
                         </button>
-                        <button id="fullScreenButton" type="button" class="btn-control" title="Toggle Fullscreen">
+                        <button id="fullScreenButton" type="button" class="btn-control" title="Toggle Fullscreen" >
                             <div class="icon-fullscreen"></div>
                         </button>
                         <span id="difficultyState" class="text-white">difficulty: Easy</span>
+
+
+                        <button id="volumeMinusButton" type="button" class="btn-control" title="Decrease Volume">
+                            <div class="icon-minus"></div>
+                        </button>
+
+                        <label for="setVolume" class="visually-hidden">Set volume</label>
+                        <input class="volume-slider" type="range" id="setVolume" name="setVolume" min="0" max="100" value="50" aria-label="Set volume">
+
+                        <button id="volumePlusButton" type="button" class="btn-control" title="Increase Volume">
+                            <div class="icon-plus"></div>
+                        </button>
+
                     </div>
                     <div class="nav-mobile nav-mobile-game">
                         <button type="button" class="btn btn-small" onclick="navigationButtonOnGame('index')">Back</button>

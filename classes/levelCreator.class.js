@@ -65,15 +65,7 @@ class LevelCreator {
      * @returns {Object} Default game settings.
      */
     createDefaultSettings() {
-        this.config = {
-            audioSetting: "Audio On",
-            countOfEnemies: 3,
-            countOfMinBottles: 5,
-            countOfMinCoins: 5,
-            difficulty: "Easy",
-            gameLengthFrames: 3,
-            theme: "Blue"
-        };
+        this.config = window.defaultGameSettings;
         safeGameSettings(this.config);
     }
 

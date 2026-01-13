@@ -3,6 +3,8 @@
  * @description Manages background music and sound effects for the application.
  */
 
+musicPlainging = false;
+
 class AudioManager {
 
     backgroundMusic = null;
@@ -39,7 +41,9 @@ class AudioManager {
      */
     playBackgroundMusic() {
         if (this.musicEnabled && this.backgroundMusic) {
+            this.backgroundMusic.volume = this.musicVolume;
             this.backgroundMusic.play();
+            this.musicPlainging = true;
         }
     }
 
@@ -52,6 +56,7 @@ class AudioManager {
     pauseBackgroundMusic() {
         if (this.backgroundMusic) {
             this.backgroundMusic.pause();
+            this.musicPlainging = false;
         }
     }
 
@@ -65,6 +70,7 @@ class AudioManager {
         if (this.backgroundMusic) {
             this.backgroundMusic.pause();
             this.backgroundMusic.currentTime = 0;
+            this.musicPlainging = false;
         }
     }
 
@@ -107,4 +113,30 @@ class AudioManager {
     toggleSFX(enable){
         this.sfxEnabled = enable;
     }
+
+    /**
+     * @description Sets the volume for music and sound effects.
+     * @memberof AudioManager
+     * @method setVolume
+     * @param {number} volume 
+     */
+    setVolume(volume){
+        const clampedVolume = Math.max(0, Math.min(10, volume));
+        this.musicVolume = clampedVolume / 10 * 0.3;
+        this.sfxVolume = clampedVolume / 10 * 0.5;
+        if (this.backgroundMusic) {
+            this.backgroundMusic.volume = this.musicVolume;
+        }
+    }
+
+    /**
+     * @description Indicates whether the background music is currently playing.
+     * @memberof AudioManager
+     * @method isMusicPlaying
+     * @returns {boolean} True if music is playing, otherwise false.
+     */
+    get isMusicPlaying() {
+        return this.musicPlainging;
+    }
+    
 }

@@ -104,13 +104,17 @@
     padding: 8px;
     border: none;
     border-radius: 50%;
-    background-color: rgb(245, 178, 44);
+    background-color: var(--button-yellow);
     cursor: pointer;
     transition: background-color 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
     outline: none;
+    touch-action: none;    
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .btn-control:hover {
@@ -129,7 +133,9 @@
 .right-icon,
 .jump-icon,
 .throw-icon,
-.icon-menu {
+.icon-menu,
+.icon-minus,
+.icon-plus {
     height: 20px;
     width: 20px;
     background-size: cover;
@@ -185,6 +191,13 @@
     background-image: url('../img/custom/mMenu.svg');
 }
 
+.icon-minus {
+    background-image: url('../img/custom/minus.svg');
+}
+
+.icon-plus {
+    background-image: url('../img/custom/plus.svg');
+}
 .mobile-game-button-panel {
     display: none;
     justify-content: space-between;
@@ -199,6 +212,50 @@
     justify-content: center;
     align-items: center;
     padding: 10px;
+}
+
+.volume-slider{
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100px;
+    height: 6px;
+    background: linear-gradient(
+        to right,
+        var(--button-yellow) 50%, 
+        #ffffff 50% 
+    );
+    border-radius: 6px;
+    outline: none;
+    cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background-color: var(--button-yellow); 
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+}
+
+.volume-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background-color: var(--button-yellow); 
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+}
+
+.volume-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background-color: var(--button-yellow); 
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
 }
 
 
