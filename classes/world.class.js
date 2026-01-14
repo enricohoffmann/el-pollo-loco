@@ -24,7 +24,6 @@ class World {
     currentCollectedBottles = 0;
     lastBounceTime = 0;
     pauseImg;
-    audioManager = new AudioManager();
     isHit;
 
     /**
@@ -35,15 +34,13 @@ class World {
      * @param {keyboard} keyboard 
      * @param {Level} level 
      * @param {string} colorTheme 
-     * @param {AudioManager} audioManager 
      */
-    constructor(canvas, keyboard, level, colorTheme, audioManager) {
+    constructor(canvas, keyboard, level, colorTheme) {
         this.level = level;
         this.canvas = canvas;
         this.colorTheme = colorTheme;
         this.ctx = canvas.getContext('2d');
         this.keyboard = keyboard;
-        this.audioManager = audioManager;
     }
 
     /**
@@ -95,7 +92,7 @@ class World {
      */
     startBackgroundMusic() {
         if (!window.isGameMuted() && !window.isGamePaused()) {
-            this.audioManager.playBackgroundMusic();
+            window.audioManager.playBackgroundMusic();
         }
     }
     
@@ -128,9 +125,9 @@ class World {
         this.statusBarManager = new StatusbarManager(this.colorTheme, this.level.enemies);
         this.statusBarManager.createNewStatusBars();
         this.statusBars = this.statusBarManager.statusBars;
-        this.coinManager = new ItemsManager(this.character, this.statusBars.find(sb => sb.barType === 'coins'), this.level, this.canvas, this.audioManager);
+        this.coinManager = new ItemsManager(this.character, this.statusBars.find(sb => sb.barType === 'coins'), this.level, this.canvas);
         this.coinsObjects = this.coinManager.createNewItems((height, levelEndX) => new Coin(height, levelEndX), this.level.coinsOnScreen);
-        this.bottleManager = new ItemsManager(this.character, this.statusBars.find(sb => sb.barType === 'bottles'), this.level, this.canvas, this.audioManager);
+        this.bottleManager = new ItemsManager(this.character, this.statusBars.find(sb => sb.barType === 'bottles'), this.level, this.canvas);
         this.bottleObjects = this.bottleManager.createNewItems((height, levelEndX) => new Bottle(height, levelEndX), this.level.bottlesOnScreen);
         const endboss = this.level.enemies.find(e => e instanceof Endboss);
         if (endboss) {
@@ -160,6 +157,22 @@ class World {
             endboss.world = this;
         }
         this.currentCollectedBottles = this.bottleManager.collectedItems;
+        this.fillThrowableObjectsArray();
+    }
+
+    /**
+     * @description Fills the throwable objects array based on the current collected bottles.
+     * @memberOf World
+     * @method fillThrowableObjectsArray
+     * @returns {void}
+     */
+    fillThrowableObjectsArray(){
+        this.throwableObjects = [];
+        for (let i = 0; i < this.currentCollectedBottles; i++) {
+            const bottle = new ThrowableObject();
+            bottle.canvas = this.canvas;
+            this.throwableObjects.push(bottle);
+        }
     }
 
     /**
@@ -234,7 +247,7 @@ class World {
     characterHitEnemyOnTop(enemy) {
         if (enemy instanceof Endboss) { return; }
         if( enemy.energy <= 1) { return; }
-        this.audioManager.playSoundEffect('./audio/chicken-shrines-01.mp3');
+        window.audioManager.playSoundEffect('./audio/chicken-shrines-01.mp3');
         enemy.hit();
         this.bounceOffEnemy(enemy);
     }
@@ -269,10 +282,10 @@ class World {
 
         if (enemy instanceof Endboss) {
             enemy.entbossHit();
-            this.audioManager.playSoundEffect('./audio/chicken-alarm.mp3');
+            window.audioManager.playSoundEffect('./audio/chicken-alarm.mp3');
         } else {
             enemy.hit();
-            this.audioManager.playSoundEffect('./audio/chicken-shrines-01.mp3');
+            window.audioManager.playSoundEffect('./audio/chicken-shrines-01.mp3');
         }
     }
 
@@ -503,7 +516,7 @@ class World {
         setTimeout(() => {
             this.stopGame();
             window.openGameOverDialog();
-            this.audioManager.playSoundEffect('./audio/game-over.mp3');
+            window.audioManager.playSoundEffect('./audio/game-over.mp3');
             return;
         }, 100);
     }
@@ -520,7 +533,7 @@ class World {
             setTimeout(() => {
                 this.stopGame();
                 window.openGameWinDialog();
-                this.audioManager.playSoundEffect('./audio/orchestral-win.mp3');
+                window.audioManager.playSoundEffect('./audio/orchestral-win.mp3');
                 return;
             }, 100);
         }
@@ -536,7 +549,7 @@ class World {
     stopGame(){
         window.clearAllGameIntervals();
         safeIsGameEnded(true);
-        this.audioManager.stopBackgroundMusic();
+        window.audioManager.stopBackgroundMusic();
     }
 
 }

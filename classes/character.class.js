@@ -178,7 +178,7 @@ class Character extends MoveableObject {
      */
     startJump() {
         this.stopIdleLoop();
-        this.world.audioManager.playSoundEffect('./audio/jump.mp3');
+        window.audioManager.playSoundEffect('./audio/jump.mp3');
         this.jump();
     }
 
@@ -274,13 +274,13 @@ class Character extends MoveableObject {
     playHurtSound() {
         if (!this.isHurtTime) {
             this.isHurtTime = new Date().getTime();
-            this.world.audioManager.playSoundEffect('./audio/character-hurt.mp3');
+            window.audioManager.playSoundEffect('./audio/character-hurt.mp3');
             return;
         };
 
         if (new Date().getTime() - this.isHurtTime < 500) return;
         this.isHurtTime = new Date().getTime();
-        this.world.audioManager.playSoundEffect('./audio/character-hurt.mp3');
+        window.audioManager.playSoundEffect('./audio/character-hurt.mp3');
     }
 
 

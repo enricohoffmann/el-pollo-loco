@@ -20,14 +20,12 @@ class ItemsManager {
      * @param {StatusBar} statusBar 
      * @param {Number} level 
      * @param {HTMLCanvasElement} canvas 
-     * @param {AudioManager} audioManager 
      */
-    constructor(character, statusBar, level, canvas, audioManager) {
+    constructor(character, statusBar, level, canvas) {
         this.character = character;
         this.statusBar = statusBar;
         this.level = level;
         this.canvas = canvas;
-        this.audioManager = audioManager;
     }
 
     /**
@@ -83,11 +81,11 @@ class ItemsManager {
         this.collectedItems++;
 
         if(collectedItem instanceof Coin) {
-            this.audioManager.playSoundEffect('./audio/get-coin.mp3');
+            window.audioManager.playSoundEffect('./audio/get-coin.mp3');
         }
 
         if(collectedItem instanceof Bottle) {
-            this.audioManager.playSoundEffect('./audio/get-bottle.mp3');
+            window.audioManager.playSoundEffect('./audio/get-bottle.mp3');
         }
 
         collectedItem.animateCollectet(() => {

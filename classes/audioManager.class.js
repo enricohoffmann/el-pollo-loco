@@ -12,6 +12,7 @@ class AudioManager {
     sfxEnabled = true;
     musicVolume = 0.3;
     sfxVolume = 0.5;
+    unlocked = false;
 
     /**
      * @description Creates an instance of AudioManager.
@@ -19,6 +20,25 @@ class AudioManager {
      * @constructor
      */
     constructor() { }
+
+    /**
+     * @description Enables autoplay unlock by adding event listeners for user interaction.
+     * @memberOf AudioManager
+     * @method enableAutoplayUnlock
+     * @returns {void}
+     */
+    enableAutoplayUnlock() {
+        const unlock = () => {
+            this.unlocked = true;
+            if( this.musicEnabled && !this.musicPlainging) {
+                this.playBackgroundMusic();
+            }
+        };
+
+        window.addEventListener('pointerdown', unlock, { once: true });
+        window.addEventListener('keydown', unlock, { once: true });
+        window.addEventListener('touchstart', unlock, { once: true });
+    }
 
     /**
      * @description Loads background music from the specified source.
@@ -30,7 +50,8 @@ class AudioManager {
     loadBackgroundMusic(src) {
         this.backgroundMusic = new Audio(src);
         this.backgroundMusic.loop = true;
-        this.backgroundMusic.volume = this.musicVolume;
+        //this.musicVolume = this.clampVolume(this.toFiniteNumber(this.musicVolume, 0.3));
+        //this.backgroundMusic.volume = this.musicVolume;
     }
 
     /**
@@ -39,12 +60,28 @@ class AudioManager {
      * @method playBackgroundMusic
      * @returns {void}
      */
-    playBackgroundMusic() {
+    async playBackgroundMusic() {
         if (this.musicEnabled && this.backgroundMusic) {
             this.backgroundMusic.volume = this.musicVolume;
-            this.backgroundMusic.play();
-            this.musicPlainging = true;
+            try {
+                await this.backgroundMusic.play();
+                this.musicPlainging = true;
+            } catch (e) {
+                this.musicPlainging = false;
+            }
+           
         }
+    }
+
+    /**
+     * @description Unlocks audio playback and plays background music.
+     * @memberOf AudioManager
+     * @method unlockAudio
+     * @returns {void}
+     */
+    unlockAudio() {
+        this.unlocked = true;
+        this.playBackgroundMusic();
     }
 
     /**
@@ -122,8 +159,11 @@ class AudioManager {
      */
     setVolume(volume){
         const clampedVolume = Math.max(0, Math.min(10, volume));
-        this.musicVolume = clampedVolume / 10 * 0.3;
-        this.sfxVolume = clampedVolume / 10 * 0.5;
+        this.musicVolume = clampedVolume / 10;
+        this.sfxVolume = clampedVolume / 10 * 0.8;
+        this.musicEnabled = this.musicVolume > 0;
+        this.sfxEnabled = this.sfxVolume > 0;
+
         if (this.backgroundMusic) {
             this.backgroundMusic.volume = this.musicVolume;
         }
@@ -137,6 +177,28 @@ class AudioManager {
      */
     get isMusicPlaying() {
         return this.musicPlainging;
+    }
+
+    /**
+     * @description Converts a value to a finite number, returning a default value if conversion fails.
+     * @param {number} value 
+     * @param {number} defaultValue 
+     * @returns {number}
+     */
+    toFiniteNumber(value, defaultValue) {
+        const number = Number(value);
+        return isFinite(number) ? number : defaultValue;
+    }
+
+    /**
+     * @description Clamps the volume between 0 and 1.
+     * @memberof AudioManager
+     * @method clampVolume
+     * @param {number} volume 
+     * @returns 
+     */
+    clampVolume(volume) {
+        return Math.max(1, Math.min(0, volume));
     }
     
 }

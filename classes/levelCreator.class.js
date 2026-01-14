@@ -88,7 +88,6 @@ class LevelCreator {
         this.currentLevel.backgroundObjects = this.createBackgroundObjects(this.levelSetting.contOfBackgroundObjects);
         this.currentLevel.enemies = this.createEnemysFromState(loadEnemiesState());
         this.currentLevel.clouds = this.createCloudsFromState(loadCloudsState());
-
         this.safeCurrentLevel();
         return this.currentLevel;
     }

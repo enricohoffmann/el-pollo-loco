@@ -15,7 +15,7 @@ let muted = false;
 let isFullScreen = false;
 let gameSettings;
 let isControlBind = false;
-let audioManager = new AudioManager();
+let audioManager = null;
 let gameIsEnded = false;
 let gameInterval = [];
 let gameVolume = 5
@@ -102,7 +102,6 @@ function loadInitialAssets() {
     initSlider();
     updateDifficultyState();
     bindControls();
-    loadAudio();
 }
 
 /**
@@ -198,27 +197,20 @@ function updateSliderBackground(slider) {
  * @returns {void}
  */
 function audioSettingsInit() {
-    if (gameSettings) {
-        muted = gameSettings.audioSetting === 'Audio Off' ? true : false;
-        gameVolume = muted ? 0 : gameSettings.volume;
-    }
-    audioManager.toggleMusic(!muted);
+    muted = gameSettings.audioSetting === 'Audio Off' ? true : false;
+    gameVolume = muted ? 0 : gameSettings.volume;
+    audioManager = new AudioManager();
+    audioManager.loadBackgroundMusic('./audio/retro-game-402454.mp3');
+    audioManager.enableAutoplayUnlock();
     audioManager.setVolume(gameVolume);
-    audioManager.toggleSFX(!muted);
+    audioManager.musicEnabled = !muted;
+    audioManager.sfxEnabled = !muted;
+    window.audioManager = audioManager;
     toggleMuteButtonIcon();
     updateAudioVolume();
 
 }
 
-/**
- * @description Loads audio assets for the game.
- * @memberOf Game
- * @function loadAudio
- * @returns {void}
- */
-function loadAudio() {
-    audioManager.loadBackgroundMusic('./audio/retro-game-402454.mp3');
-}
 
 /**
  * @description Increases the game audio volume by 1, up to a maximum of 10.
@@ -273,6 +265,12 @@ function updateAudioVolume() {
 }
 
 
+/**
+ * @description Updates the game settings related to audio in persistent storage.
+ * @memberOf Game
+ * @function updateAudioGameSettings
+ * @returns {void}
+ */
 function updateAudioGameSettings() {
     if (gameSettings) {
         gameSettings.volume = gameVolume;
@@ -306,7 +304,7 @@ function newGameStart() {
     const levelCreator = new LevelCreator(canvas);
     const level = levelCreator.createLevel();
     const config = levelCreator.getCurrentGameSettings;
-    world = new World(canvas, keyboard, level, config.theme.toLowerCase(), audioManager);
+    world = new World(canvas, keyboard, level, config.theme.toLowerCase());
     world.createNewGameObjects();
     world.run();
 }
@@ -322,7 +320,7 @@ function savedGameStart() {
     const levelCreator = new LevelCreator(canvas);
     const level = levelCreator.createLevelFromState();
     const config = levelCreator.getCurrentGameSettings;
-    world = new World(canvas, keyboard, level, config.theme.toLowerCase(), audioManager);
+    world = new World(canvas, keyboard, level, config.theme.toLowerCase());
     world.character = new Character(world);
     world.character.pos_x = loadCharacterState().character.x;
     world.character.pos_y = loadCharacterState().character.y;
@@ -443,7 +441,7 @@ function navigationButtonOnGame(target) {
     togglePauseButtonIcon();
     safeGameState(world);
     safePauseState(isPause);
-    world.audioManager.pauseBackgroundMusic();
+    audioManager.stopBackgroundMusic();
     navigateTo(target);
 }
 
@@ -458,10 +456,10 @@ function pauseGame() {
     togglePauseButtonIcon();
     safePauseState(isPause);
 
-    if(isPause){
-        world.audioManager.pauseBackgroundMusic()
-    }else if(!isPause && !muted && !audioManager.isMusicPlaying){
-        world.audioManager.playBackgroundMusic()
+    if (isPause) {
+        audioManager.pauseBackgroundMusic()
+    } else if (!isPause && !muted && !audioManager.isMusicPlaying) {
+        audioManager.playBackgroundMusic()
     }
 }
 
@@ -504,9 +502,8 @@ function reloadGame() {
 
     if (world) {
         clearAllGameIntervals();
-        world.audioManager.stopBackgroundMusic();
+        audioManager.stopBackgroundMusic();
         audioManager = null;
-        audioManager = new AudioManager();
         world = null;
         clearGameState();
         init();
@@ -527,16 +524,16 @@ function toggleMute() {
     if (muted) {
         forMutingVolume = gameVolume;
         gameVolume = 0;
-    }else {
+    } else {
         gameVolume = gameSettings.forMutingVolume || 5;
     }
     safeGameSettings(gameSettings);
     toggleMuteButtonIcon();
     audioManager.toggleMusic(!muted);
-    if(isPause) { audioManager.pauseBackgroundMusic(); }
+    if (isPause) { audioManager.pauseBackgroundMusic(); }
     audioManager.toggleSFX(!muted);
     updateAudioVolume();
-    
+
 }
 
 /**
@@ -691,5 +688,6 @@ window.createStoppableInterval = createStoppableInterval;
 window.clearAllGameIntervals = clearAllGameIntervals;
 window.removeOneGameInterval = removeOneGameInterval;
 window.defaultGameSettings = defaultGameSettings;
+
 
 
